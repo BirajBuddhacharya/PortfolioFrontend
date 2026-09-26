@@ -15,7 +15,7 @@ export default function NewPostPage() {
           saving={createPost.isPending}
           onSave={(data) =>
             createPost.mutate(data, {
-              onSuccess: () => router.push('/admin?tab=posts'),
+              onSuccess: () => router.push('/admin/posts'),
             })
           }
         />

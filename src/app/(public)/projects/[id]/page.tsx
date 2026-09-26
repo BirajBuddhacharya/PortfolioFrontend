@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
-import { getProject, getProfile, getContactLinks } from '../../../lib/serverApi';
-import { pageMetadata, toDescription, SITE_URL } from '../../../lib/seo';
+import { getProject } from '../../../../lib/serverApi';
+import { pageMetadata, toDescription, SITE_URL } from '../../../../lib/seo';
 import { ProjectDetailView } from './ProjectDetailView';
 import type { Metadata } from 'next';
 
@@ -29,11 +29,7 @@ export default async function ProjectDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [project, profile, contactLinks] = await Promise.all([
-    getProject(id),
-    getProfile(),
-    getContactLinks(),
-  ]);
+  const project = await getProject(id);
   if (!project) notFound();
 
   const ld = {
@@ -52,7 +48,7 @@ export default async function ProjectDetailPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
       />
-      <ProjectDetailView project={project} profile={profile} contactLinks={contactLinks} />
+      <ProjectDetailView project={project} />
     </>
   );
 }

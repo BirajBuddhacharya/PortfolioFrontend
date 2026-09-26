@@ -1,7 +1,7 @@
-import { getProfile, getResume, getContactLinks, REVALIDATE } from '../../lib/serverApi';
-import { pageMetadata } from '../../lib/seo';
+import { getResume, REVALIDATE } from '../../../lib/serverApi';
+import { pageMetadata } from '../../../lib/seo';
 import { ResumeView, type ResumeRow } from './ResumeView';
-import type { ResumeItem } from '../../types/resume';
+import type { ResumeItem } from '../../../types/resume';
 
 export const revalidate = REVALIDATE;
 
@@ -18,11 +18,7 @@ const toRow = (e: Pick<ResumeItem, 'title' | 'period' | 'organization' | 'body'>
 });
 
 export default async function ResumePage() {
-  const [profile, resume, contactLinks] = await Promise.all([
-    getProfile(),
-    getResume(),
-    getContactLinks(),
-  ]);
+  const resume = await getResume();
 
   const blocks = [
     { label: 'Experience', rows: (resume?.experiences ?? []).map(toRow) },
@@ -34,5 +30,5 @@ export default async function ResumePage() {
     },
   ];
 
-  return <ResumeView blocks={blocks} profile={profile} contactLinks={contactLinks} />;
+  return <ResumeView blocks={blocks} />;
 }

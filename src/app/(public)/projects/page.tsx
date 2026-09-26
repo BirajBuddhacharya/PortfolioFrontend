@@ -1,5 +1,5 @@
-import { getProjects, getProfile, getContactLinks } from '../../lib/serverApi';
-import { pageMetadata } from '../../lib/seo';
+import { getProjects } from '../../../lib/serverApi';
+import { pageMetadata } from '../../../lib/seo';
 import { ProjectsView } from './ProjectsView';
 
 export const revalidate = 60;
@@ -12,10 +12,6 @@ export const metadata = pageMetadata({
 });
 
 export default async function ProjectsPage() {
-  const [projects, profile, contactLinks] = await Promise.all([
-    getProjects(),
-    getProfile(),
-    getContactLinks(),
-  ]);
-  return <ProjectsView projects={projects} profile={profile} contactLinks={contactLinks} />;
+  const projects = await getProjects();
+  return <ProjectsView projects={projects} />;
 }

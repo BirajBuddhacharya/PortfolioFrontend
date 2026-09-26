@@ -24,7 +24,7 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
         {isError && (
           <div className="pt-12 flex flex-col gap-3">
             <p style={{ color: '#8A8A93' }}>Project not found.</p>
-            <Link href="/admin?tab=projects" style={{ color: '#FF6B6B', fontFamily: mono, fontSize: 13 }}>
+            <Link href="/admin/projects" style={{ color: '#FF6B6B', fontFamily: mono, fontSize: 13 }}>
               ← back to projects
             </Link>
           </div>
@@ -37,7 +37,7 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
             onSave={(data) =>
               updateProject.mutate(
                 { id, ...data },
-                { onSuccess: () => router.push('/admin?tab=projects') },
+                { onSuccess: () => router.push('/admin/projects') },
               )
             }
           />

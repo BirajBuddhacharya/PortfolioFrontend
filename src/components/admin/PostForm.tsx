@@ -92,7 +92,7 @@ export function PostForm({
       {/* Sticky bar */}
       <div className="sticky top-0 z-20 -mx-7 mb-10 flex items-center justify-between gap-4 border-b border-border bg-background/85 px-7 py-3 backdrop-blur">
         <Button asChild variant="ghost" size="sm" className="h-8 gap-1.5 px-2 font-mono text-[12px] text-[#6E6E78] hover:text-[#FF6B6B]">
-          <Link href="/admin?tab=posts">
+          <Link href="/admin/posts">
             <ArrowLeft size={13} /> posts
           </Link>
         </Button>

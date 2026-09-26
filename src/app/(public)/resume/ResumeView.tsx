@@ -1,10 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Navbar } from '../../components/layout/Navbar';
-import { Footer } from '../../components/layout/Footer';
-import type { Profile } from '../../types/profile';
-import type { ContactLink } from '../../types/contact';
 
 export interface ResumeRow {
   title: string;
@@ -17,18 +13,9 @@ export interface ResumeBlock {
   rows: ResumeRow[];
 }
 
-export function ResumeView({
-  blocks,
-  profile,
-  contactLinks,
-}: {
-  blocks: ResumeBlock[];
-  profile?: Profile | null;
-  contactLinks?: ContactLink[];
-}) {
+export function ResumeView({ blocks }: { blocks: ResumeBlock[] }) {
   return (
     <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'hidden' }}>
-      <Navbar profile={profile} />
       <main className="relative z-10 max-w-[900px] mx-auto px-7 pt-[160px]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -119,7 +106,6 @@ export function ResumeView({
 
         <div className="h-5" />
       </main>
-      <Footer profile={profile} contactLinks={contactLinks} />
     </div>
   );
 }

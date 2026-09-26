@@ -3,13 +3,10 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { Navbar } from '../../components/layout/Navbar';
-import { Footer } from '../../components/layout/Footer';
-import { useSubmitContact } from '../../services/contactService';
-import type { ContactLink } from '../../types/contact';
-import type { Profile } from '../../types/profile';
+import { useSubmitContact } from '../../../services/contactService';
+import type { ContactLink } from '../../../types/contact';
 
-export function ContactView({ links, profile }: { links: ContactLink[]; profile?: Profile | null }) {
+export function ContactView({ links }: { links: ContactLink[] }) {
   const { mutate: submit, isPending } = useSubmitContact();
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
 
@@ -42,7 +39,6 @@ export function ContactView({ links, profile }: { links: ContactLink[]; profile?
 
   return (
     <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'hidden' }}>
-      <Navbar profile={profile} />
       <main className="relative z-10 max-w-[1080px] mx-auto px-7 pt-[160px]">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <div
@@ -207,7 +203,6 @@ export function ContactView({ links, profile }: { links: ContactLink[]; profile?
           </motion.form>
         </div>
       </main>
-      <Footer profile={profile} contactLinks={links} />
     </div>
   );
 }

@@ -1,20 +1,11 @@
-import {
-  getProfile,
-  getResume,
-  getContactLinks,
-  REVALIDATE,
-} from "../../lib/serverApi";
-import { pageMetadata, toDescription } from "../../lib/seo";
+import { getProfile, getResume, REVALIDATE } from "../../../lib/serverApi";
+import { pageMetadata, toDescription } from "../../../lib/seo";
 import { AboutView } from "./AboutView";
 
 export const revalidate = REVALIDATE;
 
 export default async function AboutPage() {
-  const [profile, resume, contactLinks] = await Promise.all([
-    getProfile(),
-    getResume(),
-    getContactLinks(),
-  ]);
+  const [profile, resume] = await Promise.all([getProfile(), getResume()]);
 
   const education = [
     ...(resume?.education ?? []),
@@ -32,8 +23,6 @@ export default async function AboutPage() {
       paragraphs={profile?.paragraphs ?? []}
       education={education}
       facts={profile?.facts ?? []}
-      profile={profile}
-      contactLinks={contactLinks}
     />
   );
 }

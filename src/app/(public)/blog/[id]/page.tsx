@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
-import { getPost, getProfile, getContactLinks } from '../../../lib/serverApi';
-import { pageMetadata, toDescription, SITE_URL, SITE_NAME } from '../../../lib/seo';
+import { getPost } from '../../../../lib/serverApi';
+import { pageMetadata, toDescription, SITE_URL, SITE_NAME } from '../../../../lib/seo';
 import { PostView } from './PostView';
 import type { Metadata } from 'next';
 
@@ -35,11 +35,7 @@ export default async function PostPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [post, profile, contactLinks] = await Promise.all([
-    getPost(id),
-    getProfile(),
-    getContactLinks(),
-  ]);
+  const post = await getPost(id);
   if (!post) notFound();
 
   const description = toDescription(post.excerpt || post.content);
@@ -71,7 +67,7 @@ export default async function PostPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
       />
-      <PostView post={view} profile={profile} contactLinks={contactLinks} />
+      <PostView post={view} />
     </>
   );
 }

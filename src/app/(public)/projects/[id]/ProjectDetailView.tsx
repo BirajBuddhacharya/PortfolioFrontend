@@ -2,13 +2,9 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Navbar } from '../../../components/layout/Navbar';
-import { Footer } from '../../../components/layout/Footer';
-import { Prose } from '../../../components/Prose';
-import { Toc } from '../../../components/Toc';
-import type { Project } from '../../../types/project';
-import type { Profile } from '../../../types/profile';
-import type { ContactLink } from '../../../types/contact';
+import { Prose } from '../../../../components/Prose';
+import { Toc } from '../../../../components/Toc';
+import type { Project } from '../../../../types/project';
 
 const mono = 'var(--font-jetbrains-mono), monospace';
 const heading = 'var(--font-space-grotesk), sans-serif';
@@ -21,20 +17,11 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function ProjectDetailView({
-  project,
-  profile,
-  contactLinks,
-}: {
-  project: Project;
-  profile?: Profile | null;
-  contactLinks?: ContactLink[];
-}) {
+export function ProjectDetailView({ project }: { project: Project }) {
   const meta = [project.year, project.kind, project.status].filter(Boolean);
 
   return (
     <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'hidden' }}>
-      <Navbar profile={profile} />
       <main className="relative z-10 max-w-[1220px] mx-auto px-7 pt-[150px]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -192,7 +179,6 @@ export function ProjectDetailView({
           </div>
         </motion.div>
       </main>
-      <Footer profile={profile} contactLinks={contactLinks} />
     </div>
   );
 }

@@ -1,5 +1,5 @@
-import { getProfile, getContactLinks, REVALIDATE } from "../../lib/serverApi";
-import { pageMetadata } from "../../lib/seo";
+import { getContactLinks, REVALIDATE } from "../../../lib/serverApi";
+import { pageMetadata } from "../../../lib/seo";
 import { ContactView } from "./ContactView";
 
 export const revalidate = REVALIDATE;
@@ -12,6 +12,6 @@ export const metadata = pageMetadata({
 });
 
 export default async function ContactPage() {
-  const [profile, links] = await Promise.all([getProfile(), getContactLinks()]);
-  return <ContactView links={links} profile={profile} />;
+  const links = await getContactLinks();
+  return <ContactView links={links} />;
 }

@@ -1,5 +1,5 @@
-import { getPosts, getProfile, getContactLinks } from '../../lib/serverApi';
-import { pageMetadata } from '../../lib/seo';
+import { getPosts } from '../../../lib/serverApi';
+import { pageMetadata } from '../../../lib/seo';
 import { BlogView } from './BlogView';
 
 export const revalidate = 60;
@@ -14,11 +14,7 @@ const formatDate = (iso: string | null) =>
   iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 
 export default async function BlogPage() {
-  const [posts, profile, contactLinks] = await Promise.all([
-    getPosts(),
-    getProfile(),
-    getContactLinks(),
-  ]);
+  const posts = await getPosts();
 
   const items = posts.map((p) => ({
     id: p.id,
@@ -30,5 +26,5 @@ export default async function BlogPage() {
     readTime: `${p.readTime} min`,
   }));
 
-  return <BlogView posts={items} profile={profile} contactLinks={contactLinks} />;
+  return <BlogView posts={items} />;
 }

@@ -1,16 +1,14 @@
-import { Navbar } from '../components/layout/Navbar';
-import { Footer } from '../components/layout/Footer';
-import { MouseGlow } from '../components/MouseGlow';
-import { HeroSection } from '../components/sections/home/HeroSection';
-import { TickerSection } from '../components/sections/home/TickerSection';
-import { StatsSection } from '../components/sections/home/StatsSection';
-import { FeaturedProjectsSection } from '../components/sections/home/FeaturedProjectsSection';
-import { ExperienceSection } from '../components/sections/home/ExperienceSection';
-import { SkillsSection } from '../components/sections/home/SkillsSection';
-import { BlogPreviewSection } from '../components/sections/home/BlogPreviewSection';
-import { CTASection } from '../components/sections/home/CTASection';
-import { getProfile, getResume, getProjects, getPosts, getContactLinks, REVALIDATE } from '../lib/serverApi';
-import { pageMetadata } from '../lib/seo';
+import { MouseGlow } from '../../components/MouseGlow';
+import { HeroSection } from '../../components/sections/home/HeroSection';
+import { TickerSection } from '../../components/sections/home/TickerSection';
+import { StatsSection } from '../../components/sections/home/StatsSection';
+import { FeaturedProjectsSection } from '../../components/sections/home/FeaturedProjectsSection';
+import { ExperienceSection } from '../../components/sections/home/ExperienceSection';
+import { SkillsSection } from '../../components/sections/home/SkillsSection';
+import { BlogPreviewSection } from '../../components/sections/home/BlogPreviewSection';
+import { CTASection } from '../../components/sections/home/CTASection';
+import { getProfile, getResume, getProjects, getPosts, REVALIDATE } from '../../lib/serverApi';
+import { pageMetadata } from '../../lib/seo';
 
 export const revalidate = REVALIDATE;
 
@@ -22,12 +20,11 @@ export const metadata = pageMetadata({
 });
 
 export default async function HomePage() {
-  const [profile, resume, projects, posts, contactLinks] = await Promise.all([
+  const [profile, resume, projects, posts] = await Promise.all([
     getProfile(),
     getResume(),
     getProjects(),
     getPosts(),
-    getContactLinks(),
   ]);
 
   const featuredProjects = projects.filter((p) => p.status === 'live').slice(0, 3);
@@ -57,7 +54,6 @@ export default async function HomePage() {
   return (
     <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'hidden', position: 'relative' }}>
       <MouseGlow />
-      <Navbar profile={profile} />
       <main className="relative z-10">
         <HeroSection />
         <TickerSection items={profile?.ticker ?? []} />
@@ -68,7 +64,6 @@ export default async function HomePage() {
         <BlogPreviewSection posts={blogPreview} />
         <CTASection />
       </main>
-      <Footer profile={profile} contactLinks={contactLinks} />
     </div>
   );
 }

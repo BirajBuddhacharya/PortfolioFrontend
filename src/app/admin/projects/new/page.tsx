@@ -15,7 +15,7 @@ export default function NewProjectPage() {
           saving={createProject.isPending}
           onSave={(data) =>
             createProject.mutate(data, {
-              onSuccess: () => router.push('/admin?tab=projects'),
+              onSuccess: () => router.push('/admin/projects'),
             })
           }
         />

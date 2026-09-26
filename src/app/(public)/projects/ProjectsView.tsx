@@ -3,11 +3,7 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { Navbar } from '../../components/layout/Navbar';
-import { Footer } from '../../components/layout/Footer';
-import type { Project } from '../../types/project';
-import type { Profile } from '../../types/profile';
-import type { ContactLink } from '../../types/contact';
+import type { Project } from '../../../types/project';
 
 const filters = [
   { id: 'all', label: 'All' },
@@ -156,15 +152,7 @@ function ProjectCard({ p, index }: { p: Project; index: number }) {
   );
 }
 
-export function ProjectsView({
-  projects,
-  profile,
-  contactLinks,
-}: {
-  projects: Project[];
-  profile?: Profile | null;
-  contactLinks?: ContactLink[];
-}) {
+export function ProjectsView({ projects }: { projects: Project[] }) {
   const [activeFilter, setActiveFilter] = useState('all');
 
   const visible: Project[] = activeFilter === 'all'
@@ -175,7 +163,6 @@ export function ProjectsView({
 
   return (
     <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'hidden' }}>
-      <Navbar profile={profile} />
       <main className="relative z-10 max-w-[1180px] mx-auto px-7 pt-[160px]">
 
         {/* Header */}
@@ -260,7 +247,6 @@ export function ProjectsView({
           </motion.div>
         )}
       </main>
-      <Footer profile={profile} contactLinks={contactLinks} />
     </div>
   );
 }

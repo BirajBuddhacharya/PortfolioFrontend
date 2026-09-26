@@ -2,10 +2,6 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Navbar } from '../../components/layout/Navbar';
-import { Footer } from '../../components/layout/Footer';
-import type { Profile } from '../../types/profile';
-import type { ContactLink } from '../../types/contact';
 
 export interface BlogListItem {
   id: string;
@@ -17,20 +13,11 @@ export interface BlogListItem {
   readTime: string;
 }
 
-export function BlogView({
-  posts,
-  profile,
-  contactLinks,
-}: {
-  posts: BlogListItem[];
-  profile?: Profile | null;
-  contactLinks?: ContactLink[];
-}) {
+export function BlogView({ posts }: { posts: BlogListItem[] }) {
   const [featured, ...rest] = posts;
 
   return (
     <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'hidden' }}>
-      <Navbar profile={profile} />
       <main className="relative z-10 max-w-[1180px] mx-auto px-7 pt-[160px]">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <div
@@ -177,7 +164,6 @@ export function BlogView({
           ))}
         </div>
       </main>
-      <Footer profile={profile} contactLinks={contactLinks} />
     </div>
   );
 }
