@@ -3,10 +3,10 @@
 import { motion } from 'framer-motion';
 import { Navbar } from '../../components/layout/Navbar';
 import { Footer } from '../../components/layout/Footer';
-import { useResume } from '../../services/resumeService';
+import { useResumeView } from '../../services/resumeService';
 
 export default function ResumePage() {
-  const { data: blocks = [] } = useResume();
+  const { data: blocks = [] } = useResumeView();
 
   return (
     <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'hidden' }}>

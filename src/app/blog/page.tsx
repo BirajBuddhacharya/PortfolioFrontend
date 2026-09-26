@@ -51,26 +51,19 @@ export default function BlogPage() {
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,107,107,0.45)'; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.09)'; }}
             >
-              <div
-                className="min-h-[280px] flex items-center justify-center overflow-hidden"
-                style={{ background: 'linear-gradient(135deg,#17171C,#0C0C0F)' }}
-              >
-                {featured.coverImage ? (
-                  // eslint-disable-next-line @next/next/no-img-element
+              {featured.coverImage && (
+                <div
+                  className="min-h-[280px] flex items-center justify-center overflow-hidden"
+                  style={{ background: 'linear-gradient(135deg,#17171C,#0C0C0F)' }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={featured.coverImage}
                     alt={featured.title}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
-                ) : (
-                  <span
-                    className="text-[11px] uppercase tracking-[0.16em]"
-                    style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#3F3F46' }}
-                  >
-                    cover image
-                  </span>
-                )}
-              </div>
+                </div>
+              )}
               <div
                 className="p-[40px] flex flex-col justify-center"
                 style={{ background: '#0C0C0F' }}

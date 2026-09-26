@@ -6,9 +6,7 @@ import Link from 'next/link';
 import { Navbar } from '../../components/layout/Navbar';
 import { Footer } from '../../components/layout/Footer';
 import { useProjects } from '../../services/projectsService';
-import { placeholder } from '../../data/placeholder';
-
-type Project = (typeof placeholder.allProjects)[number];
+import type { Project } from '../../types/project';
 
 const filters = [
   { id: 'all', label: 'All' },
@@ -81,33 +79,30 @@ function ProjectCard({ p, index }: { p: Project; index: number }) {
               left: '20%',
             }}
           />
-          <span
-            className="relative text-[11px] uppercase tracking-[0.18em]"
-            style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#3F3F46' }}
-          >
-            cover image
-          </span>
-
           {/* Kind badge */}
-          <span
-            className="absolute top-[14px] left-[14px] text-[10.5px] border px-[9px] py-1 rounded-full"
-            style={{
-              fontFamily: 'var(--font-jetbrains-mono), monospace',
-              color: accent,
-              background: `${accent}18`,
-              borderColor: `${accent}40`,
-            }}
-          >
-            {p.kind}
-          </span>
+          {p.kind && (
+            <span
+              className="absolute top-[14px] left-[14px] text-[10.5px] border px-[9px] py-1 rounded-full"
+              style={{
+                fontFamily: 'var(--font-jetbrains-mono), monospace',
+                color: accent,
+                background: `${accent}18`,
+                borderColor: `${accent}40`,
+              }}
+            >
+              {p.kind}
+            </span>
+          )}
 
           {/* Year */}
-          <span
-            className="absolute bottom-[14px] right-[14px] text-[10.5px]"
-            style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#6E6E78' }}
-          >
-            {p.year}
-          </span>
+          {p.year && (
+            <span
+              className="absolute bottom-[14px] right-[14px] text-[10.5px]"
+              style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#6E6E78' }}
+            >
+              {p.year}
+            </span>
+          )}
         </div>
 
         {/* Body */}
@@ -131,25 +126,29 @@ function ProjectCard({ p, index }: { p: Project; index: number }) {
             </span>
           </div>
 
-          <p className="mb-4 text-[14px] leading-[1.65]" style={{ color: '#8A8A93' }}>
-            {p.blurb}
-          </p>
+          {p.blurb && (
+            <p className="mb-4 text-[14px] leading-[1.65]" style={{ color: '#8A8A93' }}>
+              {p.blurb}
+            </p>
+          )}
 
-          <div className="flex flex-wrap gap-[6px]">
-            {p.stack.map((s) => (
-              <span
-                key={s}
-                className="text-[11px] px-[9px] py-1 rounded-[6px] border border-white/[0.07]"
-                style={{
-                  fontFamily: 'var(--font-jetbrains-mono), monospace',
-                  color: '#A1A1AA',
-                  background: 'rgba(255,255,255,0.04)',
-                }}
-              >
-                {s}
-              </span>
-            ))}
-          </div>
+          {p.stack.length > 0 && (
+            <div className="flex flex-wrap gap-[6px]">
+              {p.stack.map((s) => (
+                <span
+                  key={s}
+                  className="text-[11px] px-[9px] py-1 rounded-[6px] border border-white/[0.07]"
+                  style={{
+                    fontFamily: 'var(--font-jetbrains-mono), monospace',
+                    color: '#A1A1AA',
+                    background: 'rgba(255,255,255,0.04)',
+                  }}
+                >
+                  {s}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </Link>
     </motion.div>

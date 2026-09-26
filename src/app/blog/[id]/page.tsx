@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { use } from 'react';
 import { Navbar } from '../../../components/layout/Navbar';
 import { Footer } from '../../../components/layout/Footer';
+import { Prose } from '../../../components/Prose';
+import { Toc } from '../../../components/Toc';
 import { useBlogPostDetail } from '../../../services/blogService';
 
 export default function PostPage({ params }: { params: Promise<{ id: string }> }) {
@@ -14,7 +16,7 @@ export default function PostPage({ params }: { params: Promise<{ id: string }> }
   return (
     <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'hidden' }}>
       <Navbar />
-      <main className="relative z-10 max-w-[720px] mx-auto px-7 pt-[150px]">
+      <main className="relative z-10 max-w-[1060px] mx-auto px-7 pt-[150px]">
         {isLoading && (
           <div className="text-[14px]" style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#6E6E78' }}>
             Loading…
@@ -29,7 +31,14 @@ export default function PostPage({ params }: { params: Promise<{ id: string }> }
         )}
 
         {post && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="grid gap-12 lg:grid-cols-[200px_minmax(0,720px)] lg:justify-center"
+          >
+            <Toc content={post.body ?? ''} className="order-1 hidden lg:block" />
+            <div className="order-2 min-w-0">
             <Link
               href="/blog"
               className="text-[12.5px] transition-colors duration-200"
@@ -66,36 +75,21 @@ export default function PostPage({ params }: { params: Promise<{ id: string }> }
               {post.title}
             </h1>
 
-            <div
-              className="h-[300px] rounded-[18px] border border-white/[0.09] flex items-center justify-center mb-[44px] overflow-hidden"
-              style={{ background: 'linear-gradient(135deg,#141418,#0C0C0F)' }}
-            >
-              {post.coverImage ? (
-                // eslint-disable-next-line @next/next/no-img-element
+            {post.coverImage && (
+              <div
+                className="h-[300px] rounded-[18px] border border-white/[0.09] flex items-center justify-center mb-[44px] overflow-hidden"
+                style={{ background: 'linear-gradient(135deg,#141418,#0C0C0F)' }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={post.coverImage}
                   alt={post.title}
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
-              ) : (
-                <span
-                  className="text-[11px] uppercase tracking-[0.16em]"
-                  style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#3F3F46' }}
-                >
-                  cover image
-                </span>
-              )}
-            </div>
+              </div>
+            )}
 
-            {post.body.map((paragraph, i) => (
-              <p
-                key={i}
-                className="text-[17.5px] leading-[1.85] mb-[26px]"
-                style={{ color: '#B4B4BC', textWrap: 'pretty' } as React.CSSProperties}
-              >
-                {paragraph}
-              </p>
-            ))}
+            {post.body && <Prose>{post.body}</Prose>}
 
             <div className="border-t border-white/[0.08] mt-9 pt-8 pb-5 flex items-center gap-4">
               <div
@@ -116,6 +110,7 @@ export default function PostPage({ params }: { params: Promise<{ id: string }> }
                   ML &amp; backend engineer, Kathmandu
                 </div>
               </div>
+            </div>
             </div>
           </motion.div>
         )}
