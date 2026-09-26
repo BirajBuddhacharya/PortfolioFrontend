@@ -1,8 +1,8 @@
-import { getProfile, getResume, REVALIDATE } from "../../../lib/serverApi";
+import { getProfile, getResume } from "../../../lib/serverApi";
 import { pageMetadata, toDescription } from "../../../lib/seo";
 import { AboutView } from "./AboutView";
 
-export const revalidate = REVALIDATE;
+export const revalidate = 60;
 
 export default async function AboutPage() {
   const [profile, resume] = await Promise.all([getProfile(), getResume()]);

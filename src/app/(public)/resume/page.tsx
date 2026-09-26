@@ -1,9 +1,9 @@
-import { getResume, REVALIDATE } from '../../../lib/serverApi';
+import { getResume } from '../../../lib/serverApi';
 import { pageMetadata } from '../../../lib/seo';
 import { ResumeView, type ResumeRow } from './ResumeView';
 import type { ResumeItem } from '../../../types/resume';
 
-export const revalidate = REVALIDATE;
+export const revalidate = 60;
 
 export const metadata = pageMetadata({
   title: 'Résumé | Biraj Buddhacharya',

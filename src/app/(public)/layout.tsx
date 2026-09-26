@@ -1,8 +1,8 @@
 import { Navbar } from '../../components/layout/Navbar';
 import { Footer } from '../../components/layout/Footer';
-import { getProfile, getContactLinks, REVALIDATE } from '../../lib/serverApi';
+import { getProfile, getContactLinks } from '../../lib/serverApi';
 
-export const revalidate = REVALIDATE;
+export const revalidate = 60;
 
 /**
  * Shared chrome for every public page — fetched once here instead of by

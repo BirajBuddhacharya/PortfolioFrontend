@@ -25,9 +25,9 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
 
         {notFound && (
           <div className="flex flex-col gap-3 pt-12">
-            <p style={{ color: '#8A8A93' }}>Post not found.</p>
-            <Link href="/admin/posts" style={{ color: '#FF6B6B', fontFamily: mono, fontSize: 13 }}>
-              ← back to posts
+            <p style={{ color: '#8A8A93' }}>blog not found.</p>
+            <Link href="/admin/blogs" style={{ color: '#FF6B6B', fontFamily: mono, fontSize: 13 }}>
+              ← back to blogs
             </Link>
           </div>
         )}
@@ -39,7 +39,7 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
             onSave={(data) =>
               updatePost.mutate(
                 { id, ...data },
-                { onSuccess: () => router.push('/admin/posts') },
+                { onSuccess: () => router.push('/admin/blogs') },
               )
             }
           />

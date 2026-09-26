@@ -23,7 +23,7 @@ import { BG, SURFACE, BORDER, ACCENT, MUTED, TEXT, mono, heading, body } from '.
 const navItems: { href: string; label: string; icon: LucideIcon }[] = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/projects', label: 'Projects', icon: FolderKanban },
-  { href: '/admin/posts', label: 'Posts', icon: FileText },
+  { href: '/admin/blogs', label: 'Blogs', icon: FileText },
   { href: '/admin/about', label: 'About', icon: User },
   { href: '/admin/resume', label: 'Resume', icon: Briefcase },
   { href: '/admin/inbox', label: 'Inbox', icon: Mail },

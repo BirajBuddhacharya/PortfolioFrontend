@@ -7,10 +7,10 @@ import { ExperienceSection } from '../../components/sections/home/ExperienceSect
 import { SkillsSection } from '../../components/sections/home/SkillsSection';
 import { BlogPreviewSection } from '../../components/sections/home/BlogPreviewSection';
 import { CTASection } from '../../components/sections/home/CTASection';
-import { getProfile, getResume, getProjects, getPosts, REVALIDATE } from '../../lib/serverApi';
+import { getProfile, getResume, getProjects, getBlogs } from '../../lib/serverApi';
 import { pageMetadata } from '../../lib/seo';
 
-export const revalidate = REVALIDATE;
+export const revalidate = 60;
 
 export const metadata = pageMetadata({
   title: 'Biraj Buddhacharya | ML Engineer & Full-stack Developer',
@@ -24,7 +24,7 @@ export default async function HomePage() {
     getProfile(),
     getResume(),
     getProjects(),
-    getPosts(),
+    getBlogs(),
   ]);
 
   const featuredProjects = projects.filter((p) => p.status === 'live').slice(0, 3);

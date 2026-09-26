@@ -14,9 +14,9 @@ export default function AdminPostsPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-5">
-        <SectionLabel>all posts</SectionLabel>
+        <SectionLabel>all blogs</SectionLabel>
         <Button asChild variant="outline" size="sm" className={newButton}>
-          <Link href="/admin/posts/new">+ New post</Link>
+          <Link href="/admin/blogs/new">+ New blogs</Link>
         </Button>
       </div>
       <div className="rounded-[16px] border overflow-hidden" style={{ borderColor: BORDER }}>
@@ -50,7 +50,7 @@ export default function AdminPostsPage() {
                 <TableCell className="px-5 py-[14px]">
                   <div className="flex gap-2">
                     <Button asChild variant="outline" size="xs" className={rowButton}>
-                      <Link href={`/admin/posts/${p.id}/edit`}>edit</Link>
+                      <Link href={`/admin/blogs/${p.id}/edit`}>edit</Link>
                     </Button>
                     <ConfirmDelete
                       title="Delete this post?"

@@ -44,8 +44,8 @@ const list = async <T>(path: string): Promise<T[]> =>
 export const getProjects = () => list<Project>('/projects');
 export const getProject = (id: string) => get<Project>(`/projects/${id}`);
 
-export const getPosts = () => list<BlogPost>('/blog');
-export const getPost = (id: string) => get<BlogPost>(`/blog/${id}`);
+export const getBlogs = () => list<BlogPost>('/blog');
+export const getBlog = (id: string) => get<BlogPost>(`/blog/${id}`);
 export const getBlogTags = async () => (await get<string[]>('/blog/tags')) ?? [];
 
 export const getProfile = () => get<Profile>('/profile');

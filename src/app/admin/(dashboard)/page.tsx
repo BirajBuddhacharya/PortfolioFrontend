@@ -97,7 +97,7 @@ export default function AdminDashboardPage() {
           </div>
           <div className="flex flex-col gap-2 flex-1">
             {[
-              { label: '+ New post', href: '/admin/posts/new' },
+              { label: '+ New blog', href: '/admin/blogs/new' },
               { label: '+ New project', href: '/admin/projects/new' },
             ].map((a) => (
               <Button

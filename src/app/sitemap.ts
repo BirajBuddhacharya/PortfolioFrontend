@@ -1,11 +1,11 @@
 import type { MetadataRoute } from 'next';
-import { getPosts, getProjects } from '../lib/serverApi';
+import { getBlogs, getProjects } from '../lib/serverApi';
 import { SITE_URL } from '../lib/seo';
 
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [projects, posts] = await Promise.all([getProjects(), getPosts()]);
+  const [projects, posts] = await Promise.all([getProjects(), getBlogs()]);
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}/`, changeFrequency: 'monthly', priority: 1 },

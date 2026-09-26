@@ -1,4 +1,4 @@
-import { getPosts } from '../../../lib/serverApi';
+import { getBlogs as getBlogs } from '../../../lib/serverApi';
 import { pageMetadata } from '../../../lib/seo';
 import { BlogView } from './BlogView';
 
@@ -14,7 +14,7 @@ const formatDate = (iso: string | null) =>
   iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 
 export default async function BlogPage() {
-  const posts = await getPosts();
+  const posts = await getBlogs();
 
   const items = posts.map((p) => ({
     id: p.id,

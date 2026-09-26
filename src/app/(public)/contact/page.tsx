@@ -1,8 +1,8 @@
-import { getContactLinks, REVALIDATE } from "../../../lib/serverApi";
+import { getContactLinks } from "../../../lib/serverApi";
 import { pageMetadata } from "../../../lib/seo";
 import { ContactView } from "./ContactView";
 
-export const revalidate = REVALIDATE;
+export const revalidate = 60;
 
 export const metadata = pageMetadata({
   title: "Contact | Biraj Buddhacharya",
