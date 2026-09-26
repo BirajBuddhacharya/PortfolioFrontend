@@ -228,7 +228,7 @@ export function PostForm({
                 ref={bodyRef}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder={"Start writing…\n\n## Introduction\n\nSet the scene.\n\n## How it works\n\n- Point one\n- Point two\n\n```ts\nconst example = true;\n```"}
+                placeholder={""}
                 className="min-h-[460px] resize-y border-none bg-transparent p-0 font-mono text-[13.5px] leading-[1.85] text-[#C7C7CE] shadow-none placeholder:text-[#3A3A42] focus-visible:ring-0 md:text-[13.5px]"
               />
             )}

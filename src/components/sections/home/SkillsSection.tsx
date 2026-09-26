@@ -1,11 +1,13 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useHomeSkills } from '../../../services/homeService';
 
-export function SkillsSection() {
-  const { data: groups = [] } = useHomeSkills();
+interface SkillGroup {
+  name: string;
+  items: string[];
+}
 
+export function SkillsSection({ groups }: { groups: SkillGroup[] }) {
   return (
     <section className="max-w-[1180px] mx-auto px-7 pt-[96px]">
       <motion.div

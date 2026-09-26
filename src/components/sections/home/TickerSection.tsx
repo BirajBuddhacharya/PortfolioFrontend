@@ -1,9 +1,6 @@
 'use client';
 
-import { useHomeTicker } from '../../../services/homeService';
-
-export function TickerSection() {
-  const { data: items = [] } = useHomeTicker();
+export function TickerSection({ items }: { items: string[] }) {
   const doubled = [...items, ...items];
 
   return (

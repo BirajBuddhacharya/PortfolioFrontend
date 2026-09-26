@@ -1,11 +1,16 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useHomeExperience } from '../../../services/homeService';
 
-export function ExperienceSection() {
-  const { data: experience = [] } = useHomeExperience();
+interface ExperienceItem {
+  period: string;
+  location: string;
+  role: string;
+  company: string;
+  points: string[];
+}
 
+export function ExperienceSection({ items: experience }: { items: ExperienceItem[] }) {
   return (
     <section className="max-w-[1180px] mx-auto px-7 pt-[96px]">
       <motion.div

@@ -40,8 +40,12 @@ import {
   useUpdateResumeItem,
   useDeleteResumeItem,
   useUpdateMe,
+  useCreateContactLink,
+  useUpdateContactLink,
+  useDeleteContactLink,
 } from '../../services/adminService';
 import { useAboutEducation } from '../../services/aboutService';
+import { useContactLinks } from '../../services/contactService';
 import { useAdminLogout, useAdminMe } from '../../services/authService';
 import { useDeleteProject } from '../../services/projectsService';
 import { api } from '../../lib/apiClient';
@@ -60,6 +64,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/components/ui/tabs';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -73,9 +78,10 @@ import {
 } from '@/components/components/ui/alert-dialog';
 import { cn } from '@/components/lib/utils';
 import type { ResumeSection, CreateResumeItemPayload, UpdateResumeItemPayload } from '../../types/resume';
+import type { ContactLink, CreateContactLinkPayload, UpdateContactLinkPayload } from '../../types/contact';
 
 // ─── types ───────────────────────────────────────────────────────────────────
-type Tab = 'dashboard' | 'projects' | 'posts' | 'about' | 'experience' | 'education-certs' | 'skills' | 'editor' | 'inbox' | 'settings';
+type Tab = 'dashboard' | 'projects' | 'posts' | 'about' | 'resume' | 'editor' | 'inbox' | 'settings';
 interface InboxMsg { id: number; name: string; email: string; subject: string; body: string; time: string; read: boolean; }
 type ResumeRow = { id?: string; title: string; period: string; organization: string; body: string };
 type SkillRow = { id?: string; title: string; body: string };
@@ -99,10 +105,8 @@ const navItems: { id: Tab; label: string; icon: LucideIcon }[] = [
   { id: 'projects', label: 'Projects', icon: FolderKanban },
   { id: 'posts', label: 'Posts', icon: FileText },
   { id: 'about', label: 'About', icon: User },
-  { id: 'experience', label: 'Experience', icon: Briefcase },
-  { id: 'education-certs', label: 'Education & Certs', icon: GraduationCap },
-  { id: 'skills', label: 'Skills', icon: Wrench },
-  { id: 'editor', label: 'Editor', icon: PenLine },
+  { id: 'resume', label: 'Resume', icon: Briefcase },
+  // { id: 'editor', label: 'Editor', icon: PenLine },
   { id: 'inbox', label: 'Inbox', icon: Mail },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
@@ -1149,6 +1153,29 @@ async function saveResumeRows(
   ]);
 }
 
+// ─── Shared contact-link row save/diff ─────────────────────────────────────────
+type ContactLinkRow = { id?: string; label: string; value: string; href: string };
+
+async function saveContactLinks(
+  rows: ContactLinkRow[],
+  originalIds: string[],
+  ops: {
+    create: (p: CreateContactLinkPayload) => Promise<unknown>;
+    update: (p: UpdateContactLinkPayload & { id: string }) => Promise<unknown>;
+    del: (id: string) => Promise<unknown>;
+  },
+) {
+  const currentIds = new Set(rows.filter((r) => r.id).map((r) => r.id!));
+  const toDelete = originalIds.filter((id) => !currentIds.has(id));
+  await Promise.all([
+    ...toDelete.map((id) => ops.del(id)),
+    ...rows.map((row, i) => {
+      const payload = { label: row.label, value: row.value, href: row.href, order: i };
+      return row.id ? ops.update({ id: row.id, ...payload }) : ops.create(payload);
+    }),
+  ]);
+}
+
 // ─── Shared resume row editor ─────────────────────────────────────────────────
 function ResumeRowEditor<T extends ResumeRow>({
   rows,
@@ -1224,8 +1251,35 @@ function ResumeRowEditor<T extends ResumeRow>({
   );
 }
 
-// ─── Experience tab ───────────────────────────────────────────────────────────
-function ExperienceTab() {
+// ─── Resume tab (Experience / Education & Certs / Skills, as sub-tabs) ────────
+function ResumeTab() {
+  return (
+    <Tabs defaultValue="experience" className="max-w-[860px] gap-6">
+      <TabsList>
+        <TabsTrigger value="experience" className="gap-1.5">
+          <Briefcase size={13} /> Experience
+        </TabsTrigger>
+        <TabsTrigger value="education-certs" className="gap-1.5">
+          <GraduationCap size={13} /> Education &amp; Certs
+        </TabsTrigger>
+        <TabsTrigger value="skills" className="gap-1.5">
+          <Wrench size={13} /> Skills
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="experience">
+        <ExperienceSection />
+      </TabsContent>
+      <TabsContent value="education-certs">
+        <EducationCertsSection />
+      </TabsContent>
+      <TabsContent value="skills">
+        <SkillsSection />
+      </TabsContent>
+    </Tabs>
+  );
+}
+
+function ExperienceSection() {
   const { data: resumeAdmin } = useAdminResume();
   const [experiences, setExperiences] = useState<ResumeRow[]>([]);
   const hydrated = useRef(false);
@@ -1282,8 +1336,7 @@ function ExperienceTab() {
   );
 }
 
-// ─── Education & Certs tab ────────────────────────────────────────────────────
-function EducationCertsTab() {
+function EducationCertsSection() {
   const { data: resumeAdmin } = useAdminResume();
   const [educationEntries, setEducationEntries] = useState<ResumeRow[]>([]);
   const [certs, setCerts] = useState<ResumeRow[]>([]);
@@ -1347,8 +1400,7 @@ function EducationCertsTab() {
   );
 }
 
-// ─── Skills tab ───────────────────────────────────────────────────────────────
-function SkillsTab() {
+function SkillsSection() {
   const { data: resumeAdmin } = useAdminResume();
   const [skills, setSkills] = useState<SkillRow[]>([]);
   const hydrated = useRef(false);
@@ -1445,7 +1497,7 @@ function SkillsTab() {
 }
 
 // ─── Settings tab ─────────────────────────────────────────────────────────────
-const SETTINGS_FIELDS = ['Display name', 'Email', 'Tagline', 'Location'];
+const SETTINGS_FIELDS = ['Display name', 'Email'];
 
 function SettingsTab() {
   const { data: me } = useAdminMe();
@@ -1464,6 +1516,73 @@ function SettingsTab() {
 
   const handleSave = () => {
     updateMe.mutate({ name: vals['Display name'] }, { onSuccess: () => toast.success('Saved') });
+  };
+
+  // ── Branding (Profile: navbar/footer chrome shown to public visitors) ──────
+  const { data: profile } = useAdminAbout();
+  const updateProfile = useUpdateProfile();
+  const [siteName, setSiteName] = useState('');
+  const [avatarImage, setAvatarImage] = useState('');
+  const [location, setLocation] = useState('');
+  const [ctaLabel, setCtaLabel] = useState('');
+  const [footerNote, setFooterNote] = useState('');
+  const brandingHydrated = useRef(false);
+
+  useEffect(() => {
+    if (profile && !brandingHydrated.current) {
+      brandingHydrated.current = true;
+      setSiteName(profile.name ?? '');
+      setAvatarImage(profile.avatarImage ?? '');
+      setLocation(profile.location ?? '');
+      setCtaLabel(profile.ctaLabel ?? '');
+      setFooterNote(profile.footerNote ?? '');
+    }
+  }, [profile]);
+
+  const handleSaveBranding = () => {
+    updateProfile.mutate(
+      {
+        name: siteName,
+        avatarImage: avatarImage || undefined,
+        location: location || undefined,
+        ctaLabel: ctaLabel || undefined,
+        footerNote: footerNote || undefined,
+      },
+      { onSuccess: () => toast.success('Saved') },
+    );
+  };
+
+  // ── Contact links (footer "Elsewhere" + email, e.g. GitHub/LinkedIn) ───────
+  const { data: contactLinks } = useContactLinks();
+  const [links, setLinks] = useState<ContactLinkRow[]>([]);
+  const linksHydrated = useRef(false);
+  const originalLinkIds = useRef<string[]>([]);
+  const [savingLinks, setSavingLinks] = useState(false);
+  const createLink = useCreateContactLink();
+  const updateLink = useUpdateContactLink();
+  const deleteLink = useDeleteContactLink();
+
+  useEffect(() => {
+    if (contactLinks && !linksHydrated.current) {
+      linksHydrated.current = true;
+      const rows = contactLinks.map((l: ContactLink) => ({ id: l.id, label: l.label, value: l.value, href: l.href }));
+      setLinks(rows);
+      originalLinkIds.current = rows.filter((r) => r.id).map((r) => r.id!);
+    }
+  }, [contactLinks]);
+
+  const handleSaveLinks = async () => {
+    setSavingLinks(true);
+    try {
+      await saveContactLinks(
+        links,
+        originalLinkIds.current,
+        { create: (p) => createLink.mutateAsync(p), update: (p) => updateLink.mutateAsync(p), del: (id) => deleteLink.mutateAsync(id) },
+      );
+      toast.success('Saved');
+    } finally {
+      setSavingLinks(false);
+    }
   };
 
   const [notifEmail, setNotifEmail] = useState(true);
@@ -1492,6 +1611,155 @@ function SettingsTab() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Branding — public-facing navbar/footer chrome */}
+      <div>
+        <SectionLabel>branding</SectionLabel>
+        <div className="text-[11px] mb-4 -mt-2" style={{ fontFamily: mono, color: MUTED }}>
+          Shown on every public page — navbar avatar &amp; CTA, footer name &amp; contact.
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label className="mb-2 block font-mono text-[11px] font-normal text-[#6E6E78]">Site name</Label>
+            <Input
+              value={siteName}
+              onChange={(e) => setSiteName(e.target.value)}
+              placeholder="Your full name"
+              className={cn(formField, 'h-auto px-4 py-[10px]')}
+            />
+          </div>
+          <div>
+            <Label className="mb-2 block font-mono text-[11px] font-normal text-[#6E6E78]">Location</Label>
+            <Input
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="e.g. Kathmandu, Nepal"
+              className={cn(formField, 'h-auto px-4 py-[10px]')}
+            />
+          </div>
+          <div>
+            <Label className="mb-2 block font-mono text-[11px] font-normal text-[#6E6E78]">Navbar CTA label</Label>
+            <Input
+              value={ctaLabel}
+              onChange={(e) => setCtaLabel(e.target.value)}
+              placeholder="Hire me"
+              className={cn(formField, 'h-auto px-4 py-[10px]')}
+            />
+          </div>
+          <div>
+            <Label className="mb-2 block font-mono text-[11px] font-normal text-[#6E6E78]">Footer note</Label>
+            <Input
+              value={footerNote}
+              onChange={(e) => setFooterNote(e.target.value)}
+              placeholder="e.g. built from scratch"
+              className={cn(formField, 'h-auto px-4 py-[10px]')}
+            />
+          </div>
+          <div className="col-span-2">
+            <Label className="mb-2 block font-mono text-[11px] font-normal text-[#6E6E78]">Avatar image URL</Label>
+            <Input
+              value={avatarImage}
+              onChange={(e) => setAvatarImage(e.target.value)}
+              placeholder="https://example.com/avatar.png  (or leave blank for the initial-letter fallback)"
+              className={cn(formField, 'h-auto px-4 py-[10px]')}
+            />
+            {avatarImage && (
+              <div
+                className="mt-3 rounded-full border overflow-hidden"
+                style={{ borderColor: BORDER, width: 48, height: 48 }}
+              >
+                <img
+                  src={avatarImage}
+                  alt="avatar preview"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+        <Button
+          type="button"
+          onClick={handleSaveBranding}
+          disabled={updateProfile.isPending}
+          className={cn(saveButton, 'mt-4')}
+        >
+          {updateProfile.isPending ? 'Saving…' : 'Save branding'}
+        </Button>
+      </div>
+
+      {/* Contact links — footer "Elsewhere" list + the email line */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <SectionLabel>contact links</SectionLabel>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setLinks((prev) => [...prev, { label: '', value: '', href: '' }])}
+            className={addButton}
+          >
+            + add link
+          </Button>
+        </div>
+        <div className="text-[11px] mb-4 -mt-2" style={{ fontFamily: mono, color: MUTED }}>
+          Shown in the footer &amp; on the contact page. A link labeled "Email" is used as the footer contact address.
+        </div>
+        <div className="flex flex-col gap-4">
+          {links.map((link, i) => (
+            <Card key={i} className={panelCard}>
+              <div className="flex items-center justify-between">
+                <div className="text-[11px]" style={{ fontFamily: mono, color: MUTED }}>link {i + 1}</div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="xs"
+                  onClick={() => setLinks((prev) => prev.filter((_, j) => j !== i))}
+                  className={cn(rowDangerButton, 'rounded-[7px] py-[4px] text-[10.5px]')}
+                >
+                  remove
+                </Button>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <Label className={resumeLabel}>label</Label>
+                  <Input
+                    value={link.label}
+                    onChange={(e) => setLinks((prev) => prev.map((r, j) => j === i ? { ...r, label: e.target.value } : r))}
+                    placeholder="GitHub"
+                    className={cn(formField, 'h-auto rounded-[9px] px-3 py-[8px] text-[13px] md:text-[13px]')}
+                  />
+                </div>
+                <div>
+                  <Label className={resumeLabel}>display value</Label>
+                  <Input
+                    value={link.value}
+                    onChange={(e) => setLinks((prev) => prev.map((r, j) => j === i ? { ...r, value: e.target.value } : r))}
+                    placeholder="github.com/you"
+                    className={cn(formField, 'h-auto rounded-[9px] px-3 py-[8px] text-[13px] md:text-[13px]')}
+                  />
+                </div>
+                <div>
+                  <Label className={resumeLabel}>href</Label>
+                  <Input
+                    value={link.href}
+                    onChange={(e) => setLinks((prev) => prev.map((r, j) => j === i ? { ...r, href: e.target.value } : r))}
+                    placeholder="https://github.com/you"
+                    className={cn(formField, 'h-auto rounded-[9px] px-3 py-[8px] text-[13px] md:text-[13px]')}
+                  />
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+        <Button
+          type="button"
+          onClick={handleSaveLinks}
+          disabled={savingLinks}
+          className={cn(saveButton, 'mt-4')}
+        >
+          {savingLinks ? 'Saving…' : 'Save contact links'}
+        </Button>
       </div>
 
       {/* Preferences toggles */}
@@ -1551,9 +1819,7 @@ export default function AdminPage() {
     projects: <ProjectsTab />,
     posts: <PostsTab />,
     about: <AboutTab />,
-    experience: <ExperienceTab />,
-    'education-certs': <EducationCertsTab />,
-    skills: <SkillsTab />,
+    resume: <ResumeTab />,
     editor: <EditorTab />,
     inbox: <InboxTab />,
     settings: <SettingsTab />,

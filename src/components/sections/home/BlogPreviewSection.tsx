@@ -2,11 +2,15 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useHomeBlogPreview } from '../../../services/homeService';
 
-export function BlogPreviewSection() {
-  const { data: posts = [] } = useHomeBlogPreview();
+interface BlogPreviewItem {
+  id: string;
+  title: string;
+  date: string;
+  readTime: string;
+}
 
+export function BlogPreviewSection({ posts }: { posts: BlogPreviewItem[] }) {
   return (
     <section className="max-w-[1180px] mx-auto px-7 pt-[96px]">
       <motion.div

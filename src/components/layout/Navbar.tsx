@@ -8,6 +8,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/components/ui/avatar";
+import type { Profile } from "../../types/profile";
 
 const navItems = [
   { id: "about", label: "About", href: "/about" },
@@ -16,8 +17,10 @@ const navItems = [
   { id: "resume", label: "Résumé", href: "/resume" },
 ];
 
-export function Navbar() {
+export function Navbar({ profile }: { profile?: Profile | null }) {
   const pathname = usePathname();
+  const ctaLabel = profile?.ctaLabel || "Hire me";
+  const fallbackInitial = profile?.name?.trim()?.[0]?.toUpperCase() || "B";
 
   return (
     <div className="fixed top-[22px] left-0 right-0 z-[60] flex justify-center px-4 pointer-events-none">
@@ -36,8 +39,8 @@ export function Navbar() {
       >
         <Link href="/">
           <Avatar className="">
-            <AvatarImage src="img/avatar.png" className="object-cover object-center"/>
-            <AvatarFallback>B</AvatarFallback>
+            <AvatarImage src={profile?.avatarImage || "img/avatar.png"} className="object-cover object-center"/>
+            <AvatarFallback>{fallbackInitial}</AvatarFallback>
           </Avatar>
         </Link>
 
@@ -93,7 +96,7 @@ export function Navbar() {
             (e.target as HTMLElement).style.background = "#FF6B6B";
           }}
         >
-          Hire me
+          {ctaLabel}
         </Link>
       </motion.nav>
     </div>

@@ -2,11 +2,9 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useHomeFeaturedProjects } from '../../../services/homeService';
+import type { Project } from '../../../types/project';
 
-export function FeaturedProjectsSection() {
-  const { data: projects = [] } = useHomeFeaturedProjects();
-
+export function FeaturedProjectsSection({ projects }: { projects: Project[] }) {
   return (
     <section className="max-w-[1180px] mx-auto px-7 pt-[96px]">
       <motion.div

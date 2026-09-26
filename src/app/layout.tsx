@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Space_Grotesk, JetBrains_Mono, Sora } from "next/font/google";
 import { Toaster } from "../../components/components/ui/sonner";
 import { QueryProvider } from "../providers/QueryProvider";
+import { getProfile, getContactLinks } from "../lib/serverApi";
+import { SITE_URL, DEFAULT_OG_IMAGE } from "../lib/seo";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -44,26 +46,28 @@ export const metadata: Metadata = {
   },
 };
 
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: "Biraj Buddhacharya",
-  url: "https://birajbuddhacharya.com.np",
-  sameAs: [
-    "https://www.linkedin.com/in/biraj-buddhacharya",
-    "https://github.com/birajbuddhacharya",
-  ],
-  jobTitle: "ML Engineer & Full-stack Developer",
-  image: "https://birajbuddhacharya.com.np/img/logo.png",
-  description:
-    "Machine learning engineer and full-stack developer based in Kathmandu, Nepal.",
-};
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [profile, contactLinks] = await Promise.all([getProfile(), getContactLinks()]);
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: profile?.name || "Biraj Buddhacharya",
+    url: SITE_URL,
+    sameAs: contactLinks
+      .filter((l) => l.label.toLowerCase() !== "email")
+      .map((l) => l.href),
+    jobTitle: profile?.headline || "ML Engineer & Full-stack Developer",
+    image: profile?.avatarImage || DEFAULT_OG_IMAGE,
+    description:
+      profile?.paragraphs?.[0] ||
+      "Machine learning engineer and full-stack developer based in Kathmandu, Nepal.",
+  };
+
   return (
     <html lang="en">
       <head>
