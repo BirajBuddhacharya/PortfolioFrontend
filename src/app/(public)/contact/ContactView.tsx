@@ -35,9 +35,6 @@ export function ContactView({ links }: { links: ContactLink[] }) {
           turnstileToken: "",
         });
       },
-      onError: () => {
-        toast.error("Something went wrong. Please try again.");
-      },
     });
   };
 
