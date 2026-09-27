@@ -127,7 +127,7 @@ export default function AdminPostsPage() {
                     options={BLOG_STATUSES}
                     disabled={updatePost.isPending}
                     onValueChange={(val) =>
-                      updatePost.mutate({ id: p.id, status: val, ...(val === 'published' ? { publishedAt: new Date().toISOString() } : {}) })
+                      updatePost.mutate({ id: p.id, status: val as 'draft' | 'published', ...(val === 'published' ? { publishedAt: new Date().toISOString() } : {}) })
                     }
                   />
                 </TableCell>

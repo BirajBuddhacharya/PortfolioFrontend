@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { Input } from '@/components/components/ui/input';
 import { Textarea } from '@/components/components/ui/textarea';
+import { MarkdownEditor } from './MarkdownEditor';
 import { Button } from '@/components/components/ui/button';
 import { Separator } from '@/components/components/ui/separator';
 import {
@@ -349,12 +350,7 @@ export function ProjectForm({
               : <span className="font-mono text-[13px] text-[#6E6E78]">Nothing to preview yet.</span>}
           </div>
         ) : (
-          <Textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder={""}
-            className="min-h-[460px] resize-y border-none bg-transparent p-0 font-mono text-[13.5px] leading-[1.85] text-[#C7C7CE] shadow-none placeholder:text-[#3A3A42] focus-visible:ring-0 md:text-[13.5px]"
-          />
+          <MarkdownEditor value={content} onChange={setContent} />
         )}
       </div>
     </form>

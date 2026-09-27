@@ -318,14 +318,15 @@ function LinksTab() {
 }
 
 function NotificationsTab() {
-  const [notifEmail, setNotifEmail] = useState(() => {
-    try { return localStorage.getItem('pref-email-notif') !== 'false'; } catch { return true; }
-  });
+  const { data: profile } = useAdminAbout();
+  const updateProfile = useUpdateProfile();
+  const notifEmail = profile?.emailNotifications ?? true;
 
   const handleToggle = (val: boolean) => {
-    setNotifEmail(val);
-    try { localStorage.setItem('pref-email-notif', String(val)); } catch { /* noop */ }
-    toast.success(val ? 'Email notifications enabled' : 'Email notifications disabled');
+    updateProfile.mutate(
+      { emailNotifications: val },
+      { onSuccess: () => toast.success(val ? 'Email notifications enabled' : 'Email notifications disabled') },
+    );
   };
 
   return (
@@ -342,7 +343,7 @@ function NotificationsTab() {
             Get notified via email when a new contact message arrives.
           </div>
         </div>
-        <Switch id="pref-email-notif" checked={notifEmail} onCheckedChange={handleToggle} />
+        <Switch id="pref-email-notif" checked={notifEmail} onCheckedChange={handleToggle} disabled={updateProfile.isPending} />
       </Card>
     </div>
   );

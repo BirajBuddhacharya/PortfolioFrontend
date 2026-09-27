@@ -7,11 +7,11 @@ const toSlug = (s: string) =>
 import Link from 'next/link';
 import { ArrowLeft, CalendarClock, CircleDot, Clock, Hash, Image as ImageIcon, Tags } from 'lucide-react';
 import { Input } from '@/components/components/ui/input';
-import { Textarea } from '@/components/components/ui/textarea';
 import { Button } from '@/components/components/ui/button';
 import { Separator } from '@/components/components/ui/separator';
 import { cn } from '@/components/lib/utils';
 import { Prose } from '../Prose';
+import { MarkdownEditor, type MarkdownEditorHandle } from './MarkdownEditor';
 import { HeadingExplorer, parseHeadings, type Heading } from './HeadingExplorer';
 import { ChipInput, Row, field } from './FormPrimitives';
 import type { BlogPost, CreateBlogPostPayload } from '../../types/blog';
@@ -45,7 +45,7 @@ export function PostForm({
   const [preview, setPreview] = useState(false);
   const [activeSlug, setActiveSlug] = useState<string>();
 
-  const bodyRef = useRef<HTMLTextAreaElement>(null);
+  const bodyRef = useRef<MarkdownEditorHandle>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
   const headings = useMemo(() => parseHeadings(content), [content]);
@@ -67,15 +67,7 @@ export function PostForm({
       return;
     }
 
-    const el = bodyRef.current;
-    if (!el) return;
-    el.focus();
-    el.setSelectionRange(h.offset, h.offset + h.text.length + h.level + 1);
-
-    // Scroll the heading's line to the top of the viewport.
-    const line = content.slice(0, h.offset).split('\n').length - 1;
-    const lineHeight = parseFloat(getComputedStyle(el).lineHeight) || 25;
-    window.scrollTo({ top: el.offsetTop + line * lineHeight - 90, behavior: 'smooth' });
+    bodyRef.current?.select(h.offset, h.offset + h.text.length + h.level + 1);
   };
 
   useEffect(() => {
@@ -247,13 +239,7 @@ export function PostForm({
                   : <span className="font-mono text-[13px] text-[#6E6E78]">Nothing to preview yet.</span>}
               </div>
             ) : (
-              <Textarea
-                ref={bodyRef}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder={""}
-                className="min-h-[460px] resize-y border-none bg-transparent p-0 font-mono text-[13.5px] leading-[1.85] text-[#C7C7CE] shadow-none placeholder:text-[#3A3A42] focus-visible:ring-0 md:text-[13.5px]"
-              />
+              <MarkdownEditor handleRef={bodyRef} value={content} onChange={setContent} />
             )}
           </div>
         </div>

@@ -11,6 +11,7 @@ export interface Profile {
   ctaLabel: string;
   footerNote: string | null;
   resumePdfUrl?: string | null;
+  emailNotifications?: boolean;
   updatedAt?: string;
 }
 
