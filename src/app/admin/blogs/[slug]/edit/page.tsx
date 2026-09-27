@@ -8,10 +8,10 @@ import { useAdminPostDetail, useUpdatePost } from '../../../../../services/admin
 
 const mono = 'var(--font-jetbrains-mono), monospace';
 
-export default function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function EditPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
   const router = useRouter();
-  const { data: post, isLoading, isError } = useAdminPostDetail(id);
+  const { data: post, isLoading, isError } = useAdminPostDetail(slug);
   const updatePost = useUpdatePost();
 
   const notFound = isError || (!isLoading && !post);
@@ -38,7 +38,7 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
             saving={updatePost.isPending}
             onSave={(data) =>
               updatePost.mutate(
-                { id, ...data },
+                { id: post.id, ...data },
                 { onSuccess: () => router.push('/admin/blogs') },
               )
             }

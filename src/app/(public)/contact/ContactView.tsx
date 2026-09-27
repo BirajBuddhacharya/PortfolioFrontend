@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import type { TurnstileInstance } from "@marsidev/react-turnstile";
 import { useSubmitContact } from "../../../services/contactService";
 import type { ContactLink } from "../../../types/contact";
 import { Turnstile } from "../../../components/Turnstile";
 
 export function ContactView({ links }: { links: ContactLink[] }) {
   const { mutate: submit, isPending } = useSubmitContact();
+  const turnstileRef = useRef<TurnstileInstance>(null);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -34,6 +36,7 @@ export function ContactView({ links }: { links: ContactLink[] }) {
           message: "",
           turnstileToken: "",
         });
+        turnstileRef.current?.reset();
       },
     });
   };
@@ -252,8 +255,9 @@ export function ContactView({ links }: { links: ContactLink[] }) {
               />
             </div>
             <Turnstile
-              onSuccess={(token) => setForm({ ...form, turnstileToken: token })}
-              onExpire={() => setForm({ ...form, turnstileToken: "" })}
+              ref={turnstileRef}
+              onSuccess={(token) => setForm((prev) => ({ ...prev, turnstileToken: token }))}
+              onExpire={() => setForm((prev) => ({ ...prev, turnstileToken: "" }))}
             />
 
             <button

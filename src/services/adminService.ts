@@ -151,29 +151,18 @@ export const useAdminPosts = () =>
   useQuery({
     queryKey: [QueryKeys.BLOG_ADMIN],
     queryFn: fetchAdminPosts,
-    select: (posts: BlogPost[]) =>
-      posts.map((p) => ({
-        id: p.id,
-        title: p.title,
-        excerpt: p.excerpt,
-        content: p.content,
-        tags: p.tags,
-        date: p.publishedAt ?? p.createdAt,
-        status: p.status,
-        coverImage: p.coverImage,
-      })),
   });
 
 /**
  * Single post for the admin editor. Reads from the admin list rather than
  * `GET /blog/:id`, which 404s on drafts.
  */
-export const useAdminPostDetail = (id: string) =>
+export const useAdminPostDetail = (slug: string) =>
   useQuery({
     queryKey: [QueryKeys.BLOG_ADMIN],
     queryFn: fetchAdminPosts,
-    enabled: !!id,
-    select: (posts: BlogPost[]) => posts.find((p) => p.id === id),
+    enabled: !!slug,
+    select: (posts: BlogPost[]) => posts.find((p) => p.slug === slug),
   });
 
 export const useCreatePost = () => {

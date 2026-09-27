@@ -19,4 +19,8 @@ export enum ApiUrls {
   DASHBOARD_SNAPSHOT = "/dashboard/snapshot",
   PROJECTS_LIST = "/projects",
   PROJECT_DETAIL = "/projects/:id",
+  UPLOAD_IMAGE = "/upload/image",
+  UPLOAD_PDF = "/upload/pdf",
+  GALLERY = "/gallery",
+  GALLERY_ITEM = "/gallery/:id",
 }

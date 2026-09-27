@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { Briefcase, GraduationCap, Wrench } from 'lucide-react';
+import { Briefcase, FileText, GraduationCap, Wrench } from 'lucide-react';
 import { Button } from '@/components/components/ui/button';
 import { Input } from '@/components/components/ui/input';
 import { Textarea } from '@/components/components/ui/textarea';
@@ -10,13 +10,14 @@ import { Card } from '@/components/components/ui/card';
 import { Label } from '@/components/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/components/ui/tabs';
 import { cn } from '@/components/lib/utils';
-import { useAdminResume, useCreateResumeItem, useUpdateResumeItem, useDeleteResumeItem } from '../../../../services/adminService';
+import { useAdminResume, useCreateResumeItem, useUpdateResumeItem, useDeleteResumeItem, useUpdateProfile, useAdminAbout } from '../../../../services/adminService';
 import type { CreateResumeItemPayload, UpdateResumeItemPayload } from '../../../../types/resume';
 import {
   MUTED, mono, formField, addButton, saveButton, panelCard, resumeLabel, rowDangerButton,
   SectionLabel, ResumeRowEditor, saveResumeRows,
   type ResumeRow, type SkillRow,
 } from '../../../../components/admin/adminUi';
+import { PdfUploadButton } from '../../../../components/admin/PdfUploadButton';
 
 export default function AdminResumePage() {
   return (
@@ -31,6 +32,9 @@ export default function AdminResumePage() {
         <TabsTrigger value="skills" className="gap-1.5">
           <Wrench size={13} /> Skills
         </TabsTrigger>
+        <TabsTrigger value="pdf" className="gap-1.5">
+          <FileText size={13} /> Resume PDF
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="experience">
         <ExperienceSection />
@@ -40,6 +44,9 @@ export default function AdminResumePage() {
       </TabsContent>
       <TabsContent value="skills">
         <SkillsSection />
+      </TabsContent>
+      <TabsContent value="pdf">
+        <ResumePdfSection />
       </TabsContent>
     </Tabs>
   );
@@ -257,6 +264,68 @@ function SkillsSection() {
         className={saveButton}
       >
         {saving ? 'Saving…' : 'Save changes'}
+      </Button>
+    </div>
+  );
+}
+
+function ResumePdfSection() {
+  const { data: profile } = useAdminAbout();
+  const updateProfile = useUpdateProfile();
+  const [pdfUrl, setPdfUrl] = useState('');
+  const hydrated = useRef(false);
+
+  useEffect(() => {
+    if (profile && !hydrated.current) {
+      hydrated.current = true;
+      setPdfUrl(profile.resumePdfUrl ?? '');
+    }
+  }, [profile]);
+
+  const handleSave = async () => {
+    try {
+      await updateProfile.mutateAsync({ resumePdfUrl: pdfUrl || null });
+      toast.success('Saved');
+    } catch {
+      // toast handled by interceptor
+    }
+  };
+
+  return (
+    <div className="max-w-[860px] flex flex-col gap-6">
+      <SectionLabel>resume pdf</SectionLabel>
+      <div className="flex flex-col gap-3">
+        <div className="text-[11px]" style={{ fontFamily: mono, color: MUTED }}>
+          Upload a PDF or paste a direct URL. This will be used as the download link on the public resume page.
+        </div>
+        <div className="flex gap-2 items-center">
+          <Input
+            value={pdfUrl}
+            onChange={(e) => setPdfUrl(e.target.value)}
+            placeholder="https://res.cloudinary.com/…"
+            className={cn(formField, 'flex-1 h-auto px-4 py-[10px] text-[13px]')}
+          />
+          <PdfUploadButton onUploaded={(url) => setPdfUrl(url)} />
+        </div>
+        {pdfUrl && (
+          <a
+            href={pdfUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[11px] self-start"
+            style={{ fontFamily: mono, color: '#FF6B6B' }}
+          >
+            view current PDF ↗
+          </a>
+        )}
+      </div>
+      <Button
+        type="button"
+        onClick={handleSave}
+        disabled={updateProfile.isPending}
+        className={saveButton}
+      >
+        {updateProfile.isPending ? 'Saving…' : 'Save changes'}
       </Button>
     </div>
   );

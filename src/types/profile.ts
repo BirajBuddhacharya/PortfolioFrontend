@@ -10,6 +10,7 @@ export interface Profile {
   location: string | null;
   ctaLabel: string;
   footerNote: string | null;
+  resumePdfUrl?: string | null;
   updatedAt?: string;
 }
 

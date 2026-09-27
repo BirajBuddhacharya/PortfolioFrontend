@@ -8,10 +8,10 @@ import { useProjectDetail, useUpdateProject } from '../../../../../services/proj
 
 const mono = 'var(--font-jetbrains-mono), monospace';
 
-export default function EditProjectPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function EditProjectPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
   const router = useRouter();
-  const { data: project, isLoading, isError } = useProjectDetail(id);
+  const { data: project, isLoading, isError } = useProjectDetail(slug);
   const updateProject = useUpdateProject();
 
   return (
@@ -36,7 +36,7 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
             saving={updateProject.isPending}
             onSave={(data) =>
               updateProject.mutate(
-                { id, ...data },
+                { id: project.id, ...data },
                 { onSuccess: () => router.push('/admin/projects') },
               )
             }

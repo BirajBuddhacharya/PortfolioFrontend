@@ -36,6 +36,7 @@ import { cn } from '@/components/lib/utils';
 import { Prose } from '../Prose';
 import { ChipInput, Row, field } from './FormPrimitives';
 import type { Project, CreateProjectPayload } from '../../types/project';
+import { ImageUploadButton } from './ImageUploadButton';
 
 const KIND_OPTIONS = ['ML', 'Web app', 'CLI tool', 'AI product'];
 const NONE = '__none__';
@@ -253,8 +254,39 @@ export function ProjectForm({
           </div>
         </Row>
 
-        <Row icon={Images} label="Gallery">
-          <ChipInput values={gallery} onChange={setGallery} placeholder="Caption or image URL…" />
+        <Row icon={Images} label="Gallery" align="start">
+          <div className="flex flex-col gap-2 px-2 py-1 w-full">
+            {gallery.map((url, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <Input
+                  value={url}
+                  onChange={(e) => setGallery((g) => g.map((v, j) => (j === i ? e.target.value : v)))}
+                  className={cn(field, 'flex-1 font-mono text-[12px]')}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setGallery((g) => g.filter((_, j) => j !== i))}
+                  className="size-7 shrink-0 text-[#6E6E78] hover:bg-destructive/10 hover:text-destructive"
+                >
+                  <X size={13} />
+                </Button>
+              </div>
+            ))}
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setGallery((g) => [...g, ''])}
+                className="h-7 w-fit gap-1.5 px-1 font-mono text-[12px] font-normal text-[#6E6E78] hover:bg-transparent hover:text-[#FF6B6B]"
+              >
+                <Plus size={12} /> Add URL
+              </Button>
+              <ImageUploadButton onUploaded={(url) => setGallery((g) => [...g, url])} />
+            </div>
+          </div>
         </Row>
 
         <Row icon={Palette} label="Cover">

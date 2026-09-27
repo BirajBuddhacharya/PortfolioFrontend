@@ -27,7 +27,7 @@ export default function AdminAboutPage() {
       setHeadline(about.headline ?? '');
       setCoverImage(about.coverImage ?? '');
       setParagraphs(about.paragraphs ?? []);
-      setFacts(about.facts ?? []);
+      setFacts((about.facts ?? []).map((f) => ({ k: (f as { k?: string }).k ?? '', v: (f as { v?: string }).v ?? '' })));
     }
   }, [about]);
 
@@ -176,13 +176,13 @@ export default function AdminAboutPage() {
           {facts.map((f, i) => (
             <div key={i} className="flex gap-3 items-center">
               <Input
-                value={f.k}
+                value={f.k ?? ''}
                 onChange={(e) => setFacts((prev) => prev.map((row, j) => j === i ? { ...row, k: e.target.value } : row))}
                 placeholder="label"
                 className={cn(formField, 'h-auto w-[180px] shrink-0 rounded-[9px] px-3 py-[8px] font-mono text-[12px] md:text-[12px]')}
               />
               <Input
-                value={f.v}
+                value={f.v ?? ''}
                 onChange={(e) => setFacts((prev) => prev.map((row, j) => j === i ? { ...row, v: e.target.value } : row))}
                 placeholder="value"
                 className={cn(formField, 'h-auto flex-1 rounded-[9px] px-3 py-[8px]')}

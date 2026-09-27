@@ -13,4 +13,5 @@ export enum QueryKeys {
   DASHBOARD_SNAPSHOT = "dashboard_snapshot",
   PROJECTS_LIST = "projects_list",
   PROJECT_DETAIL = "project_detail",
+  GALLERY = "gallery",
 }

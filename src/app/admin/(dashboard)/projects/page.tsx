@@ -1,15 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { Pencil } from 'lucide-react';
+import { Pencil, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/components/ui/button';
+import { Badge } from '@/components/components/ui/badge';
 import { Input } from '@/components/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/components/ui/table';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/components/ui/dialog';
 import { useAdminProjects } from '../../../../services/adminService';
 import { useDeleteProject, useUpdateProject } from '../../../../services/projectsService';
-import { BORDER, TEXT, TEXT2, MUTED, mono, formField, newButton, tableHead, rowButton, SectionLabel, StatusSelect, ConfirmDelete } from '../../../../components/admin/adminUi';
+import { BORDER, TEXT, TEXT2, MUTED, ACCENT, mono, heading, formField, newButton, tableHead, rowButton, SectionLabel, StatusSelect, ConfirmDelete } from '../../../../components/admin/adminUi';
 import { cn } from '@/components/lib/utils';
+import type { Project } from '../../../../types/project';
 
 const PROJECT_STATUSES = ['live', 'archived'];
 
@@ -20,6 +23,7 @@ export default function AdminProjectsPage() {
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [preview, setPreview] = useState<Project | null>(null);
 
   const filtered = projects.filter((p) => {
     const matchSearch = !search || p.title.toLowerCase().includes(search.toLowerCase());
@@ -89,7 +93,11 @@ export default function AdminProjectsPage() {
               </TableRow>
             )}
             {filtered.map((p) => (
-              <TableRow key={p.id}>
+              <TableRow
+                key={p.id}
+                className="cursor-pointer"
+                onClick={() => setPreview(p)}
+              >
                 <TableCell className="px-5 py-[14px] text-[13.5px] font-medium" style={{ color: TEXT }}>{p.title}</TableCell>
                 <TableCell className="px-5 py-[14px] text-[12.5px]" style={{ fontFamily: mono, color: TEXT2 }}>{p.kind ?? '—'}</TableCell>
                 <TableCell className="px-5 py-[14px] text-[12.5px]" style={{ fontFamily: mono, color: MUTED }}>{p.year ?? '—'}</TableCell>
@@ -101,10 +109,10 @@ export default function AdminProjectsPage() {
                     onValueChange={(val) => updateProject.mutate({ id: p.id, status: val })}
                   />
                 </TableCell>
-                <TableCell className="px-5 py-[14px]">
+                <TableCell className="px-5 py-[14px]" onClick={(e) => e.stopPropagation()}>
                   <div className="flex gap-2">
                     <Button asChild variant="outline" size="xs" className={cn(rowButton, 'px-2')}>
-                      <Link href={`/admin/projects/${p.id}/edit`}><Pencil size={13} /></Link>
+                      <Link href={`/admin/projects/${p.slug}/edit`}><Pencil size={13} /></Link>
                     </Button>
                     <ConfirmDelete
                       title="Delete this project?"
@@ -119,6 +127,91 @@ export default function AdminProjectsPage() {
           </TableBody>
         </Table>
       </div>
+
+      {/* Preview modal */}
+      <Dialog open={!!preview} onOpenChange={(open) => !open && setPreview(null)}>
+        <DialogContent className="max-w-[520px] bg-[#0C0C0F] border-white/[0.08] p-0 overflow-hidden rounded-[20px]">
+          {preview && (
+            <>
+              {/* Accent bar */}
+              <div
+                className="h-[6px] w-full"
+                style={{ background: preview.coverAccent || ACCENT }}
+              />
+              <div className="p-6">
+                <DialogHeader className="mb-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <DialogTitle
+                      className="text-[20px] font-semibold leading-[1.25]"
+                      style={{ fontFamily: heading, color: TEXT }}
+                    >
+                      {preview.title}
+                    </DialogTitle>
+                    <span
+                      className="shrink-0 text-[10px] px-[9px] py-[3px] rounded-full border mt-[3px]"
+                      style={{
+                        fontFamily: mono,
+                        background: preview.status === 'live' ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.04)',
+                        borderColor: preview.status === 'live' ? 'rgba(16,185,129,0.25)' : BORDER,
+                        color: preview.status === 'live' ? '#10B981' : MUTED,
+                      }}
+                    >
+                      {preview.status}
+                    </span>
+                  </div>
+                  {(preview.kind || preview.year) && (
+                    <div className="text-[12px] mt-1" style={{ fontFamily: mono, color: MUTED }}>
+                      {[preview.kind, preview.year].filter(Boolean).join(' · ')}
+                    </div>
+                  )}
+                </DialogHeader>
+
+                {preview.blurb && (
+                  <p className="text-[14px] leading-[1.65] mb-4" style={{ color: TEXT2 }}>
+                    {preview.blurb}
+                  </p>
+                )}
+
+                {preview.stack?.length > 0 && (
+                  <div className="flex flex-wrap gap-[6px] mb-5">
+                    {preview.stack.map((s) => (
+                      <Badge
+                        key={s}
+                        variant="outline"
+                        className="border-border bg-white/[0.04] px-[9px] py-[3px] font-mono text-[10.5px] font-normal text-[#A1A1AA]"
+                      >
+                        {s}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                <div className="flex gap-2 pt-2 border-t" style={{ borderColor: BORDER }}>
+                  <Button asChild variant="outline" size="sm" className={cn(rowButton, 'gap-1.5')}>
+                    <Link href={`/projects/${preview.slug}`} target="_blank">
+                      <ExternalLink size={12} /> View public page
+                    </Link>
+                  </Button>
+                  {preview.live && (
+                    <Button asChild variant="outline" size="sm" className={cn(rowButton, 'gap-1.5')}>
+                      <a href={preview.live} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink size={12} /> Live
+                      </a>
+                    </Button>
+                  )}
+                  {preview.repo && (
+                    <Button asChild variant="outline" size="sm" className={cn(rowButton, 'gap-1.5')}>
+                      <a href={preview.repo} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink size={12} /> Repo
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -13,7 +13,7 @@ export interface ResumeBlock {
   rows: ResumeRow[];
 }
 
-export function ResumeView({ blocks }: { blocks: ResumeBlock[] }) {
+export function ResumeView({ blocks, pdfUrl }: { blocks: ResumeBlock[]; pdfUrl?: string | null }) {
   return (
     <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'hidden' }}>
       <main className="relative z-10 max-w-[900px] mx-auto px-7 pt-[160px]">
@@ -45,8 +45,10 @@ export function ResumeView({ blocks }: { blocks: ResumeBlock[] }) {
             </h1>
           </div>
           <a
-            href="/resume.pdf"
-            download
+            href={pdfUrl ?? '/resume.pdf'}
+            download={!pdfUrl ? true : undefined}
+            target={pdfUrl ? '_blank' : undefined}
+            rel={pdfUrl ? 'noopener noreferrer' : undefined}
             className="px-[22px] py-[13px] rounded-[11px] border border-white/[0.14] text-[12.5px] transition-colors duration-200"
             style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#EDEDEF' }}
             onMouseEnter={(e) => { const el = e.target as HTMLElement; el.style.borderColor = '#FF6B6B'; el.style.color = '#FF6B6B'; }}
