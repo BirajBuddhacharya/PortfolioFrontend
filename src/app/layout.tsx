@@ -5,6 +5,9 @@ import { QueryProvider } from "../providers/QueryProvider";
 import { getProfile, getContactLinks } from "../lib/serverApi";
 import { SITE_URL } from "../lib/seo";
 import "./globals.css";
+import Head from "next/head";
+import { GoogleTagManager } from "@next/third-parties/google";
+import { Env } from "src/utils/Env";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -69,6 +72,34 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <Head>
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+        <title>Biraj Buddhacharya | Software & AI Engineer</title>
+        <meta
+          name="description"
+          content="Portfolio of Biraj Buddhacharya, a Software and AI Engineer."
+        />
+        <meta
+          name="keywords"
+          content="software engineer, AI, Python, portfolio"
+        />
+        <meta
+          property="og:title"
+          content="Biraj Buddhacharya | Software & AI Engineer"
+        />
+        <meta
+          property="og:description"
+          content="Explore the portfolio of Biraj Buddhacharya, a Software and AI Engineer specializing in Python and machine learning."
+        />
+        <meta
+          property="og:image"
+          content="https://birajbuddhacharya.com.np/img/logo.png"
+        />
+        <meta property="og:url" content="https://birajbuddhacharya.com.np" />
+        <meta property="og:type" content="website" />
+      </Head>
       <head>
         <script
           type="application/ld+json"
@@ -83,6 +114,7 @@ export default async function RootLayout({
           {children}
           <Toaster />
         </QueryProvider>
+        <GoogleTagManager gtmId={Env.GOOGLE_ANALYTICS_ID} />
       </body>
     </html>
   );
