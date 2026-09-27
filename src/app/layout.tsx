@@ -3,7 +3,7 @@ import { Space_Grotesk, JetBrains_Mono, Sora } from "next/font/google";
 import { Toaster } from "../../components/components/ui/sonner";
 import { QueryProvider } from "../providers/QueryProvider";
 import { getProfile, getContactLinks } from "../lib/serverApi";
-import { SITE_URL, DEFAULT_OG_IMAGE } from "../lib/seo";
+import { SITE_URL } from "../lib/seo";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -42,7 +42,6 @@ export const metadata: Metadata = {
       "Machine learning engineer and full-stack developer building backends that think.",
     url: "https://birajbuddhacharya.com.np",
     type: "website",
-    images: [{ url: "https://birajbuddhacharya.com.np/img/logo.png" }],
   },
 };
 
@@ -62,7 +61,7 @@ export default async function RootLayout({
       .filter((l) => l.label.toLowerCase() !== "email")
       .map((l) => l.href),
     jobTitle: profile?.headline || "ML Engineer & Full-stack Developer",
-    image: profile?.avatarImage || DEFAULT_OG_IMAGE,
+    image: profile?.avatarImage || `${SITE_URL}/img/logo.png`,
     description:
       profile?.paragraphs?.[0] ||
       "Machine learning engineer and full-stack developer based in Kathmandu, Nepal.",

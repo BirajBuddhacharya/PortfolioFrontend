@@ -43,7 +43,7 @@ export default async function HomePage() {
   }));
 
   const blogPreview = posts.slice(0, 3).map((p) => ({
-    id: p.id,
+    slug: p.slug,
     title: p.title,
     date: p.publishedAt
       ? new Date(p.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })

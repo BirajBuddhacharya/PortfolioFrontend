@@ -32,7 +32,8 @@ export function HeadingExplorer({
 
         {headings.length === 0 ? (
           <p className="font-mono text-[11.5px] leading-relaxed text-[#45454E]">
-            Add a <span className="text-[#6E6E78]">## heading</span> to build an outline.
+            ...
+            {/*Add a <span className="text-[#6E6E78]">## heading</span> to build an outline.*/}
           </p>
         ) : (
           <nav>

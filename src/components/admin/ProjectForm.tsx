@@ -1,6 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+const toSlug = (s: string) =>
+  s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -8,6 +11,7 @@ import {
   Calendar,
   CircleDot,
   Github,
+  Hash,
   Images,
   Layers,
   Link2,
@@ -49,6 +53,8 @@ export function ProjectForm({
   const isEdit = !!project;
 
   const [title, setTitle] = useState(project?.title ?? '');
+  const [slug, setSlug] = useState(project?.slug ?? '');
+  const [slugEdited, setSlugEdited] = useState(isEdit);
   const [blurb, setBlurb] = useState(project?.blurb ?? '');
   const [summary, setSummary] = useState(project?.summary ?? '');
   const [content, setContent] = useState(project?.content ?? '');
@@ -65,12 +71,17 @@ export function ProjectForm({
   const [metrics, setMetrics] = useState<{ value: string; label: string }[]>(project?.metrics ?? []);
   const [preview, setPreview] = useState(false);
 
+  useEffect(() => {
+    if (!slugEdited) setSlug(toSlug(title));
+  }, [title, slugEdited]);
+
   const trimmed = (s: string) => (s.trim() ? s.trim() : undefined);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave({
       title: title.trim(),
+      slug: slug.trim(),
       blurb: trimmed(blurb),
       summary: trimmed(summary),
       content: trimmed(content),
@@ -174,6 +185,15 @@ export function ProjectForm({
 
         <Row icon={Layers} label="Stack">
           <ChipInput values={stack} onChange={setStack} placeholder="Type and press Enter…" />
+        </Row>
+
+        <Row icon={Hash} label="Slug">
+          <Input
+            value={slug}
+            onChange={(e) => { setSlug(e.target.value); setSlugEdited(true); }}
+            placeholder="auto-generated"
+            className={cn(field, 'font-mono text-[13px]')}
+          />
         </Row>
 
         <Row icon={Link2} label="Live URL">

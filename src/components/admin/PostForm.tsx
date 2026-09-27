@@ -1,8 +1,11 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+
+const toSlug = (s: string) =>
+  s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 import Link from 'next/link';
-import { ArrowLeft, CalendarClock, CircleDot, Clock, Image as ImageIcon, Tags } from 'lucide-react';
+import { ArrowLeft, CalendarClock, CircleDot, Clock, Hash, Image as ImageIcon, Tags } from 'lucide-react';
 import { Input } from '@/components/components/ui/input';
 import { Textarea } from '@/components/components/ui/textarea';
 import { Button } from '@/components/components/ui/button';
@@ -28,6 +31,8 @@ export function PostForm({
   const isEdit = !!post;
 
   const [title, setTitle] = useState(post?.title ?? '');
+  const [slug, setSlug] = useState(post?.slug ?? '');
+  const [slugEdited, setSlugEdited] = useState(isEdit);
   const [excerpt, setExcerpt] = useState(post?.excerpt ?? '');
   const [content, setContent] = useState(post?.content ?? '');
   const [tags, setTags] = useState<string[]>(post?.tags ?? []);
@@ -72,12 +77,17 @@ export function PostForm({
     window.scrollTo({ top: el.offsetTop + line * lineHeight - 90, behavior: 'smooth' });
   };
 
+  useEffect(() => {
+    if (!slugEdited) setSlug(toSlug(title));
+  }, [title, slugEdited]);
+
   const trimmed = (s: string) => (s.trim() ? s.trim() : undefined);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave({
       title: title.trim(),
+      slug: slug.trim(),
       excerpt: trimmed(excerpt),
       content: trimmed(content),
       tags,
@@ -180,6 +190,15 @@ export function PostForm({
                 onChange={(e) => setCoverImage(e.target.value)}
                 placeholder="Empty"
                 className={field}
+              />
+            </Row>
+
+            <Row icon={Hash} label="Slug">
+              <Input
+                value={slug}
+                onChange={(e) => { setSlug(e.target.value); setSlugEdited(true); }}
+                placeholder="auto-generated"
+                className={cn(field, 'font-mono text-[13px]')}
               />
             </Row>
 

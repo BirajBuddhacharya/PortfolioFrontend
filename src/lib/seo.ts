@@ -19,12 +19,12 @@ export function toDescription(input: string | null | undefined, max = 160): stri
   return `${flat.slice(0, max - 1).replace(/\s+\S*$/, '')}…`;
 }
 
-/** Builds per-page metadata with canonical URL and OG/Twitter cards filled in. */
+/** Builds per-page metadata with canonical URL and OG/Twitter cards filled in.
+ *  Images are omitted here — opengraph-image.tsx route files handle them per-page. */
 export function pageMetadata({
   title,
   description,
   path,
-  image,
   type = 'website',
   publishedTime,
   tags,
@@ -38,7 +38,6 @@ export function pageMetadata({
   tags?: string[];
 }): Metadata {
   const url = `${SITE_URL}${path}`;
-  const ogImage = image || DEFAULT_OG_IMAGE;
 
   return {
     title,
@@ -50,7 +49,6 @@ export function pageMetadata({
       url,
       siteName: SITE_NAME,
       type,
-      images: [{ url: ogImage }],
       ...(publishedTime ? { publishedTime } : {}),
       ...(tags?.length ? { tags } : {}),
     },
@@ -58,7 +56,6 @@ export function pageMetadata({
       card: 'summary_large_image',
       title,
       description,
-      images: [ogImage],
     },
   };
 }
