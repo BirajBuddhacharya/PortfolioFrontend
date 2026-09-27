@@ -196,8 +196,23 @@ export function ProjectsView({ projects }: { projects: Project[] }) {
           </p>
         </motion.div>
 
+        {projects.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="py-24 text-center"
+          >
+            <div
+              className="text-[13px]"
+              style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#6E6E78' }}
+            >
+              no projects yet — check back soon
+            </div>
+          </motion.div>
+        )}
+
         {/* Filters */}
-        <div className="flex gap-2 flex-wrap mb-[40px]">
+        {projects.length > 0 && <div className="flex gap-2 flex-wrap mb-[40px]">
           {filters.map((f) => {
             const isActive = activeFilter === f.id;
             return (
@@ -217,10 +232,10 @@ export function ProjectsView({ projects }: { projects: Project[] }) {
               </button>
             );
           })}
-        </div>
+        </div>}
 
         {/* Masonry grid — 3 flexbox columns, shortest-column-first distribution */}
-        <div className="flex gap-5 items-start pb-10">
+        {projects.length > 0 && <div className="flex gap-5 items-start pb-10">
           {columns.map((col, ci) => (
             <div key={ci} className="flex-1 flex flex-col gap-5 min-w-0">
               <AnimatePresence mode="popLayout">
@@ -230,9 +245,9 @@ export function ProjectsView({ projects }: { projects: Project[] }) {
               </AnimatePresence>
             </div>
           ))}
-        </div>
+        </div>}
 
-        {visible.length === 0 && (
+        {projects.length > 0 && visible.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

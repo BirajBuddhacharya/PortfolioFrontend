@@ -1,21 +1,16 @@
 import { ImageResponse } from 'next/og';
+import fs from 'fs';
+import path from 'path';
 
 export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_CONTENT_TYPE = 'image/png';
 
 const SITE_DOMAIN = 'birajbuddhacharya.com.np';
 
-async function loadFont(): Promise<ArrayBuffer | null> {
+function loadFont(): ArrayBuffer | null {
   try {
-    // Old UA → Google Fonts returns TTF (format('truetype')), which Satori supports.
-    // Modern UA returns WOFF2 which Satori rejects with "Unsupported OpenType signature wOF2".
-    const css = await fetch(
-      'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700',
-      { headers: { 'User-Agent': 'Mozilla/4.0 (compatible; MSIE 6.0)' } }
-    ).then((r) => r.text());
-    const match = css.match(/src: url\(([^)]+)\) format\('truetype'\)/);
-    if (!match?.[1]) return null;
-    return fetch(match[1]).then((r) => r.arrayBuffer());
+    const fontPath = path.join(process.cwd(), 'public/fonts/SpaceGrotesk-Bold.ttf');
+    return fs.readFileSync(fontPath).buffer as ArrayBuffer;
   } catch {
     return null;
   }
@@ -203,8 +198,8 @@ function OgTemplate({ title, description, label, tags = [] }: OgProps) {
   );
 }
 
-export async function buildOgImage(props: OgProps): Promise<ImageResponse> {
-  const fontData = await loadFont();
+export function buildOgImage(props: OgProps): ImageResponse {
+  const fontData = loadFont();
   return new ImageResponse(<OgTemplate {...props} />, {
     ...OG_SIZE,
     fonts: fontData

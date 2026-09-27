@@ -110,6 +110,21 @@ export function BlogView({ posts }: { posts: BlogListItem[] }) {
           </motion.div>
         )}
 
+        {posts.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="py-24 text-center"
+          >
+            <div
+              className="text-[13px]"
+              style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#6E6E78' }}
+            >
+              no posts yet — check back soon
+            </div>
+          </motion.div>
+        )}
+
         <div className="border-t border-white/[0.08] pb-5">
           {rest.map((p, i) => (
             <motion.div
