@@ -3,13 +3,16 @@
 import { motion } from 'framer-motion';
 import { FileText, ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 import { useGallery, useDeleteGalleryItem } from '../../../../services/uploadService';
+import { QueryKeys } from '../../../../lib/queryKeys';
 import { BORDER, MUTED, TEXT, mono, SectionLabel, ConfirmDelete } from '../../../../components/admin/adminUi';
 import { ImageUploadButton } from '../../../../components/admin/ImageUploadButton';
 
 export default function AdminGalleryPage() {
   const { data: items = [], isLoading } = useGallery();
   const deleteItem = useDeleteGalleryItem();
+  const queryClient = useQueryClient();
 
   const images = items.filter((i) => i.type === 'image');
   const pdfs = items.filter((i) => i.type === 'pdf');
@@ -18,7 +21,7 @@ export default function AdminGalleryPage() {
     <div className="max-w-[1080px]">
       <div className="flex items-center justify-between mb-6">
         <SectionLabel>gallery</SectionLabel>
-        <ImageUploadButton onUploaded={() => {}} />
+        <ImageUploadButton onUploaded={() => queryClient.invalidateQueries({ queryKey: [QueryKeys.GALLERY] })} />
       </div>
 
       {isLoading && (

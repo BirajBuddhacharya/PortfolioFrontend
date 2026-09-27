@@ -10,6 +10,7 @@ import { cn } from '@/components/lib/utils';
 import { useAdminAbout, useUpdateProfile } from '../../../../services/adminService';
 import { useAboutEducation } from '../../../../services/aboutService';
 import { BORDER, MUTED, TEXT, ACCENT, mono, heading, formField, addButton, saveButton, rowDangerButton, SectionLabel } from '../../../../components/admin/adminUi';
+import { ImageUploadButton } from '../../../../components/admin/ImageUploadButton';
 
 export default function AdminAboutPage() {
   const { data: about } = useAdminAbout();
@@ -66,12 +67,15 @@ export default function AdminAboutPage() {
       {/* ── Cover image ── */}
       <div>
         <SectionLabel>cover image</SectionLabel>
-        <Input
-          value={coverImage}
-          onChange={(e) => setCoverImage(e.target.value)}
-          placeholder="https://example.com/portrait.jpg  (or leave blank for placeholder)"
-          className={cn(formField, 'h-auto px-4 py-[10px]')}
-        />
+        <div className="flex gap-2 items-center">
+          <Input
+            value={coverImage}
+            onChange={(e) => setCoverImage(e.target.value)}
+            placeholder="https://example.com/portrait.jpg  (or leave blank for placeholder)"
+            className={cn(formField, 'flex-1 h-auto px-4 py-[10px]')}
+          />
+          <ImageUploadButton onUploaded={(url) => setCoverImage(url)} />
+        </div>
         {coverImage && (
           <div
             className="mt-3 rounded-[12px] border overflow-hidden"

@@ -313,3 +313,45 @@ export function ResumeRowEditor<T extends ResumeRow>({
     </>
   );
 }
+
+export function AdminPagination({
+  page,
+  total,
+  size,
+  onPageChange,
+}: {
+  page: number;
+  total: number;
+  size: number;
+  onPageChange: (p: number) => void;
+}) {
+  const totalPages = Math.ceil(total / size);
+  if (totalPages <= 1) return null;
+  const from = (page - 1) * size + 1;
+  const to = Math.min(page * size, total);
+  return (
+    <div className="flex items-center justify-between pt-4 px-1">
+      <span className="text-[12px]" style={{ fontFamily: mono, color: MUTED }}>
+        {from}–{to} of {total}
+      </span>
+      <div className="flex gap-1">
+        <button
+          disabled={page <= 1}
+          onClick={() => onPageChange(page - 1)}
+          className="px-3 py-[5px] rounded-[7px] text-[11px] border transition-colors duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+          style={{ fontFamily: mono, borderColor: BORDER, color: MUTED }}
+        >
+          Prev
+        </button>
+        <button
+          disabled={page >= totalPages}
+          onClick={() => onPageChange(page + 1)}
+          className="px-3 py-[5px] rounded-[7px] text-[11px] border transition-colors duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+          style={{ fontFamily: mono, borderColor: BORDER, color: MUTED }}
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}

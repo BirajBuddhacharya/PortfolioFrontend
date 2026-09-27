@@ -1,35 +1,44 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pencil, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/components/ui/button';
 import { Badge } from '@/components/components/ui/badge';
 import { Input } from '@/components/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/components/ui/dialog';
+import { Prose } from '../../../../components/Prose';
+import { Toc } from '../../../../components/Toc';
 import { useAdminProjects } from '../../../../services/adminService';
 import { useDeleteProject, useUpdateProject } from '../../../../services/projectsService';
-import { BORDER, TEXT, TEXT2, MUTED, ACCENT, mono, heading, formField, newButton, tableHead, rowButton, SectionLabel, StatusSelect, ConfirmDelete } from '../../../../components/admin/adminUi';
+import { BORDER, TEXT, TEXT2, MUTED, ACCENT, mono, heading, formField, newButton, tableHead, rowButton, SectionLabel, StatusSelect, ConfirmDelete, AdminPagination } from '../../../../components/admin/adminUi';
 import { cn } from '@/components/lib/utils';
 import type { Project } from '../../../../types/project';
 
 const PROJECT_STATUSES = ['live', 'archived'];
+const SIZE = 10;
 
 export default function AdminProjectsPage() {
-  const { data: projects = [] } = useAdminProjects();
   const deleteProject = useDeleteProject();
   const updateProject = useUpdateProject();
 
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [page, setPage] = useState(1);
   const [preview, setPreview] = useState<Project | null>(null);
 
-  const filtered = projects.filter((p) => {
-    const matchSearch = !search || p.title.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = statusFilter === 'all' || p.status === statusFilter;
-    return matchSearch && matchStatus;
-  });
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 400);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  useEffect(() => { setPage(1); }, [debouncedSearch, statusFilter]);
+
+  const { data } = useAdminProjects({ search: debouncedSearch, status: statusFilter, page, size: SIZE });
+  const projects = data?.result ?? [];
+  const total = data?.total ?? 0;
 
   return (
     <div>
@@ -77,7 +86,7 @@ export default function AdminProjectsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.length === 0 && (
+            {projects.length === 0 && (
               <TableRow>
                 <TableCell colSpan={5} className="py-16">
                   <div className="flex flex-col items-center gap-3">
@@ -92,7 +101,7 @@ export default function AdminProjectsPage() {
                 </TableCell>
               </TableRow>
             )}
-            {filtered.map((p) => (
+            {projects.map((p) => (
               <TableRow
                 key={p.id}
                 className="cursor-pointer"
@@ -128,84 +137,88 @@ export default function AdminProjectsPage() {
         </Table>
       </div>
 
-      {/* Preview modal */}
+      <AdminPagination page={page} total={total} size={SIZE} onPageChange={setPage} />
+
+      {/* Preview modal — full public view */}
       <Dialog open={!!preview} onOpenChange={(open) => !open && setPreview(null)}>
-        <DialogContent className="max-w-[520px] bg-[#0C0C0F] border-white/[0.08] p-0 overflow-hidden rounded-[20px]">
+        <DialogContent className="h-[90vh] bg-[#09090B] border-white/[0.08] p-0 overflow-hidden rounded-[20px] flex flex-col" style={{ maxWidth: '1400px', width: '95vw' }}>
           {preview && (
             <>
-              {/* Accent bar */}
-              <div
-                className="h-[6px] w-full"
-                style={{ background: preview.coverAccent || ACCENT }}
-              />
-              <div className="p-6">
-                <DialogHeader className="mb-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <DialogTitle
-                      className="text-[20px] font-semibold leading-[1.25]"
-                      style={{ fontFamily: heading, color: TEXT }}
-                    >
-                      {preview.title}
-                    </DialogTitle>
-                    <span
-                      className="shrink-0 text-[10px] px-[9px] py-[3px] rounded-full border mt-[3px]"
-                      style={{
-                        fontFamily: mono,
-                        background: preview.status === 'live' ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.04)',
-                        borderColor: preview.status === 'live' ? 'rgba(16,185,129,0.25)' : BORDER,
-                        color: preview.status === 'live' ? '#10B981' : MUTED,
-                      }}
-                    >
-                      {preview.status}
-                    </span>
-                  </div>
-                  {(preview.kind || preview.year) && (
-                    <div className="text-[12px] mt-1" style={{ fontFamily: mono, color: MUTED }}>
-                      {[preview.kind, preview.year].filter(Boolean).join(' · ')}
+              {/* Top bar */}
+              <div className="flex items-center justify-between px-7 py-3 border-b shrink-0" style={{ borderColor: BORDER, background: '#0C0C0F' }}>
+                <div className="flex items-center gap-3">
+                  <DialogTitle className="text-[13px] font-medium" style={{ fontFamily: mono, color: MUTED }}>preview</DialogTitle>
+                  <span
+                    className="text-[10px] px-[8px] py-[2px] rounded-full border"
+                    style={{
+                      fontFamily: mono,
+                      background: preview.status === 'live' ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.04)',
+                      borderColor: preview.status === 'live' ? 'rgba(16,185,129,0.25)' : BORDER,
+                      color: preview.status === 'live' ? '#10B981' : MUTED,
+                    }}
+                  >
+                    {preview.status}
+                  </span>
+                </div>
+                <Button asChild variant="outline" size="sm" className={cn(rowButton, 'gap-1.5')}>
+                  <Link href={`/projects/${preview.slug}`} target="_blank"><ExternalLink size={12} /> Open public page</Link>
+                </Button>
+              </div>
+
+              {/* Scrollable content */}
+              <div className="flex-1 overflow-y-auto" style={{ color: '#EDEDEF' }}>
+                <div className="max-w-[1220px] mx-auto px-8 pt-12 pb-16">
+                  <div className="grid gap-12 lg:grid-cols-[200px_minmax(0,1fr)]">
+                    <Toc content={preview.content ?? ''} className="hidden lg:block" />
+                    <div className="min-w-0">
+                      <h1 className="mb-[18px]" style={{ fontFamily: heading, fontSize: 'clamp(32px, 5vw, 62px)', lineHeight: 1.02, letterSpacing: '-0.04em', fontWeight: 600, color: '#EDEDEF', margin: '0 0 18px' }}>
+                        {preview.title}
+                      </h1>
+
+                      {[preview.year, preview.kind, preview.status].filter(Boolean).length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-5">
+                          {[preview.year, preview.kind, preview.status].filter(Boolean).map((m) => (
+                            <span key={m} className="text-[11px] uppercase tracking-[0.1em] px-[10px] py-[5px] rounded-[8px] border" style={{ fontFamily: mono, color: '#8A8A93', borderColor: 'rgba(255,255,255,0.09)' }}>{m}</span>
+                          ))}
+                        </div>
+                      )}
+
+                      {preview.summary && (
+                        <p className="text-[17px] leading-[1.7] mb-[26px] max-w-[60ch]" style={{ color: '#A1A1AA' }}>{preview.summary}</p>
+                      )}
+
+                      {(preview.live || preview.repo) && (
+                        <div className="flex gap-[10px] flex-wrap mb-[34px]">
+                          {preview.live && <a href={preview.live} target="_blank" rel="noopener noreferrer" className="px-5 py-[11px] rounded-[10px] text-[12.5px] font-semibold" style={{ background: '#FF6B6B', color: '#12080A', fontFamily: mono }}>Live site ↗</a>}
+                          {preview.repo && <a href={preview.repo} target="_blank" rel="noopener noreferrer" className="px-5 py-[11px] rounded-[10px] text-[12.5px] border border-white/[0.14]" style={{ color: '#EDEDEF', fontFamily: mono }}>GitHub ↗</a>}
+                        </div>
+                      )}
+
+                      {preview.metrics?.length > 0 && (
+                        <div className="grid gap-[1px] border border-white/[0.08] rounded-[18px] overflow-hidden mb-[48px]" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', background: 'rgba(255,255,255,0.08)' }}>
+                          {preview.metrics.map((m, i) => (
+                            <div key={i} className="p-[24px]" style={{ background: '#0C0C0F' }}>
+                              <div className="text-[28px] font-semibold mb-1" style={{ fontFamily: heading, letterSpacing: '-0.03em', color: '#FF6B6B' }}>{m.value}</div>
+                              <div className="text-[11px] uppercase tracking-[0.06em]" style={{ fontFamily: mono, color: '#8A8A93' }}>{m.label}</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {preview.content && <div className="mb-[48px]"><Prose>{preview.content}</Prose></div>}
+
+                      {preview.stack?.length > 0 && (
+                        <div className="mb-[48px]">
+                          <div className="text-[12px] uppercase tracking-[0.1em] mb-4" style={{ fontFamily: mono, color: '#FF6B6B' }}>stack</div>
+                          <div className="flex flex-wrap gap-2">
+                            {preview.stack.map((s) => (
+                              <span key={s} className="text-[12.5px] px-[14px] py-2 rounded-[8px] border border-white/[0.08]" style={{ fontFamily: mono, color: '#C7C7CE', background: 'rgba(255,255,255,0.05)' }}>{s}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </DialogHeader>
-
-                {preview.blurb && (
-                  <p className="text-[14px] leading-[1.65] mb-4" style={{ color: TEXT2 }}>
-                    {preview.blurb}
-                  </p>
-                )}
-
-                {preview.stack?.length > 0 && (
-                  <div className="flex flex-wrap gap-[6px] mb-5">
-                    {preview.stack.map((s) => (
-                      <Badge
-                        key={s}
-                        variant="outline"
-                        className="border-border bg-white/[0.04] px-[9px] py-[3px] font-mono text-[10.5px] font-normal text-[#A1A1AA]"
-                      >
-                        {s}
-                      </Badge>
-                    ))}
                   </div>
-                )}
-
-                <div className="flex gap-2 pt-2 border-t" style={{ borderColor: BORDER }}>
-                  <Button asChild variant="outline" size="sm" className={cn(rowButton, 'gap-1.5')}>
-                    <Link href={`/projects/${preview.slug}`} target="_blank">
-                      <ExternalLink size={12} /> View public page
-                    </Link>
-                  </Button>
-                  {preview.live && (
-                    <Button asChild variant="outline" size="sm" className={cn(rowButton, 'gap-1.5')}>
-                      <a href={preview.live} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink size={12} /> Live
-                      </a>
-                    </Button>
-                  )}
-                  {preview.repo && (
-                    <Button asChild variant="outline" size="sm" className={cn(rowButton, 'gap-1.5')}>
-                      <a href={preview.repo} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink size={12} /> Repo
-                      </a>
-                    </Button>
-                  )}
                 </div>
               </div>
             </>

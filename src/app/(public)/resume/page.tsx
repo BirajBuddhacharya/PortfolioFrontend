@@ -28,7 +28,7 @@ export default async function ResumePage() {
       label: 'Skills',
       rows: (resume?.skills ?? []).map((s) => ({ title: s.title, meta: '', body: s.body ?? '' })),
     },
-  ];
+  ].filter((b) => b.rows.length > 0);
 
   return <ResumeView blocks={blocks} pdfUrl={profile?.resumePdfUrl} />;
 }

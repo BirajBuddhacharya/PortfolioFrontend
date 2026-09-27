@@ -128,30 +128,54 @@ export const useDeleteMessage = () => {
   });
 };
 
-// ── Projects (already real — untouched) ─────────────────────────────────────
+// ── Projects ─────────────────────────────────────────────────────────────────
 
-export const useAdminProjects = () =>
-  useQuery({
-    queryKey: [QueryKeys.PROJECTS_LIST],
+interface AdminListParams {
+  search?: string;
+  status?: string;
+  page?: number;
+  size?: number;
+}
+
+export const useAdminProjects = (params: AdminListParams = {}) => {
+  const { search = '', status = 'all', page = 1, size = 10 } = params;
+  return useQuery({
+    queryKey: [QueryKeys.PROJECTS_LIST, { search, status, page, size }],
     queryFn: async () => {
-      const { data } = await api.get<ApiResponse<{ result: Project[]; total: number }>>(ApiUrls.PROJECTS_LIST);
-      return data.data.result;
+      const q = new URLSearchParams({ pagination: 'true', page: String(page), size: String(size) });
+      if (search) q.set('search', search);
+      if (status && status !== 'all') q.set('status', status);
+      const { data } = await api.get<ApiResponse<{ result: Project[]; total: number }>>(
+        `${ApiUrls.PROJECTS_LIST}?${q}`,
+      );
+      return data.data;
     },
   });
+};
 
 // ── Posts (Blog) ─────────────────────────────────────────────────────────────
 
-/** Every admin post, drafts included. Shared cache — callers narrow it with `select`. */
-const fetchAdminPosts = async () => {
+/** Full unpaginated list — used only by useAdminPostDetail (edit page, draft-safe). */
+const fetchAllAdminPosts = async () => {
   const { data } = await api.get<ApiResponse<{ result: BlogPost[]; total: number }>>(ApiUrls.BLOG_ADMIN);
   return data.data.result;
 };
 
-export const useAdminPosts = () =>
-  useQuery({
-    queryKey: [QueryKeys.BLOG_ADMIN],
-    queryFn: fetchAdminPosts,
+export const useAdminPosts = (params: AdminListParams = {}) => {
+  const { search = '', status = 'all', page = 1, size = 10 } = params;
+  return useQuery({
+    queryKey: [QueryKeys.BLOG_ADMIN, { search, status, page, size }],
+    queryFn: async () => {
+      const q = new URLSearchParams({ pagination: 'true', page: String(page), size: String(size) });
+      if (search) q.set('search', search);
+      if (status && status !== 'all') q.set('status', status);
+      const { data } = await api.get<ApiResponse<{ result: BlogPost[]; total: number }>>(
+        `${ApiUrls.BLOG_ADMIN}?${q}`,
+      );
+      return data.data;
+    },
   });
+};
 
 /**
  * Single post for the admin editor. Reads from the admin list rather than
@@ -159,8 +183,8 @@ export const useAdminPosts = () =>
  */
 export const useAdminPostDetail = (slug: string) =>
   useQuery({
-    queryKey: [QueryKeys.BLOG_ADMIN],
-    queryFn: fetchAdminPosts,
+    queryKey: [QueryKeys.BLOG_ADMIN, 'detail', slug],
+    queryFn: fetchAllAdminPosts,
     enabled: !!slug,
     select: (posts: BlogPost[]) => posts.find((p) => p.slug === slug),
   });

@@ -11,28 +11,28 @@ import { Label } from '@/components/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/components/ui/tabs';
 import { cn } from '@/components/lib/utils';
 import { useAdminResume, useCreateResumeItem, useUpdateResumeItem, useDeleteResumeItem, useUpdateProfile, useAdminAbout } from '../../../../services/adminService';
+import { useUploadPdf } from '../../../../services/uploadService';
 import type { CreateResumeItemPayload, UpdateResumeItemPayload } from '../../../../types/resume';
 import {
   MUTED, mono, formField, addButton, saveButton, panelCard, resumeLabel, rowDangerButton,
   SectionLabel, ResumeRowEditor, saveResumeRows,
   type ResumeRow, type SkillRow,
 } from '../../../../components/admin/adminUi';
-import { PdfUploadButton } from '../../../../components/admin/PdfUploadButton';
 
 export default function AdminResumePage() {
   return (
-    <Tabs defaultValue="experience" className="max-w-[860px] gap-6">
-      <TabsList>
-        <TabsTrigger value="experience" className="gap-1.5">
+    <Tabs defaultValue="experience" className="max-w-[860px] gap-8">
+      <TabsList variant="line" className="w-full justify-start gap-1 rounded-none bg-transparent border-b border-white/[0.07] pb-0 h-auto p-0">
+        <TabsTrigger value="experience" className="gap-1.5 px-4 py-[10px] text-[12.5px] rounded-none rounded-t-[6px] data-[state=active]:bg-white/[0.04]">
           <Briefcase size={13} /> Experience
         </TabsTrigger>
-        <TabsTrigger value="education-certs" className="gap-1.5">
+        <TabsTrigger value="education-certs" className="gap-1.5 px-4 py-[10px] text-[12.5px] rounded-none rounded-t-[6px] data-[state=active]:bg-white/[0.04]">
           <GraduationCap size={13} /> Education &amp; Certs
         </TabsTrigger>
-        <TabsTrigger value="skills" className="gap-1.5">
+        <TabsTrigger value="skills" className="gap-1.5 px-4 py-[10px] text-[12.5px] rounded-none rounded-t-[6px] data-[state=active]:bg-white/[0.04]">
           <Wrench size={13} /> Skills
         </TabsTrigger>
-        <TabsTrigger value="pdf" className="gap-1.5">
+        <TabsTrigger value="pdf" className="gap-1.5 px-4 py-[10px] text-[12.5px] rounded-none rounded-t-[6px] data-[state=active]:bg-white/[0.04]">
           <FileText size={13} /> Resume PDF
         </TabsTrigger>
       </TabsList>
@@ -96,6 +96,19 @@ function ExperienceSection() {
   return (
     <div className="max-w-[860px] flex flex-col gap-6">
       <SectionLabel>experience</SectionLabel>
+      {experiences.length === 0 && (
+        <div className="py-10 flex flex-col items-center gap-3 rounded-[14px] border border-dashed" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+          <span className="text-[12px]" style={{ fontFamily: mono, color: MUTED }}>no experience entries yet</span>
+          <button
+            type="button"
+            onClick={() => setExperiences([{ title: '', period: '', organization: '', body: '' }])}
+            className="text-[11px] px-3 py-[5px] rounded-[7px] border"
+            style={{ fontFamily: mono, borderColor: 'rgba(255,107,107,0.3)', color: '#FF6B6B' }}
+          >
+            + add first entry
+          </button>
+        </div>
+      )}
       <ResumeRowEditor rows={experiences} setRows={setExperiences} addLabel="+ add experience" />
       <Button
         type="button"
@@ -274,6 +287,9 @@ function ResumePdfSection() {
   const updateProfile = useUpdateProfile();
   const [pdfUrl, setPdfUrl] = useState('');
   const hydrated = useRef(false);
+  const [dragging, setDragging] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const upload = useUploadPdf();
 
   useEffect(() => {
     if (profile && !hydrated.current) {
@@ -291,22 +307,67 @@ function ResumePdfSection() {
     }
   };
 
+  const handleFile = async (file: File) => {
+    if (file.type !== 'application/pdf') { toast.error('Only PDF files are accepted'); return; }
+    try {
+      const entry = await upload.mutateAsync(file);
+      setPdfUrl(entry.url);
+      toast.success('PDF uploaded');
+    } catch {
+      toast.error('Upload failed');
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) handleFile(file);
+  };
+
   return (
     <div className="max-w-[860px] flex flex-col gap-6">
       <SectionLabel>resume pdf</SectionLabel>
-      <div className="flex flex-col gap-3">
-        <div className="text-[11px]" style={{ fontFamily: mono, color: MUTED }}>
-          Upload a PDF or paste a direct URL. This will be used as the download link on the public resume page.
+
+      {/* Drag-drop zone */}
+      <div
+        onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={handleDrop}
+        onClick={() => inputRef.current?.click()}
+        className="flex flex-col items-center justify-center gap-3 rounded-[16px] border-2 border-dashed cursor-pointer transition-colors duration-150 py-12"
+        style={{
+          borderColor: dragging ? '#FF6B6B' : 'rgba(255,255,255,0.1)',
+          background: dragging ? 'rgba(255,107,107,0.05)' : 'transparent',
+        }}
+      >
+        <input
+          ref={inputRef}
+          type="file"
+          accept="application/pdf"
+          className="hidden"
+          onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); if (inputRef.current) inputRef.current.value = ''; }}
+        />
+        <FileText size={32} style={{ color: dragging ? '#FF6B6B' : MUTED, opacity: 0.6 }} />
+        <div className="text-center">
+          <div className="text-[13px]" style={{ color: MUTED }}>
+            {upload.isPending ? 'Uploading…' : 'Drag & drop your PDF here'}
+          </div>
+          <div className="text-[11px] mt-1" style={{ fontFamily: mono, color: 'rgba(110,110,120,0.6)' }}>
+            or click to browse · PDF only
+          </div>
         </div>
-        <div className="flex gap-2 items-center">
-          <Input
-            value={pdfUrl}
-            onChange={(e) => setPdfUrl(e.target.value)}
-            placeholder="https://res.cloudinary.com/…"
-            className={cn(formField, 'flex-1 h-auto px-4 py-[10px] text-[13px]')}
-          />
-          <PdfUploadButton onUploaded={(url) => setPdfUrl(url)} />
-        </div>
+      </div>
+
+      {/* URL input fallback */}
+      <div className="flex flex-col gap-2">
+        <div className="text-[11px]" style={{ fontFamily: mono, color: MUTED }}>or paste a direct URL</div>
+        <Input
+          value={pdfUrl}
+          onChange={(e) => setPdfUrl(e.target.value)}
+          placeholder="https://res.cloudinary.com/…"
+          className={cn(formField, 'h-auto px-4 py-[10px] text-[13px]')}
+        />
         {pdfUrl && (
           <a
             href={pdfUrl}
@@ -319,6 +380,7 @@ function ResumePdfSection() {
           </a>
         )}
       </div>
+
       <Button
         type="button"
         onClick={handleSave}

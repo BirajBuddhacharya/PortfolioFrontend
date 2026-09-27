@@ -1,9 +1,11 @@
 'use client';
 
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Prose } from '../../../../components/Prose';
 import { Toc } from '../../../../components/Toc';
+import { parseHeadings } from '../../../../lib/markdown';
 
 export interface PostViewModel {
   id: string;
@@ -16,6 +18,7 @@ export interface PostViewModel {
 }
 
 export function PostView({ post }: { post: PostViewModel }) {
+  const hasHeadings = useMemo(() => parseHeadings(post.content ?? '').length > 0, [post.content]);
   return (
     <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'hidden' }}>
       <main className="relative z-10 max-w-[1060px] mx-auto px-7 pt-[150px]">
@@ -23,10 +26,10 @@ export function PostView({ post }: { post: PostViewModel }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="grid gap-12 lg:grid-cols-[200px_minmax(0,720px)] lg:justify-center"
+          className={hasHeadings ? "grid gap-12 lg:grid-cols-[200px_minmax(0,720px)] lg:justify-center" : "max-w-[720px] mx-auto"}
         >
-          <Toc content={post.content ?? ''} className="order-1 hidden lg:block" />
-          <div className="order-2 min-w-0">
+          {hasHeadings && <Toc content={post.content ?? ''} className="order-1 hidden lg:block" />}
+          <div className={hasHeadings ? "order-2 min-w-0" : "min-w-0"}>
           <Link
             href="/blog"
             className="text-[12.5px] transition-colors duration-200"
