@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Inbox } from 'lucide-react';
 import { Button } from '@/components/components/ui/button';
 import { Badge } from '@/components/components/ui/badge';
 import { Card } from '@/components/components/ui/card';
@@ -35,30 +36,39 @@ export default function AdminInboxPage() {
           )}
         </div>
         <div className="flex-1 overflow-auto">
-          {msgs.map((m) => (
-            <Button
-              key={m.id}
-              type="button"
-              variant="ghost"
-              onClick={() => setSelected(m)}
-              className={cn(
-                'h-auto w-full flex-col items-stretch gap-1 rounded-none border-b border-border px-4 py-3 text-left font-normal',
-                selected?.id === m.id ? 'bg-[#FF6B6B]/[0.06] hover:bg-[#FF6B6B]/[0.06]' : 'hover:bg-white/[0.03]',
-              )}
-            >
-              <div className="flex items-center justify-between">
-                <span
-                  className="text-[13px] font-medium truncate"
-                  style={{ color: m.read ? TEXT2 : TEXT }}
-                >
-                  {!m.read && <span className="inline-block w-[6px] h-[6px] rounded-full mr-2 align-middle" style={{ background: ACCENT }} />}
-                  {m.name}
-                </span>
-                <span className="text-[10px] shrink-0 ml-2" style={{ fontFamily: mono, color: MUTED }}>{m.time}</span>
-              </div>
-              <div className="text-[12px] truncate text-left" style={{ color: MUTED }}>{m.subject}</div>
-            </Button>
-          ))}
+          {msgs.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full gap-3 py-12 px-4">
+              <Inbox size={32} style={{ color: MUTED, opacity: 0.4 }} />
+              <span className="text-[12px] text-center" style={{ fontFamily: mono, color: MUTED }}>
+                no messages
+              </span>
+            </div>
+          ) : (
+            msgs.map((m) => (
+              <Button
+                key={m.id}
+                type="button"
+                variant="ghost"
+                onClick={() => setSelected(m)}
+                className={cn(
+                  'h-auto w-full flex-col items-stretch gap-1 rounded-none border-b border-border px-4 py-3 text-left font-normal',
+                  selected?.id === m.id ? 'bg-[#FF6B6B]/[0.06] hover:bg-[#FF6B6B]/[0.06]' : 'hover:bg-white/[0.03]',
+                )}
+              >
+                <div className="flex items-center justify-between">
+                  <span
+                    className="text-[13px] font-medium truncate"
+                    style={{ color: m.read ? TEXT2 : TEXT }}
+                  >
+                    {!m.read && <span className="inline-block w-[6px] h-[6px] rounded-full mr-2 align-middle" style={{ background: ACCENT }} />}
+                    {m.name}
+                  </span>
+                  <span className="text-[10px] shrink-0 ml-2" style={{ fontFamily: mono, color: MUTED }}>{m.time}</span>
+                </div>
+                <div className="text-[12px] truncate text-left" style={{ color: MUTED }}>{m.subject}</div>
+              </Button>
+            ))
+          )}
         </div>
       </Card>
 
@@ -111,8 +121,18 @@ export default function AdminInboxPage() {
             </Card>
           </motion.div>
         ) : (
-          <div className="flex-1 flex items-center justify-center text-[13px]" style={{ fontFamily: mono, color: MUTED }}>
-            select a message
+          <div className="flex-1 flex flex-col items-center justify-center gap-3">
+            {msgs.length === 0 ? (
+              <>
+                <Inbox size={40} style={{ color: MUTED, opacity: 0.25 }} />
+                <div className="text-center">
+                  <div className="text-[14px] mb-1" style={{ fontFamily: heading, color: TEXT2 }}>Inbox is empty</div>
+                  <div className="text-[12px]" style={{ fontFamily: mono, color: MUTED }}>Messages from your contact form appear here.</div>
+                </div>
+              </>
+            ) : (
+              <span className="text-[13px]" style={{ fontFamily: mono, color: MUTED }}>select a message</span>
+            )}
           </div>
         )}
       </AnimatePresence>
