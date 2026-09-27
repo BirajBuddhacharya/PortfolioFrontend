@@ -1,5 +1,6 @@
 export interface BlogPost {
   id: string;
+  slug: string;
   title: string;
   excerpt: string | null;
   content: string | null;
@@ -14,6 +15,7 @@ export interface BlogPost {
 
 export interface CreateBlogPostPayload {
   title: string;
+  slug: string;
   excerpt?: string;
   content?: string;
   tags?: string[];

@@ -1,5 +1,6 @@
 export interface Project {
   id: string;
+  slug: string;
   title: string;
   blurb?: string | null;
   summary?: string | null;
@@ -22,6 +23,7 @@ export interface Project {
 
 export type CreateProjectPayload = {
   title: string;
+  slug: string;
   blurb?: string;
   summary?: string;
   content?: string;

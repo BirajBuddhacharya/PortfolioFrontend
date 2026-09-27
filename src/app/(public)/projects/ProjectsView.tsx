@@ -41,7 +41,7 @@ function ProjectCard({ p, index }: { p: Project; index: number }) {
       transition={{ duration: 0.45, delay: index * 0.06, ease: [0.2, 0.8, 0.2, 1] }}
     >
       <Link
-        href={`/projects/${p.id}`}
+        href={`/projects/${p.slug}`}
         className="block rounded-[20px] overflow-hidden border border-white/[0.08] transition-all duration-[0.35s]"
         style={{ background: '#0C0C0F', color: 'inherit' }}
         onMouseEnter={(e) => {

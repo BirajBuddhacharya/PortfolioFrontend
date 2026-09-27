@@ -12,16 +12,16 @@ const formatDate = (iso: string | null) =>
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { id } = await params;
-  const post = await getBlog(id);
+  const { slug } = await params;
+  const post = await getBlog(slug);
   if (!post) return { title: 'Post not found' };
 
   return pageMetadata({
     title: `${post.title} | Biraj Buddhacharya`,
     description: toDescription(post.excerpt || post.content),
-    path: `/blog/${id}`,
+    path: `/blog/${slug}`,
     type: 'article',
     image: post.coverImage,
     publishedTime: post.publishedAt,
@@ -32,10 +32,10 @@ export async function generateMetadata({
 export default async function PostPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { id } = await params;
-  const post = await getBlog(id);
+  const { slug } = await params;
+  const post = await getBlog(slug);
   if (!post) notFound();
 
   const description = toDescription(post.excerpt || post.content);
@@ -48,7 +48,7 @@ export default async function PostPage({
     dateModified: post.updatedAt,
     author: { '@type': 'Person', name: SITE_NAME },
     ...(post.coverImage ? { image: post.coverImage } : {}),
-    mainEntityOfPage: `${SITE_URL}/blog/${id}`,
+    mainEntityOfPage: `${SITE_URL}/blog/${slug}`,
   };
 
   const view = {

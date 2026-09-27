@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 export interface BlogListItem {
-  id: string;
+  slug: string;
   title: string;
   excerpt: string | null;
   coverImage: string | null;
@@ -49,7 +49,7 @@ export function BlogView({ posts }: { posts: BlogListItem[] }) {
             transition={{ duration: 0.6, delay: 0.1 }}
           >
             <Link
-              href={`/blog/${featured.id}`}
+              href={`/blog/${featured.slug}`}
               className="grid border border-white/[0.09] rounded-[20px] overflow-hidden mb-[56px] transition-colors duration-300"
               style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', color: 'inherit' }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,107,107,0.45)'; }}
@@ -113,14 +113,14 @@ export function BlogView({ posts }: { posts: BlogListItem[] }) {
         <div className="border-t border-white/[0.08] pb-5">
           {rest.map((p, i) => (
             <motion.div
-              key={p.id}
+              key={p.slug}
               initial={{ opacity: 0, x: -16 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.5, delay: i * 0.06, ease: [0.2, 0.8, 0.2, 1] }}
             >
               <Link
-                href={`/blog/${p.id}`}
+                href={`/blog/${p.slug}`}
                 className="grid items-center gap-6 py-6 px-3 border-b border-white/[0.08] transition-colors duration-200"
                 style={{ gridTemplateColumns: '110px 1fr minmax(130px, auto) auto', color: 'inherit' }}
                 onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.03)'; }}
