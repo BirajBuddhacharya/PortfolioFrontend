@@ -1,7 +1,9 @@
 'use client';
 
 export function TickerSection({ items }: { items: string[] }) {
-  const doubled = [...items, ...items];
+  const valid = items.filter(Boolean);
+  if (valid.length === 0) return null;
+  const doubled = [...valid, ...valid];
 
   return (
     <div

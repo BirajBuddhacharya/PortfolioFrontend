@@ -33,7 +33,12 @@ export default function AdminAboutPage() {
 
   const handleSave = () => {
     updateProfile.mutate(
-      { headline, coverImage: coverImage || undefined, paragraphs, facts },
+      {
+        headline,
+        coverImage: coverImage || undefined,
+        paragraphs: paragraphs.filter((p) => p.trim()),
+        facts: facts.filter((f) => f.k.trim() || f.v.trim()),
+      },
       { onSuccess: () => toast.success('Saved') },
     );
   };

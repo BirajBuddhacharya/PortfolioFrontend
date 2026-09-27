@@ -11,6 +11,7 @@ interface BlogPreviewItem {
 }
 
 export function BlogPreviewSection({ posts }: { posts: BlogPreviewItem[] }) {
+  if (posts.length === 0) return null;
   return (
     <section className="max-w-[1180px] mx-auto px-7 pt-[96px]">
       <motion.div

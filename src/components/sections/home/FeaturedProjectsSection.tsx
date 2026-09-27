@@ -5,6 +5,7 @@ import Link from 'next/link';
 import type { Project } from '../../../types/project';
 
 export function FeaturedProjectsSection({ projects }: { projects: Project[] }) {
+  if (projects.length === 0) return null;
   return (
     <section className="max-w-[1180px] mx-auto px-7 pt-[96px]">
       <motion.div

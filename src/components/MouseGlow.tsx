@@ -18,7 +18,7 @@ export function MouseGlow() {
   return (
     <div
       ref={glowRef}
-      className="pointer-events-none fixed z-0"
+      className="pointer-events-none fixed z-[1]"
       style={{
         width: 520,
         height: 520,

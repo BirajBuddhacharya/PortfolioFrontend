@@ -17,7 +17,7 @@ export function BlogView({ posts }: { posts: BlogListItem[] }) {
   const [featured, ...rest] = posts;
 
   return (
-    <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'hidden' }}>
+    <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh' }}>
       <main className="relative z-10 max-w-[1180px] mx-auto px-7 pt-[160px]">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <div
@@ -112,15 +112,30 @@ export function BlogView({ posts }: { posts: BlogListItem[] }) {
 
         {posts.length === 0 && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="py-24 text-center"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="py-32 flex flex-col items-center gap-5"
           >
-            <div
-              className="text-[13px]"
-              style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#6E6E78' }}
-            >
-              no posts yet — check back soon
+            <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+              <rect x="8" y="6" width="40" height="44" rx="6" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5"/>
+              <path d="M17 20h22M17 28h22M17 36h14" stroke="rgba(255,255,255,0.12)" strokeWidth="1.5" strokeLinecap="round"/>
+              <circle cx="44" cy="44" r="10" fill="#0C0C0F" stroke="rgba(255,107,107,0.3)" strokeWidth="1.5"/>
+              <path d="M41 44h6M44 41v6" stroke="#FF6B6B" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+            <div className="text-center">
+              <div
+                className="text-[15px] font-medium mb-2"
+                style={{ fontFamily: 'var(--font-space-grotesk), sans-serif', color: '#EDEDEF' }}
+              >
+                Nothing here yet
+              </div>
+              <div
+                className="text-[13px]"
+                style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#6E6E78' }}
+              >
+                first post is brewing — check back soon
+              </div>
             </div>
           </motion.div>
         )}

@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 
 export function StatsSection({ stats }: { stats: { value: string; label: string }[] }) {
+  if (stats.length === 0) return null;
   return (
     <section className="max-w-[1180px] mx-auto px-7 pt-[80px]">
       <motion.div

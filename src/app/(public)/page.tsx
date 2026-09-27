@@ -1,4 +1,3 @@
-import { MouseGlow } from '../../components/MouseGlow';
 import { HeroSection } from '../../components/sections/home/HeroSection';
 import { TickerSection } from '../../components/sections/home/TickerSection';
 import { StatsSection } from '../../components/sections/home/StatsSection';
@@ -52,8 +51,7 @@ export default async function HomePage() {
   }));
 
   return (
-    <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'hidden', position: 'relative' }}>
-      <MouseGlow />
+    <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', position: 'relative' }}>
       <main className="relative z-10">
         <HeroSection />
         <TickerSection items={profile?.ticker ?? []} />

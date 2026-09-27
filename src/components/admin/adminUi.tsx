@@ -1,11 +1,19 @@
 'use client';
 
+import { Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/components/ui/button';
 import { Input } from '@/components/components/ui/input';
 import { Textarea } from '@/components/components/ui/textarea';
 import { Badge } from '@/components/components/ui/badge';
 import { Label } from '@/components/components/ui/label';
 import { Card } from '@/components/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/components/ui/select';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -88,21 +96,19 @@ export function ConfirmDelete({
   description,
   onConfirm,
   disabled,
-  label = 'del',
   className,
 }: {
   title: string;
   description: string;
   onConfirm: () => void;
   disabled?: boolean;
-  label?: string;
   className?: string;
 }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button type="button" variant="outline" size="xs" disabled={disabled} className={cn(rowDangerButton, className)}>
-          {label}
+        <Button type="button" variant="outline" size="xs" disabled={disabled} className={cn(rowDangerButton, 'px-2', className)}>
+          <Trash2 size={13} />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
@@ -134,6 +140,40 @@ export function StatusBadge({ status }: { status: string }) {
     >
       {status}
     </Badge>
+  );
+}
+
+// ─── Inline status selector ───────────────────────────────────────────────────
+export function StatusSelect({
+  status,
+  options,
+  onValueChange,
+  disabled,
+}: {
+  status: string;
+  options: string[];
+  onValueChange: (val: string) => void;
+  disabled?: boolean;
+}) {
+  const isLive = status === 'live' || status === 'published';
+  return (
+    <Select value={status} onValueChange={onValueChange} disabled={disabled}>
+      <SelectTrigger
+        className={cn(
+          'h-auto px-[9px] py-[3px] font-mono text-[10.5px] font-normal border rounded-full gap-[5px] w-auto shadow-none ring-0 focus:ring-0 focus:ring-offset-0 cursor-pointer',
+          isLive
+            ? 'border-[#10B981]/25 bg-[#10B981]/10 text-[#10B981] hover:bg-[#10B981]/[0.15]'
+            : 'border-border bg-white/[0.04] text-[#6E6E78] hover:bg-white/[0.07]',
+        )}
+      >
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {options.map((o) => (
+          <SelectItem key={o} value={o} className="font-mono text-[12px]">{o}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }
 

@@ -105,7 +105,6 @@ export default function AdminInboxPage() {
                   {selected?.read ? 'Read' : 'Mark read'}
                 </Button>
                 <ConfirmDelete
-                  label="Delete"
                   title="Delete this message?"
                   description={`The message from ${selected.name} will be permanently removed. This can't be undone.`}
                   disabled={deleteMessage.isPending}
