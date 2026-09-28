@@ -259,24 +259,34 @@ export function ProjectForm({
 
         <Row icon={Images} label="Gallery" align="start">
           <div className="flex flex-col gap-2 px-2 py-1 w-full">
-            {gallery.map((url, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <Input
-                  value={url}
-                  onChange={(e) => setGallery((g) => g.map((v, j) => (j === i ? e.target.value : v)))}
-                  className={cn(field, 'flex-1 font-mono text-[12px]')}
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setGallery((g) => g.filter((_, j) => j !== i))}
-                  className="size-7 shrink-0 text-[#6E6E78] hover:bg-destructive/10 hover:text-destructive"
-                >
-                  <X size={13} />
-                </Button>
+            {gallery.length > 0 && (
+              <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fill, 220px)' }}>
+                {gallery.map((url, i) => (
+                  <div key={i} className="relative w-[220px] rounded border border-[#27272A] bg-[#111113] overflow-hidden group">
+                    {url ? (
+                      <img src={url} alt="" className="w-full h-[120px] object-cover" />
+                    ) : (
+                      <div className="w-full h-[120px] flex items-center justify-center text-[#6E6E78] font-mono text-[11px]">no image</div>
+                    )}
+                    <Input
+                      value={url}
+                      onChange={(e) => setGallery((g) => g.map((v, j) => (j === i ? e.target.value : v)))}
+                      className={cn(field, 'w-full font-mono text-[10px] rounded-none border-0 border-t border-[#27272A]')}
+                      placeholder="https://..."
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setGallery((g) => g.filter((_, j) => j !== i))}
+                      className="absolute top-1 right-1 size-6 opacity-0 group-hover:opacity-100 bg-black/60 text-[#6E6E78] hover:bg-destructive/80 hover:text-white transition-opacity"
+                    >
+                      <X size={12} />
+                    </Button>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
             <div className="flex gap-2">
               <Button
                 type="button"

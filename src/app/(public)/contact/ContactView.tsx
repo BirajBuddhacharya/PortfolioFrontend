@@ -19,10 +19,12 @@ export function ContactView({ links }: { links: ContactLink[] }) {
     turnstileToken: "",
   });
 
+  const ignoreTurnstile = process.env.NEXT_PUBLIC_IGNORE_TURNSTILE === 'true';
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.subject || !form.message) return;
-    if (!form.turnstileToken) {
+    if (!ignoreTurnstile && !form.turnstileToken) {
       toast.error("Please complete the captcha.");
       return;
     }
@@ -254,11 +256,13 @@ export function ContactView({ links }: { links: ContactLink[] }) {
                 }}
               />
             </div>
-            <Turnstile
-              ref={turnstileRef}
-              onSuccess={(token) => setForm((prev) => ({ ...prev, turnstileToken: token }))}
-              onExpire={() => setForm((prev) => ({ ...prev, turnstileToken: "" }))}
-            />
+            {!ignoreTurnstile && (
+              <Turnstile
+                ref={turnstileRef}
+                onSuccess={(token) => setForm((prev) => ({ ...prev, turnstileToken: token }))}
+                onExpire={() => setForm((prev) => ({ ...prev, turnstileToken: "" }))}
+              />
+            )}
 
             <button
               type="submit"

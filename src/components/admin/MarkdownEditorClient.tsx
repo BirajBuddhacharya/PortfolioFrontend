@@ -1,7 +1,7 @@
 'use client';
 
 import { useImperativeHandle, useRef, type RefObject } from 'react';
-import CodeMirror, { EditorView, type ReactCodeMirrorRef } from '@uiw/react-codemirror';
+import CodeMirror, { EditorView, Prec, keymap, type ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import { markdown } from '@codemirror/lang-markdown';
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { tags as t } from '@lezer/highlight';
@@ -49,6 +49,20 @@ const theme = EditorView.theme(
 // `jk` leaves insert mode, the usual escape-key replacement.
 Vim.map('jk', '<Esc>', 'insert');
 
+/**
+ * Save from inside the editor: the form's Save button is the only way out
+ * otherwise, and `:w` / Ctrl-S are what anyone in vim mode reaches for.
+ */
+const submitForm = (view: EditorView) => {
+  const form = view.dom.closest('form');
+  const submit = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+  if (!form || submit?.disabled) return false;
+  form.requestSubmit();
+  return true;
+};
+
+Vim.defineEx('write', 'w', (cm) => submitForm(cm.cm6));
+
 /** Markdown tokens, tuned for the dark admin background. */
 const highlight = HighlightStyle.define([
   { tag: t.heading, color: '#FF6B6B', fontWeight: '600' },
@@ -64,6 +78,8 @@ const highlight = HighlightStyle.define([
 
 // vim() must come first so its keymap wins over the default one.
 const extensions = [
+  // ...except Ctrl-S, which has to beat vim's key handler and the browser's.
+  Prec.highest(keymap.of([{ key: 'Mod-s', run: submitForm, preventDefault: true }])),
   vim({ status: true }),
   markdown(),
   syntaxHighlighting(highlight),
