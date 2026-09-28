@@ -163,14 +163,12 @@ export function ProjectDetailView({ project }: { project: Project }) {
                 {project.gallery.map((g, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-center rounded-[14px] border border-white/[0.08] transition-colors duration-200"
+                    className="overflow-hidden rounded-[14px] border border-white/[0.08] transition-colors duration-200"
                     style={{ aspectRatio: '16/10', background: 'linear-gradient(135deg,#141418,#0C0C0F)' }}
                     onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,107,107,0.4)'; }}
                     onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.08)'; }}
                   >
-                    <span className="text-[11px] tracking-[0.1em]" style={{ fontFamily: mono, color: '#4A4A52' }}>
-                      {g}
-                    </span>
+                    <img src={g} alt={`${project.title} screenshot ${i + 1}`} className="w-full h-full object-cover" />
                   </div>
                 ))}
               </div>

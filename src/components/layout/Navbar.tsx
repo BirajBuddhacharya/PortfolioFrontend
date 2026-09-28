@@ -19,7 +19,7 @@ const navItems = [
 
 export function Navbar({ profile }: { profile?: Profile | null }) {
   const pathname = usePathname();
-  const ctaLabel = profile?.ctaLabel || "Hire me";
+  const ctaLabel = profile?.ctaLabel || "Contact Me";
   const fallbackInitial = profile?.name?.trim()?.[0]?.toUpperCase() || "B";
 
   return (
