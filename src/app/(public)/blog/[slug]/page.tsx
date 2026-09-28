@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getBlog } from '../../../../lib/serverApi';
+import { getBlog, getProfile } from '../../../../lib/serverApi';
 import { pageMetadata, toDescription, SITE_URL, SITE_NAME } from '../../../../lib/seo';
 import { PostView } from './PostView';
 import type { Metadata } from 'next';
@@ -35,7 +35,7 @@ export default async function PostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await getBlog(slug);
+  const [post, profile] = await Promise.all([getBlog(slug), getProfile()]);
   if (!post) notFound();
 
   const description = toDescription(post.excerpt || post.content);
@@ -59,6 +59,7 @@ export default async function PostPage({
     tags: post.tags,
     date: formatDate(post.publishedAt ?? post.createdAt),
     readTime: `${post.readTime} min`,
+    author: profile ? { name: profile.name, bio: profile.headline, avatarImage: profile.avatarImage } : undefined,
   };
 
   return (

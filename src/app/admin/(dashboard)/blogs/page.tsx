@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/components/ui/d
 import { Prose } from '../../../../components/Prose';
 import { Toc } from '../../../../components/Toc';
 import { useAdminPosts, useDeletePost, useUpdatePost } from '../../../../services/adminService';
+import { Skeleton } from '@/components/components/ui/skeleton';
 import { BORDER, TEXT, MUTED, ACCENT, mono, heading, formField, newButton, tableHead, rowButton, SectionLabel, StatusSelect, ConfirmDelete, AdminPagination } from '../../../../components/admin/adminUi';
 import { cn } from '@/components/lib/utils';
 import type { BlogPost } from '../../../../types/blog';
@@ -35,7 +36,7 @@ export default function AdminPostsPage() {
 
   useEffect(() => { setPage(1); }, [debouncedSearch, statusFilter]);
 
-  const { data } = useAdminPosts({ search: debouncedSearch, status: statusFilter, page, size: SIZE });
+  const { data, isPending } = useAdminPosts({ search: debouncedSearch, status: statusFilter, page, size: SIZE });
   const posts = data?.result ?? [];
   const total = data?.total ?? 0;
 
@@ -85,7 +86,16 @@ export default function AdminPostsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {posts.length === 0 && (
+            {isPending && Array.from({ length: 5 }).map((_, i) => (
+              <TableRow key={i}>
+                <TableCell className="px-5 py-[14px]"><Skeleton className="h-4 w-[200px]" /></TableCell>
+                <TableCell className="px-5 py-[14px]"><div className="flex gap-1"><Skeleton className="h-5 w-[50px] rounded-full" /><Skeleton className="h-5 w-[50px] rounded-full" /></div></TableCell>
+                <TableCell className="px-5 py-[14px]"><Skeleton className="h-4 w-[80px]" /></TableCell>
+                <TableCell className="px-5 py-[14px]"><Skeleton className="h-6 w-[70px] rounded-full" /></TableCell>
+                <TableCell className="px-5 py-[14px]"><Skeleton className="h-7 w-[60px]" /></TableCell>
+              </TableRow>
+            ))}
+            {!isPending && posts.length === 0 && (
               <TableRow>
                 <TableCell colSpan={5} className="py-16">
                   <div className="flex flex-col items-center gap-3">
@@ -100,7 +110,7 @@ export default function AdminPostsPage() {
                 </TableCell>
               </TableRow>
             )}
-            {posts.map((p) => (
+            {!isPending && posts.map((p) => (
               <TableRow
                 key={p.id}
                 className="cursor-pointer"

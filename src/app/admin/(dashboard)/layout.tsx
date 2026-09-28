@@ -17,7 +17,7 @@ import {
 import { Button } from '@/components/components/ui/button';
 import { Badge } from '@/components/components/ui/badge';
 import { cn } from '@/components/lib/utils';
-import { useAdminInbox } from '../../../services/adminService';
+import { useAdminInbox, useAdminAbout } from '../../../services/adminService';
 import { useAdminLogout } from '../../../services/authService';
 import { BG, SURFACE, BORDER, ACCENT, MUTED, TEXT, mono, heading, body } from '../../../components/admin/adminUi';
 
@@ -38,6 +38,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const logout = useAdminLogout();
   const { data: inboxMsgs = [] } = useAdminInbox();
   const unread = inboxMsgs.filter((m) => !m.read).length;
+  const { data: profile } = useAdminAbout();
 
   const activeItem = navItems.find((n) => n.href === '/admin' ? pathname === '/admin' : pathname?.startsWith(n.href));
 
@@ -98,14 +99,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Bottom: avatar + back to site */}
         <div className="px-3 py-4 border-t" style={{ borderColor: BORDER }}>
           <div className="flex items-center gap-3 px-3 py-2 mb-3">
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold shrink-0"
-              style={{ background: `${ACCENT}22`, color: ACCENT }}
-            >
-              B
+            <div className="w-8 h-8 rounded-full shrink-0 overflow-hidden">
+              {profile?.avatarImage ? (
+                <img src={profile.avatarImage} alt={profile.name} className="w-full h-full object-cover" />
+              ) : (
+                <div
+                  className="w-full h-full flex items-center justify-center text-[12px] font-bold"
+                  style={{ background: `${ACCENT}22`, color: ACCENT }}
+                >
+                  {profile?.name?.[0]?.toUpperCase() ?? 'B'}
+                </div>
+              )}
             </div>
             <div>
-              <div className="text-[12.5px] font-medium" style={{ color: TEXT }}>Biraj</div>
+              <div className="text-[12.5px] font-medium" style={{ color: TEXT }}>{profile?.name ?? 'Biraj'}</div>
               <div className="text-[10.5px]" style={{ fontFamily: mono, color: MUTED }}>admin</div>
             </div>
           </div>

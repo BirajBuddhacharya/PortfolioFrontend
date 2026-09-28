@@ -12,6 +12,7 @@ import { Prose } from '../../../../components/Prose';
 import { Toc } from '../../../../components/Toc';
 import { useAdminProjects } from '../../../../services/adminService';
 import { useDeleteProject, useUpdateProject } from '../../../../services/projectsService';
+import { Skeleton } from '@/components/components/ui/skeleton';
 import { BORDER, TEXT, TEXT2, MUTED, ACCENT, mono, heading, formField, newButton, tableHead, rowButton, SectionLabel, StatusSelect, ConfirmDelete, AdminPagination } from '../../../../components/admin/adminUi';
 import { cn } from '@/components/lib/utils';
 import type { Project } from '../../../../types/project';
@@ -36,7 +37,7 @@ export default function AdminProjectsPage() {
 
   useEffect(() => { setPage(1); }, [debouncedSearch, statusFilter]);
 
-  const { data } = useAdminProjects({ search: debouncedSearch, status: statusFilter, page, size: SIZE });
+  const { data, isPending } = useAdminProjects({ search: debouncedSearch, status: statusFilter, page, size: SIZE });
   const projects = data?.result ?? [];
   const total = data?.total ?? 0;
 
@@ -86,7 +87,16 @@ export default function AdminProjectsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {projects.length === 0 && (
+            {isPending && Array.from({ length: 5 }).map((_, i) => (
+              <TableRow key={i}>
+                <TableCell className="px-5 py-[14px]"><Skeleton className="h-4 w-[140px]" /></TableCell>
+                <TableCell className="px-5 py-[14px]"><Skeleton className="h-4 w-[70px]" /></TableCell>
+                <TableCell className="px-5 py-[14px]"><Skeleton className="h-4 w-[40px]" /></TableCell>
+                <TableCell className="px-5 py-[14px]"><Skeleton className="h-6 w-[70px] rounded-full" /></TableCell>
+                <TableCell className="px-5 py-[14px]"><Skeleton className="h-7 w-[60px]" /></TableCell>
+              </TableRow>
+            ))}
+            {!isPending && projects.length === 0 && (
               <TableRow>
                 <TableCell colSpan={5} className="py-16">
                   <div className="flex flex-col items-center gap-3">
@@ -101,7 +111,7 @@ export default function AdminProjectsPage() {
                 </TableCell>
               </TableRow>
             )}
-            {projects.map((p) => (
+            {!isPending && projects.map((p) => (
               <TableRow
                 key={p.id}
                 className="cursor-pointer"

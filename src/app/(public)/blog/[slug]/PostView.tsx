@@ -15,6 +15,7 @@ export interface PostViewModel {
   tags: string[];
   date: string;
   readTime: string;
+  author?: { name: string; bio: string | null; avatarImage: string | null };
 }
 
 export function PostView({ post }: { post: PostViewModel }) {
@@ -83,23 +84,29 @@ export function PostView({ post }: { post: PostViewModel }) {
           {post.content && <Prose>{post.content}</Prose>}
 
           <div className="border-t border-white/[0.08] mt-9 pt-8 pb-5 flex items-center gap-4">
-            <div
-              className="w-[46px] h-[46px] rounded-full flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg,#FF6B6B,#7C3AED)' }}
-            />
+            <div className="w-[46px] h-[46px] rounded-full flex-shrink-0 overflow-hidden">
+              {post.author?.avatarImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={post.author.avatarImage} alt={post.author.name} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full" style={{ background: 'linear-gradient(135deg,#FF6B6B,#7C3AED)' }} />
+              )}
+            </div>
             <div>
               <div
                 className="text-[16px] font-semibold"
                 style={{ fontFamily: 'var(--font-space-grotesk), sans-serif', color: '#EDEDEF' }}
               >
-                Biraj Buddhacharya
+                {post.author?.name ?? 'Biraj Buddhacharya'}
               </div>
-              <div
-                className="text-[12px] mt-1"
-                style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#8A8A93' }}
-              >
-                ML &amp; backend engineer, Kathmandu
-              </div>
+              {(post.author?.bio) && (
+                <div
+                  className="text-[12px] mt-1"
+                  style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#8A8A93' }}
+                >
+                  {post.author.bio}
+                </div>
+              )}
             </div>
           </div>
           </div>

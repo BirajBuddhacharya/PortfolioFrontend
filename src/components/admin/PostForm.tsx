@@ -5,10 +5,13 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 const toSlug = (s: string) =>
   s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 import Link from 'next/link';
+import { format } from 'date-fns';
 import { ArrowLeft, CalendarClock, CircleDot, Clock, Hash, Image as ImageIcon, Tags } from 'lucide-react';
 import { Input } from '@/components/components/ui/input';
 import { Button } from '@/components/components/ui/button';
 import { Separator } from '@/components/components/ui/separator';
+import { Calendar } from '@/components/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/components/ui/popover';
 import { cn } from '@/components/lib/utils';
 import { Prose } from '../Prose';
 import { MarkdownEditor, type MarkdownEditorHandle } from './MarkdownEditor';
@@ -169,12 +172,25 @@ export function PostForm({
             </Row>
 
             <Row icon={CalendarClock} label="Published">
-              <Input
-                type="date"
-                value={publishedAt}
-                onChange={(e) => setPublishedAt(e.target.value)}
-                className={cn(field, 'w-[180px] font-mono text-[13px]')}
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className={cn(field, 'w-[180px] justify-start font-mono text-[13px] font-normal', !publishedAt && 'text-[#45454E]')}
+                  >
+                    {publishedAt ? format(new Date(publishedAt), 'MMM d, yyyy') : 'Empty'}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={publishedAt ? new Date(publishedAt) : undefined}
+                    onSelect={(date) => setPublishedAt(date ? format(date, 'yyyy-MM-dd') : '')}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </Row>
 
             <Row icon={ImageIcon} label="Cover image">

@@ -150,7 +150,7 @@ export function ProjectForm({
             >
               <SelectValue placeholder="Empty" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent position="popper">
               <SelectItem value={NONE} className="text-[#6E6E78]">Empty</SelectItem>
               {KIND_OPTIONS.map((k) => (
                 <SelectItem key={k} value={k}>{k}</SelectItem>
@@ -224,12 +224,14 @@ export function ProjectForm({
                   value={m.value}
                   placeholder="80%+"
                   onChange={(e) => setMetrics((p) => p.map((x, j) => (j === i ? { ...x, value: e.target.value } : x)))}
+                  onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
                   className={cn(field, 'flex-1 font-mono text-[13px]')}
                 />
                 <Input
                   value={m.label}
                   placeholder="model accuracy"
                   onChange={(e) => setMetrics((p) => p.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))}
+                  onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
                   className={cn(field, 'flex-[2] text-[13px]')}
                 />
                 <Button

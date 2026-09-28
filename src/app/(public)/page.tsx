@@ -26,7 +26,8 @@ export default async function HomePage() {
     getBlogs(),
   ]);
 
-  const featuredProjects = projects.filter((p) => p.status === 'live').slice(0, 3);
+  const liveProjects = projects.filter((p) => p.status === 'live');
+  const featuredProjects = liveProjects.slice(0, 3);
 
   const experience = (resume?.experiences ?? []).map((e) => ({
     period: e.period ?? '',
@@ -56,7 +57,7 @@ export default async function HomePage() {
         <HeroSection />
         <TickerSection items={profile?.ticker ?? []} />
         <StatsSection stats={profile?.stats ?? []} />
-        <FeaturedProjectsSection projects={featuredProjects} />
+        <FeaturedProjectsSection projects={featuredProjects} total={liveProjects.length} />
         <ExperienceSection items={experience} />
         <SkillsSection groups={skills} />
         <BlogPreviewSection posts={blogPreview} />

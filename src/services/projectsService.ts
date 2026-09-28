@@ -50,9 +50,9 @@ export const useUpdateProject = () => {
       );
       return data.data;
     },
-    onSuccess: (_, { id }) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.PROJECTS_LIST] });
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.PROJECT_DETAIL, id] });
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.PROJECT_DETAIL] });
     },
   });
 };

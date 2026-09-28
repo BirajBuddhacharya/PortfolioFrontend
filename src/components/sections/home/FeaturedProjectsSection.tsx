@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import type { Project } from '../../../types/project';
 
-export function FeaturedProjectsSection({ projects }: { projects: Project[] }) {
+export function FeaturedProjectsSection({ projects, total }: { projects: Project[]; total: number }) {
   if (projects.length === 0) return null;
   return (
     <section className="max-w-[1180px] mx-auto px-7 pt-[96px]">
@@ -40,11 +40,11 @@ export function FeaturedProjectsSection({ projects }: { projects: Project[] }) {
             className="text-[13px] border-b border-[rgba(255,107,107,0.4)] pb-[3px] transition-colors duration-200"
             style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#FF6B6B' }}
           >
-            all {projects.length + 3} projects →
+            all {total} projects →
           </Link>
         </div>
 
-        <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
+        <div className="grid grid-cols-2 gap-5">
           {projects.map((p, i) => (
             <motion.div
               key={p.id}
