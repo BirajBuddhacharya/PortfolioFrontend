@@ -187,7 +187,7 @@ export function PostForm({
                     mode="single"
                     selected={publishedAt ? new Date(publishedAt) : undefined}
                     onSelect={(date) => setPublishedAt(date ? format(date, 'yyyy-MM-dd') : '')}
-                    initialFocus
+
                   />
                 </PopoverContent>
               </Popover>
