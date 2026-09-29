@@ -4,6 +4,7 @@ import { use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { PostForm } from '../../../../../components/admin/PostForm';
+import { PostFormSkeleton } from '../../../../../components/admin/PostFormSkeleton';
 import { useAdminPostDetail, useUpdatePost } from '../../../../../services/adminService';
 
 const mono = 'var(--font-jetbrains-mono), monospace';
@@ -19,9 +20,7 @@ export default function EditPostPage({ params }: { params: Promise<{ slug: strin
   return (
     <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh' }}>
       <main className="mx-auto max-w-[1080px] px-7 pb-12">
-        {isLoading && (
-          <div className="pt-12 text-[13px]" style={{ fontFamily: mono, color: '#6E6E78' }}>Loading…</div>
-        )}
+        {isLoading && <PostFormSkeleton />}
 
         {notFound && (
           <div className="flex flex-col gap-3 pt-12">

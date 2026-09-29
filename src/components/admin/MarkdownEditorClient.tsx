@@ -25,6 +25,11 @@ const theme = EditorView.theme(
       lineHeight: '1.85',
       caretColor: '#FF6B6B',
     },
+    // Base theme sets overflow-x:auto, which makes the browser compute
+    // overflow-y:auto too, so a scrollbar flashes mid-remeasure on edits.
+    // lineWrapping means we never scroll sideways; clip is the one value
+    // that does not propagate to the other axis.
+    '.cm-scroller': { overflowX: 'clip' },
     '.cm-gutters': { display: 'none' },
     '.cm-line': { padding: 0 },
     '.cm-activeLine': { background: 'transparent' },
@@ -80,6 +85,9 @@ const highlight = HighlightStyle.define([
 const extensions = [
   // ...except Ctrl-S, which has to beat vim's key handler and the browser's.
   Prec.highest(keymap.of([{ key: 'Mod-s', run: submitForm, preventDefault: true }])),
+  // The forms' `sticky top-0` bar (~57px) floats over the scroll container, so
+  // keep that much clear or `gg`/`k` park the cursor underneath it.
+  EditorView.scrollMargins.of(() => ({ top: 72 })),
   vim({ status: true }),
   markdown(),
   syntaxHighlighting(highlight),

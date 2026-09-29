@@ -14,6 +14,7 @@ export interface Project {
   metrics: { value: string; label: string }[];
   live?: string | null;
   repo?: string | null;
+  coverImage?: string | null;
   coverHeight: number;
   coverAccent: string;
   coverColor: string;
@@ -35,6 +36,7 @@ export type CreateProjectPayload = {
   metrics?: { value: string; label: string }[];
   live?: string;
   repo?: string;
+  coverImage?: string;
   coverHeight?: number;
   coverAccent?: string;
   coverColor?: string;

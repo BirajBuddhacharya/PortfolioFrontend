@@ -21,7 +21,7 @@ export function ProjectDetailView({ project }: { project: Project }) {
   const meta = [project.year, project.kind, project.status].filter(Boolean);
 
   return (
-    <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'hidden' }}>
+    <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'clip' }}>
       <main className="relative z-10 max-w-[1220px] mx-auto px-7 pt-[150px]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -106,6 +106,20 @@ export function ProjectDetailView({ project }: { project: Project }) {
                   GitHub ↗
                 </a>
               )}
+            </div>
+          )}
+
+          {project.coverImage && (
+            <div
+              className="overflow-hidden rounded-[18px] border border-white/[0.08] mb-[48px]"
+              style={{ background: '#0C0C0F' }}
+            >
+              <img
+                src={project.coverImage}
+                alt={project.title}
+                className="w-full object-cover"
+                style={{ maxHeight: 420 }}
+              />
             </div>
           )}
 

@@ -44,7 +44,7 @@ export function FeaturedProjectsSection({ projects, total }: { projects: Project
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 gap-5">
+        <div className="grid grid-cols-3 gap-5">
           {projects.map((p, i) => (
             <motion.div
               key={p.id}

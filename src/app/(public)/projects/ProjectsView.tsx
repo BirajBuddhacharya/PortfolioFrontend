@@ -65,17 +65,21 @@ function ProjectCard({ p, index }: { p: Project; index: number }) {
             background: `linear-gradient(140deg, ${accent}18 0%, #0E0E11 70%)`,
           }}
         >
-          {/* Ambient glow blob */}
-          <div
-            className="absolute rounded-full blur-3xl opacity-30"
-            style={{
-              width: coverH * 1.2,
-              height: coverH * 1.2,
-              background: accent,
-              top: '-30%',
-              left: '20%',
-            }}
-          />
+          {p.coverImage ? (
+            <img src={p.coverImage} alt={p.title} className="absolute inset-0 w-full h-full object-cover" />
+          ) : (
+            /* Ambient glow blob */
+            <div
+              className="absolute rounded-full blur-3xl opacity-30"
+              style={{
+                width: coverH * 1.2,
+                height: coverH * 1.2,
+                background: accent,
+                top: '-30%',
+                left: '20%',
+              }}
+            />
+          )}
           {/* Kind badge */}
           {p.kind && (
             <span

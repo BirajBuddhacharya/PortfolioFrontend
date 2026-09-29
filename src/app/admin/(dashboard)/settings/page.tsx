@@ -14,7 +14,7 @@ import { useContactLinks } from '../../../../services/contactService';
 import { useAdminMe } from '../../../../services/authService';
 import type { ContactLink } from '../../../../types/contact';
 import {
-  BORDER, MUTED, TEXT, mono, formField, addButton, saveButton, panelCard, resumeLabel, rowDangerButton,
+  BORDER, MUTED, TEXT, TEXT2, mono, formField, addButton, saveButton, panelCard, resumeLabel, rowDangerButton,
   SectionLabel, saveContactLinks, type ContactLinkRow,
 } from '../../../../components/admin/adminUi';
 import { ImageUploadButton } from '../../../../components/admin/ImageUploadButton';
@@ -36,6 +36,7 @@ export default function AdminSettingsPage() {
         <TabsTrigger value="account" className={triggerCls}>Account</TabsTrigger>
         <TabsTrigger value="branding" className={triggerCls}>Branding</TabsTrigger>
         <TabsTrigger value="links" className={triggerCls}>Contact Links</TabsTrigger>
+        <TabsTrigger value="ticker" className={triggerCls}>Ticker</TabsTrigger>
         <TabsTrigger value="notifications" className={triggerCls}>Notifications</TabsTrigger>
       </TabsList>
 
@@ -44,6 +45,7 @@ export default function AdminSettingsPage() {
         <TabsContent value="account"><AccountTab /></TabsContent>
         <TabsContent value="branding"><BrandingTab /></TabsContent>
         <TabsContent value="links"><LinksTab /></TabsContent>
+        <TabsContent value="ticker"><TickerTab /></TabsContent>
         <TabsContent value="notifications"><NotificationsTab /></TabsContent>
       </div>
     </Tabs>
@@ -312,6 +314,80 @@ function LinksTab() {
         className={saveButton}
       >
         {savingLinks ? 'Saving…' : 'Save contact links'}
+      </Button>
+    </div>
+  );
+}
+
+function TickerTab() {
+  const { data: profile } = useAdminAbout();
+  const updateProfile = useUpdateProfile();
+  const [items, setItems] = useState<string[]>([]);
+  const [input, setInput] = useState('');
+  const hydrated = useRef(false);
+
+  useEffect(() => {
+    if (profile && !hydrated.current) {
+      hydrated.current = true;
+      setItems(profile.ticker ?? []);
+    }
+  }, [profile]);
+
+  const add = () => {
+    const val = input.trim();
+    if (!val || items.includes(val)) return;
+    setItems((prev) => [...prev, val]);
+    setInput('');
+  };
+
+  const remove = (i: number) => setItems((prev) => prev.filter((_, j) => j !== i));
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div>
+        <SectionLabel>ticker</SectionLabel>
+        <div className="text-[11px] -mt-2 mb-4" style={{ fontFamily: mono, color: MUTED }}>
+          Skills scrolled in the marquee strip on the home page.
+        </div>
+      </div>
+      <div className="flex gap-2">
+        <Input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); add(); } }}
+          placeholder="e.g. TypeScript"
+          className={cn(formField, 'flex-1 h-auto px-4 py-[10px]')}
+        />
+        <Button type="button" variant="outline" onClick={add} className={addButton}>
+          + add
+        </Button>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {items.map((item, i) => (
+          <span
+            key={i}
+            className="flex items-center gap-1.5 rounded-[8px] border px-3 py-[5px] font-mono text-[12px]"
+            style={{ borderColor: 'rgba(255,255,255,0.1)', color: TEXT2, background: '#131317' }}
+          >
+            {item}
+            <button
+              type="button"
+              onClick={() => remove(i)}
+              className="opacity-50 hover:opacity-100 transition-opacity text-[10px] leading-none"
+              style={{ color: MUTED }}
+            >
+              ✕
+            </button>
+          </span>
+        ))}
+      </div>
+      <Button
+        type="button"
+        onClick={() => updateProfile.mutate({ ticker: items }, { onSuccess: () => toast.success('Saved') })}
+        disabled={updateProfile.isPending}
+        className={saveButton}
+      >
+        {updateProfile.isPending ? 'Saving…' : 'Save ticker'}
       </Button>
     </div>
   );

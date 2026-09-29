@@ -22,6 +22,7 @@ import {
   X,
 } from 'lucide-react';
 import { Input } from '@/components/components/ui/input';
+import { ColorPicker } from '@/components/components/ui/color-picker';
 import { Textarea } from '@/components/components/ui/textarea';
 import { MarkdownEditor } from './MarkdownEditor';
 import { Button } from '@/components/components/ui/button';
@@ -67,6 +68,7 @@ export function ProjectForm({
   const [gallery, setGallery] = useState<string[]>(project?.gallery ?? []);
   const [live, setLive] = useState(project?.live ?? '');
   const [repo, setRepo] = useState(project?.repo ?? '');
+  const [coverImage, setCoverImage] = useState(project?.coverImage ?? '');
   const [coverAccent, setCoverAccent] = useState(project?.coverAccent ?? '#FF6B6B');
   const [coverColor, setCoverColor] = useState(project?.coverColor ?? '#141418');
   const [coverHeight, setCoverHeight] = useState(project?.coverHeight ?? 260);
@@ -95,6 +97,7 @@ export function ProjectForm({
       metrics: metrics.filter((m) => m.value.trim() || m.label.trim()),
       live: trimmed(live),
       repo: trimmed(repo),
+      coverImage: trimmed(coverImage),
       coverAccent,
       coverColor,
       coverHeight,
@@ -302,22 +305,35 @@ export function ProjectForm({
           </div>
         </Row>
 
-        <Row icon={Palette} label="Cover">
-          <div className="flex flex-wrap items-center gap-2 px-2 py-1">
-            {[
-              { v: coverAccent, set: setCoverAccent, title: 'Accent' },
-              { v: coverColor, set: setCoverColor, title: 'Background' },
-            ].map((c) => (
-              <div key={c.title} className="flex items-center gap-1.5">
+        <Row icon={Palette} label="Cover" align="start">
+          <div className="flex flex-col gap-2 px-2 py-1 w-full">
+            {/* Cover image */}
+            <div className="flex items-center gap-2">
+              {coverImage && (
+                <img src={coverImage} alt="" className="h-[60px] w-[100px] rounded-md object-cover border border-[#27272A]" />
+              )}
+              <div className="flex flex-col gap-1 flex-1">
                 <Input
-                  type="color"
-                  value={c.v}
-                  title={c.title}
-                  onChange={(e) => c.set(e.target.value)}
-                  className="size-6 shrink-0 cursor-pointer rounded-md border-border bg-transparent p-0.5 shadow-none focus-visible:ring-0"
+                  value={coverImage}
+                  onChange={(e) => setCoverImage(e.target.value)}
+                  placeholder="https://… or upload →"
+                  className={cn(field, 'font-mono text-[12px]')}
                 />
-                <span className="font-mono text-[11.5px] text-[#A1A1AA]">{c.v}</span>
+                <ImageUploadButton onUploaded={(url) => setCoverImage(url)} />
               </div>
+            </div>
+            {/* Colors & height */}
+            <div className="flex flex-wrap items-center gap-2">
+            {[
+              { v: coverAccent, set: setCoverAccent, label: 'Accent' },
+              { v: coverColor, set: setCoverColor, label: 'Background' },
+            ].map((c) => (
+              <ColorPicker
+                key={c.label}
+                value={c.v}
+                label={c.label}
+                onChange={c.set}
+              />
             ))}
             <span className="ml-1 font-mono text-[11.5px] text-[#6E6E78]">h</span>
             <Input
@@ -326,6 +342,7 @@ export function ProjectForm({
               onChange={(e) => setCoverHeight(Number(e.target.value))}
               className={cn(field, 'w-[72px] font-mono text-[12.5px]')}
             />
+            </div>
           </div>
         </Row>
       </div>

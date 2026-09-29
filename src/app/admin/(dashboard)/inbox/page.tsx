@@ -20,6 +20,11 @@ export default function AdminInboxPage() {
     if (!selected && msgs.length > 0) setSelected(msgs[0]);
   }, [msgs, selected]);
 
+  useEffect(() => {
+    if (selected && !selected.read) markRead.mutate(selected.id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected?.id]);
+
   const unreadCount = msgs.filter((m) => !m.read).length;
 
   return (
@@ -96,14 +101,6 @@ export default function AdminInboxPage() {
                 {selected.body}
               </div>
               <div className="px-6 py-4 border-t flex gap-2" style={{ borderColor: BORDER }}>
-                <Button
-                  type="button"
-                  onClick={() => selected && !selected.read && markRead.mutate(selected.id)}
-                  disabled={selected?.read || markRead.isPending}
-                  className="h-auto rounded-[10px] px-4 py-2 font-mono text-[12px] font-normal text-[#111]"
-                >
-                  {selected?.read ? 'Read' : 'Mark read'}
-                </Button>
                 <ConfirmDelete
                   title="Delete this message?"
                   description={`The message from ${selected.name} will be permanently removed. This can't be undone.`}

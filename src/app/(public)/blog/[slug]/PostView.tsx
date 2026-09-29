@@ -21,7 +21,7 @@ export interface PostViewModel {
 export function PostView({ post }: { post: PostViewModel }) {
   const hasHeadings = useMemo(() => parseHeadings(post.content ?? '').length > 0, [post.content]);
   return (
-    <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'hidden' }}>
+    <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'clip' }}>
       <main className="relative z-10 max-w-[1060px] mx-auto px-7 pt-[150px]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
