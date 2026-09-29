@@ -369,15 +369,20 @@ function ResumePdfSection() {
           className={cn(formField, 'h-auto px-4 py-[10px] text-[13px]')}
         />
         {pdfUrl && (
-          <a
-            href={pdfUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[11px] self-start"
+          <button
+            type="button"
+            className="text-[11px] self-start cursor-pointer bg-transparent border-none p-0"
             style={{ fontFamily: mono, color: '#FF6B6B' }}
+            onClick={async () => {
+              const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/resume/pdf`);
+              const blob = await res.blob();
+              const url = URL.createObjectURL(blob);
+              window.open(url, '_blank');
+              setTimeout(() => URL.revokeObjectURL(url), 10000);
+            }}
           >
             view current PDF ↗
-          </a>
+          </button>
         )}
       </div>
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 export interface ResumeRow {
@@ -13,7 +14,28 @@ export interface ResumeBlock {
   rows: ResumeRow[];
 }
 
+const PDF_PROXY_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/resume/pdf`;
+
 export function ResumeView({ blocks, pdfUrl }: { blocks: ResumeBlock[]; pdfUrl?: string | null }) {
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    if (!pdfUrl) { window.location.href = '/resume.pdf'; return; }
+    setDownloading(true);
+    try {
+      const res = await fetch(PDF_PROXY_URL);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'resume.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'hidden' }}>
       <main className="relative z-10 max-w-[900px] mx-auto px-7 pt-[160px]">
@@ -44,18 +66,16 @@ export function ResumeView({ blocks, pdfUrl }: { blocks: ResumeBlock[]; pdfUrl?:
               The short version<span style={{ color: '#FF6B6B' }}>.</span>
             </h1>
           </div>
-          <a
-            href={pdfUrl ?? '/resume.pdf'}
-            download={!pdfUrl ? true : undefined}
-            target={pdfUrl ? '_blank' : undefined}
-            rel={pdfUrl ? 'noopener noreferrer' : undefined}
-            className="px-[22px] py-[13px] rounded-[11px] border border-white/[0.14] text-[12.5px] transition-colors duration-200"
-            style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#EDEDEF' }}
-            onMouseEnter={(e) => { const el = e.target as HTMLElement; el.style.borderColor = '#FF6B6B'; el.style.color = '#FF6B6B'; }}
-            onMouseLeave={(e) => { const el = e.target as HTMLElement; el.style.borderColor = 'rgba(255,255,255,0.14)'; el.style.color = '#EDEDEF'; }}
+          <button
+            onClick={handleDownload}
+            disabled={downloading}
+            className="px-[22px] py-[13px] rounded-[11px] border border-white/[0.14] text-[12.5px] transition-colors duration-200 cursor-pointer disabled:opacity-60"
+            style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#EDEDEF', background: 'transparent' }}
+            onMouseEnter={(e) => { const el = e.currentTarget; el.style.borderColor = '#FF6B6B'; el.style.color = '#FF6B6B'; }}
+            onMouseLeave={(e) => { const el = e.currentTarget; el.style.borderColor = 'rgba(255,255,255,0.14)'; el.style.color = '#EDEDEF'; }}
           >
-            Download PDF ↓
-          </a>
+            {downloading ? 'Downloading…' : 'Download PDF ↓'}
+          </button>
         </motion.div>
 
         {blocks.map((rb, i) => (
