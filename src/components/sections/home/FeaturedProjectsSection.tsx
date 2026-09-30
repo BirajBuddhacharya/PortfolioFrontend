@@ -86,19 +86,18 @@ export function FeaturedProjectsSection({
               >
                 <div
                   className="h-[172px] border-b border-white/[0.07] flex items-center justify-center relative"
-                  style={{
-                    background: `linear-gradient(135deg, ${p.coverColor} 0%, #0E0E11 100%)`,
-                  }}
+                  style={
+                    p.coverImage
+                      ? {
+                          backgroundImage: `url(${p.coverImage})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        }
+                      : {
+                          background: `linear-gradient(135deg, ${p.coverColor} 0%, #0E0E11 100%)`,
+                        }
+                  }
                 >
-                  <span
-                    className="text-[11px] uppercase tracking-[0.16em]"
-                    style={{
-                      fontFamily: "var(--font-jetbrains-mono), monospace",
-                      color: "#3F3F46",
-                    }}
-                  >
-                    cover image
-                  </span>
                   {p.year && (
                     <span
                       className="absolute top-[14px] left-[14px] text-[10.5px] border border-white/[0.12] px-[9px] py-1 rounded-full"

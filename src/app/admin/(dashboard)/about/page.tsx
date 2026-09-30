@@ -7,19 +7,21 @@ import { Input } from '@/components/components/ui/input';
 import { Textarea } from '@/components/components/ui/textarea';
 import { Card } from '@/components/components/ui/card';
 import { cn } from '@/components/lib/utils';
+import { Skeleton } from '@/components/components/ui/skeleton';
 import { useAdminAbout, useUpdateProfile } from '../../../../services/adminService';
 import { useAboutEducation } from '../../../../services/aboutService';
 import { BORDER, MUTED, TEXT, ACCENT, mono, heading, formField, addButton, saveButton, rowDangerButton, SectionLabel } from '../../../../components/admin/adminUi';
 import { ImageUploadButton } from '../../../../components/admin/ImageUploadButton';
 
 export default function AdminAboutPage() {
-  const { data: about } = useAdminAbout();
+  const { data: about, isLoading } = useAdminAbout();
   const updateProfile = useUpdateProfile();
 
   const [headline, setHeadline] = useState('');
   const [coverImage, setCoverImage] = useState('');
   const [paragraphs, setParagraphs] = useState<string[]>([]);
   const [facts, setFacts] = useState<{ k: string; v: string }[]>([]);
+  const [stats, setStats] = useState<{ value: string; label: string }[]>([]);
   const hydrated = useRef(false);
 
   useEffect(() => {
@@ -29,6 +31,7 @@ export default function AdminAboutPage() {
       setCoverImage(about.coverImage ?? '');
       setParagraphs(about.paragraphs ?? []);
       setFacts((about.facts ?? []).map((f) => ({ k: (f as { k?: string }).k ?? '', v: (f as { v?: string }).v ?? '' })));
+      setStats((about.stats ?? []).map((s) => ({ value: (s as { value?: string }).value ?? '', label: (s as { label?: string }).label ?? '' })));
     }
   }, [about]);
 
@@ -39,12 +42,75 @@ export default function AdminAboutPage() {
         coverImage: coverImage || undefined,
         paragraphs: paragraphs.filter((p) => p.trim()),
         facts: facts.filter((f) => f.k.trim() || f.v.trim()),
+        stats: stats.filter((s) => s.value.trim() || s.label.trim()),
       },
       { onSuccess: () => toast.success('Saved') },
     );
   };
 
   const { data: educationEntries = [] } = useAboutEducation();
+
+  if (isLoading) {
+    return (
+      <div className="max-w-[860px] flex flex-col gap-10">
+        {/* Headline */}
+        <div>
+          <Skeleton className="h-3 w-28 mb-3 rounded-[4px]" />
+          <Skeleton className="h-10 w-full rounded-[10px]" />
+          <Skeleton className="h-2.5 w-64 mt-2 rounded-[4px]" />
+        </div>
+        {/* Cover image */}
+        <div>
+          <Skeleton className="h-3 w-24 mb-3 rounded-[4px]" />
+          <Skeleton className="h-10 w-full rounded-[10px]" />
+        </div>
+        {/* Bio paragraphs */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <Skeleton className="h-3 w-28 rounded-[4px]" />
+            <Skeleton className="h-7 w-28 rounded-[8px]" />
+          </div>
+          <div className="flex flex-col gap-3">
+            {[0, 1].map((i) => <Skeleton key={i} className="h-20 w-full rounded-[10px]" />)}
+          </div>
+        </div>
+        {/* Stats */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <Skeleton className="h-3 w-12 rounded-[4px]" />
+            <Skeleton className="h-7 w-24 rounded-[8px]" />
+          </div>
+          <div className="flex flex-col gap-3">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="flex gap-3 items-center">
+                <Skeleton className="h-9 w-[120px] shrink-0 rounded-[9px]" />
+                <Skeleton className="h-9 flex-1 rounded-[9px]" />
+                <Skeleton className="h-9 w-12 shrink-0 rounded-[9px]" />
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Facts */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <Skeleton className="h-3 w-36 rounded-[4px]" />
+            <Skeleton className="h-7 w-24 rounded-[8px]" />
+          </div>
+          <div className="flex flex-col gap-3">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="flex gap-3 items-center">
+                <Skeleton className="h-9 w-[180px] shrink-0 rounded-[9px]" />
+                <Skeleton className="h-9 flex-1 rounded-[9px]" />
+                <Skeleton className="h-9 w-12 shrink-0 rounded-[9px]" />
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Save button */}
+        <Skeleton className="h-10 w-32 rounded-[10px]" />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-[860px] flex flex-col gap-10">
@@ -127,38 +193,49 @@ export default function AdminAboutPage() {
         </div>
       </div>
 
-      {/* ── Education & certifications (view-only) ── */}
+      {/* ── Stats ── */}
       <div>
-        <SectionLabel>education &amp; certifications</SectionLabel>
-        <div
-          className="grid gap-4"
-          style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}
-        >
-          {educationEntries.map((e, i) => (
-            <Card
-              key={i}
-              className="gap-0 rounded-[16px] border-white/[0.08] bg-[#0C0C0F] p-6 shadow-none"
-            >
-              <div
-                className="text-[11.5px] mb-3"
-                style={{ fontFamily: mono, color: ACCENT }}
+        <div className="flex items-center justify-between mb-4">
+          <SectionLabel>stats</SectionLabel>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setStats((prev) => [...prev, { value: '', label: '' }])}
+            className={addButton}
+          >
+            + add stat
+          </Button>
+        </div>
+        <div className="flex flex-col gap-3">
+          {stats.map((s, i) => (
+            <div key={i} className="flex gap-3 items-center">
+              <Input
+                value={s.value}
+                onChange={(e) => setStats((prev) => prev.map((row, j) => j === i ? { ...row, value: e.target.value } : row))}
+                placeholder="3+"
+                className={cn(formField, 'h-auto w-[120px] shrink-0 rounded-[9px] px-3 py-[8px] font-mono text-[12px] md:text-[12px]')}
+              />
+              <Input
+                value={s.label}
+                onChange={(e) => setStats((prev) => prev.map((row, j) => j === i ? { ...row, label: e.target.value } : row))}
+                placeholder="years experience"
+                className={cn(formField, 'h-auto flex-1 rounded-[9px] px-3 py-[8px]')}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="xs"
+                onClick={() => setStats((prev) => prev.filter((_, j) => j !== i))}
+                className={cn(rowDangerButton, 'shrink-0 py-[7px]')}
               >
-                {e.period}
-              </div>
-              <div
-                className="text-[18px] font-semibold mb-[6px]"
-                style={{ fontFamily: heading, letterSpacing: '-0.02em', color: TEXT }}
-              >
-                {e.title}
-              </div>
-              <div className="text-[14px] leading-[1.6]" style={{ color: '#8A8A93' }}>
-                {e.place}
-              </div>
-            </Card>
+                del
+              </Button>
+            </div>
           ))}
         </div>
-        <div className="text-[11px] mt-3" style={{ fontFamily: mono, color: MUTED }}>
-          Manage education entries in the Resume tab.
+        <div className="text-[11px] mt-2" style={{ fontFamily: mono, color: MUTED }}>
+          Displayed in the homepage stats strip.
         </div>
       </div>
 

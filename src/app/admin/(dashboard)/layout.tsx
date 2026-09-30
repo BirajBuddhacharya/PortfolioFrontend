@@ -55,7 +55,7 @@ export default function AdminLayout({
   const logout = useAdminLogout();
   const { data: inboxMsgs = [] } = useAdminInbox();
   const unread = inboxMsgs.filter((m) => !m.read).length;
-  const { data: profile } = useAdminAbout();
+  const { data: profile, isLoading: profileLoading } = useAdminAbout();
 
   const activeItem = navItems.find((n) =>
     n.href === "/admin" ? pathname === "/admin" : pathname?.startsWith(n.href),
@@ -83,6 +83,7 @@ export default function AdminLayout({
         pathname={pathname}
         sidebarOpen={sidebarOpen}
         profile={profile}
+        profileLoading={profileLoading}
         unread={unread}
         navItems={navItems}
         router={router}
@@ -139,6 +140,7 @@ function Sidebar({
   pathname,
   sidebarOpen,
   profile,
+  profileLoading,
   unread,
   navItems,
   router,
@@ -204,7 +206,9 @@ function Sidebar({
       <div className="px-3 py-4 border-t" style={{ borderColor: BORDER }}>
         <div className="flex items-center gap-3 px-3 py-2 mb-3">
           <div className="w-8 h-8 rounded-full shrink-0 overflow-hidden">
-            {profile?.avatarImage ? (
+            {profileLoading ? (
+              <div className="w-full h-full rounded-full animate-pulse" style={{ background: "rgba(255,255,255,0.08)" }} />
+            ) : profile?.avatarImage ? (
               <img
                 src={profile.avatarImage}
                 alt={profile.name}
@@ -220,15 +224,20 @@ function Sidebar({
             )}
           </div>
           <div>
-            <div className="text-[12.5px] font-medium" style={{ color: TEXT }}>
-              {profile?.name ?? "Biraj"}
-            </div>
-            <div
-              className="text-[10.5px]"
-              style={{ fontFamily: mono, color: MUTED }}
-            >
-              admin
-            </div>
+            {profileLoading ? (
+              <div className="h-3 w-20 rounded animate-pulse mb-1" style={{ background: "rgba(255,255,255,0.08)" }} />
+            ) : (
+              <div className="text-[12.5px] font-medium" style={{ color: TEXT }}>
+                {profile?.name ?? "Biraj"}
+              </div>
+            )}
+            {profileLoading ? (
+              <div className="h-2.5 w-10 rounded animate-pulse" style={{ background: "rgba(255,255,255,0.06)" }} />
+            ) : (
+              <div className="text-[10.5px]" style={{ fontFamily: mono, color: MUTED }}>
+                admin
+              </div>
+            )}
           </div>
         </div>
         <Button
