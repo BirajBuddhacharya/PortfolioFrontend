@@ -85,10 +85,6 @@ export function AboutView({
                 alt="Portrait"
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
-              <span
-                className="absolute"
-                style={{ inset: '14px -14px -14px 14px', border: '1px solid rgba(255,107,107,0.5)', borderRadius: 20, zIndex: -1 }}
-              />
             </motion.div>
           )}
         </div>
