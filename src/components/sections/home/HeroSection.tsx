@@ -67,10 +67,11 @@ export function HeroSection() {
       <div className="relative mb-[28px] min-h-[420px] sm:min-h-[700px] lg:min-h-[820px]">
         {/* Accent glow behind the portrait */}
         <div
-          className="absolute pointer-events-none left-1/2 sm:left-[26%] -translate-x-1/2 bottom-0 w-[78%] sm:w-[46%] max-w-[620px] h-[82%]"
+          className="absolute pointer-events-none left-1/2 sm:left-[26%] -translate-x-1/2 bottom-0 w-[90%] sm:w-[52%] max-w-[680px] h-[90%]"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 58%, rgba(255,107,107,0.15) 0%, transparent 70%)",
+              "radial-gradient(circle at 50% 42%, rgba(255,107,107,0.7) 0%, rgba(255,107,107,0.3) 38%, rgba(255,107,107,0.08) 62%, transparent 75%)",
+            filter: "blur(48px)",
           }}
         />
 
