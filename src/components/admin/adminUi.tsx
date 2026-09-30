@@ -30,7 +30,7 @@ import type { ResumeSection, CreateResumeItemPayload, UpdateResumeItemPayload } 
 import type { CreateContactLinkPayload, UpdateContactLinkPayload } from '../../types/contact';
 
 // ─── types shared across admin tabs ────────────────────────────────────────────
-export type ResumeRow = { id?: string; title: string; period: string; organization: string; body: string };
+export type ResumeRow = { id?: string; title: string; period: string; organization: string; location?: string; body: string };
 export type SkillRow = { id?: string; title: string; body: string };
 export type ContactLinkRow = { id?: string; label: string; value: string; href: string };
 export interface InboxMsg { id: number; name: string; email: string; subject: string; body: string; time: string; read: boolean; }
@@ -192,7 +192,7 @@ export function SectionLabel({ children }: { children: React.ReactNode }) {
 // ─── Shared resume row save/diff ──────────────────────────────────────────────
 export async function saveResumeRows(
   section: ResumeSection,
-  rows: { id?: string; title: string; period?: string; organization?: string; body?: string }[],
+  rows: { id?: string; title: string; period?: string; organization?: string; location?: string; body?: string }[],
   originalIds: string[],
   extra: (row: (typeof rows)[number]) => Partial<CreateResumeItemPayload>,
   ops: {
@@ -210,6 +210,7 @@ export async function saveResumeRows(
         title: row.title,
         organization: row.organization || undefined,
         period: row.period || undefined,
+        location: row.location || undefined,
         order: i,
         ...extra(row),
       };
@@ -256,7 +257,7 @@ export function ResumeRowEditor<T extends ResumeRow>({
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => setRows((prev) => [...prev, { title: '', period: '', organization: '', body: '' } as T])}
+          onClick={() => setRows((prev) => [...prev, { title: '', period: '', organization: '', location: '', body: '' } as T])}
           className={addButton}
         >
           {addLabel}
@@ -289,14 +290,25 @@ export function ResumeRowEditor<T extends ResumeRow>({
                 </div>
               ))}
             </div>
-            <div>
-              <Label className={resumeLabel}>period</Label>
-              <Input
-                value={row.period}
-                onChange={(e) => setRows((prev) => prev.map((r, j) => j === i ? { ...r, period: e.target.value } : r))}
-                placeholder="e.g. 2023 — present"
-                className={cn(formField, 'h-auto rounded-[9px] px-3 py-[8px] text-[13px] md:text-[13px]')}
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <Label className={resumeLabel}>period</Label>
+                <Input
+                  value={row.period}
+                  onChange={(e) => setRows((prev) => prev.map((r, j) => j === i ? { ...r, period: e.target.value } : r))}
+                  placeholder="e.g. 2023 — present"
+                  className={cn(formField, 'h-auto rounded-[9px] px-3 py-[8px] text-[13px] md:text-[13px]')}
+                />
+              </div>
+              <div>
+                <Label className={resumeLabel}>location</Label>
+                <Input
+                  value={row.location ?? ''}
+                  onChange={(e) => setRows((prev) => prev.map((r, j) => j === i ? { ...r, location: e.target.value } : r))}
+                  placeholder="e.g. Remote, Kathmandu"
+                  className={cn(formField, 'h-auto rounded-[9px] px-3 py-[8px] text-[13px] md:text-[13px]')}
+                />
+              </div>
             </div>
             <div>
               <Label className={resumeLabel}>body</Label>

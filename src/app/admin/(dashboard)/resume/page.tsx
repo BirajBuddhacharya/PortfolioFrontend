@@ -70,6 +70,7 @@ function ExperienceSection() {
         title: e.title,
         period: e.period ?? '',
         organization: e.organization ?? '',
+        location: e.location ?? '',
         body: e.points.length ? e.points.join('\n') : (e.body ?? ''),
       }));
       setExperiences(rows);
