@@ -18,7 +18,7 @@ import { MarkdownEditor, type MarkdownEditorHandle } from './MarkdownEditor';
 import { HeadingExplorer, parseHeadings, type Heading } from './HeadingExplorer';
 import { ChipInput, Row, field } from './FormPrimitives';
 import type { BlogPost, CreateBlogPostPayload } from '../../types/blog';
-import { ImageUploadButton } from './ImageUploadButton';
+import { ImagePickerButton } from './ImagePickerButton';
 
 /** `2026-09-26T10:00:00.000Z` → `2026-09-26` for a date input. */
 const toDateInput = (iso?: string | null) => (iso ? iso.slice(0, 10) : '');
@@ -195,13 +195,20 @@ export function PostForm({
 
             <Row icon={ImageIcon} label="Cover image">
               <div className="flex gap-2 items-center px-2 py-1 w-full">
+                {coverImage && (
+                  <img
+                    src={coverImage}
+                    alt=""
+                    className="h-9 w-14 shrink-0 rounded-md border border-[#27272A] object-cover"
+                  />
+                )}
                 <Input
                   value={coverImage}
                   onChange={(e) => setCoverImage(e.target.value)}
                   placeholder="Empty"
                   className={cn(field, 'flex-1')}
                 />
-                <ImageUploadButton onUploaded={(url) => setCoverImage(url)} />
+                <ImagePickerButton onSelect={(url) => setCoverImage(url)} />
               </div>
             </Row>
 

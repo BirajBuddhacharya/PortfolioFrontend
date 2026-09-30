@@ -11,7 +11,7 @@ import { Skeleton } from '@/components/components/ui/skeleton';
 import { useAdminAbout, useUpdateProfile } from '../../../../services/adminService';
 import { useAboutEducation } from '../../../../services/aboutService';
 import { BORDER, MUTED, TEXT, ACCENT, mono, heading, formField, addButton, saveButton, rowDangerButton, SectionLabel } from '../../../../components/admin/adminUi';
-import { ImageUploadButton } from '../../../../components/admin/ImageUploadButton';
+import { ImagePickerButton } from '../../../../components/admin/ImagePickerButton';
 
 export default function AdminAboutPage() {
   const { data: about, isLoading } = useAdminAbout();
@@ -140,7 +140,7 @@ export default function AdminAboutPage() {
             placeholder="https://example.com/portrait.jpg  (or leave blank for placeholder)"
             className={cn(formField, 'flex-1 h-auto px-4 py-[10px]')}
           />
-          <ImageUploadButton onUploaded={(url) => setCoverImage(url)} />
+          <ImagePickerButton onUploaded={(url) => setCoverImage(url)} />
         </div>
         {coverImage && (
           <div

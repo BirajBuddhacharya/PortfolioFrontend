@@ -68,11 +68,6 @@
   --color-destructive-foreground: var(--destructive-foreground);
 }
 
-html,
-html {
-  overflow-x: hidden;
-}
-
 body {
   margin: 0;
   padding: 0;
@@ -80,6 +75,15 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
+  /* Clip horizontal overflow without creating a scroll container.
+     (Do NOT use overflow-x: hidden here, and do NOT put overflow-x on
+     <html>: either one breaks viewport scroll-propagation, so when a Radix
+     modal sets body { overflow: hidden } on open, <body> becomes a nested
+     scroller at offset 0 and the whole page snaps to the top — hiding the
+     editor's vim status bar until the dialog closes. `clip` keeps
+     overflow-y: visible and propagation intact, so Radix's own scrollbar
+     compensation applies exactly and nothing jumps.) */
+  overflow-x: clip;
 }
 
 * {

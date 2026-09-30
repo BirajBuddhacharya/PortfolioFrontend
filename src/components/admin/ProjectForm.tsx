@@ -38,7 +38,7 @@ import { cn } from '@/components/lib/utils';
 import { Prose } from '../Prose';
 import { ChipInput, Row, field } from './FormPrimitives';
 import type { Project, CreateProjectPayload } from '../../types/project';
-import { ImageUploadButton } from './ImageUploadButton';
+import { ImagePickerButton } from './ImagePickerButton';
 
 const KIND_OPTIONS = ['ML', 'Web app', 'CLI tool', 'AI product'];
 const NONE = '__none__';
@@ -300,7 +300,7 @@ export function ProjectForm({
               >
                 <Plus size={12} /> Add URL
               </Button>
-              <ImageUploadButton onUploaded={(url) => setGallery((g) => [...g, url])} />
+              <ImagePickerButton onUploaded={(url) => setGallery((g) => [...g, url])} />
             </div>
           </div>
         </Row>
@@ -319,7 +319,7 @@ export function ProjectForm({
                   placeholder="https://… or upload →"
                   className={cn(field, 'font-mono text-[12px]')}
                 />
-                <ImageUploadButton onUploaded={(url) => setCoverImage(url)} />
+                <ImagePickerButton onUploaded={(url) => setCoverImage(url)} />
               </div>
             </div>
             {/* Colors & height */}

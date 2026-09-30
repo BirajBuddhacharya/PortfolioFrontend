@@ -41,7 +41,7 @@ import {
   saveContactLinks,
   type ContactLinkRow,
 } from "../../../../components/admin/adminUi";
-import { ImageUploadButton } from "../../../../components/admin/ImageUploadButton";
+import { ImagePickerButton } from "../../../../components/admin/ImagePickerButton";
 
 const triggerCls =
   "justify-start rounded-[8px] px-3 py-[9px] text-[13px] font-normal text-left h-auto " +
@@ -269,7 +269,7 @@ function BrandingTab() {
               placeholder="https://example.com/avatar.png  (or leave blank for initials fallback)"
               className={cn(formField, "flex-1 h-auto px-4 py-[10px]")}
             />
-            <ImageUploadButton onUploaded={(url) => setAvatarImage(url)} />
+            <ImagePickerButton onUploaded={(url) => setAvatarImage(url)} />
           </div>
           {avatarImage && (
             <div
