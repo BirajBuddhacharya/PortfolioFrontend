@@ -5,7 +5,65 @@ import Link from "next/link";
 
 export function HeroSection() {
   return (
-    <section className="max-w-[1180px] mx-auto px-7 pt-[170px] pb-[90px]">
+    <section
+      className="relative overflow-hidden"
+      style={{
+        background: "#09090B",
+        minHeight: "92vh",
+        display: "flex",
+        alignItems: "flex-end",
+      }}
+    >
+      {/* Looping video — top-right so the flower clears the copy/buttons */}
+      <div
+        aria-hidden="true"
+        className="absolute top-0 right-0 w-full md:w-[74%] h-[86%]"
+        style={{
+          maskImage:
+            "linear-gradient(to right, transparent 0%, black 26%), linear-gradient(to bottom, black 82%, transparent 100%)",
+          maskComposite: "intersect",
+          WebkitMaskImage:
+            "linear-gradient(to right, transparent 0%, black 26%), linear-gradient(to bottom, black 82%, transparent 100%)",
+          WebkitMaskComposite: "source-in",
+        }}
+      >
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260808_064556_051587f1-74a1-4336-8c05-4dde3594ed05.mp4"
+          className="h-full w-full object-cover"
+          style={{
+            objectPosition: "68% 18%",
+            transform: "translate(6%, -8%) scale(1.12)",
+            transformOrigin: "top right",
+            filter: "saturate(1.15) contrast(1.05) brightness(1.05)",
+          }}
+        />
+      </div>
+
+      {/* Light blend only — no full black dim: left edge + top for navbar + bottom into page */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-y-0 left-0 hidden md:block"
+        style={{
+          width: "55%",
+          background:
+            "linear-gradient(to right, #09090B 0%, rgba(9,9,11,0.6) 45%, transparent 100%)",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-[140px]"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(9,9,11,0.85), transparent)",
+        }}
+      />
+
+      <div className="relative z-10 w-full max-w-[1180px] mx-auto px-7 pt-[170px] pb-[90px]">
       <motion.h1
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -84,6 +142,7 @@ export function HeroSection() {
           </Link>
         </div>
       </motion.div>
+      </div>
     </section>
   );
 }
