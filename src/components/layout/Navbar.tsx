@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Avatar,
   AvatarFallback,
@@ -19,6 +20,7 @@ const navItems = [
 
 export function Navbar({ profile }: { profile?: Profile | null }) {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
   const ctaLabel = profile?.ctaLabel || "Contact Me";
   const fallbackInitial = profile?.name?.trim()?.[0]?.toUpperCase() || "B";
 
@@ -38,13 +40,14 @@ export function Navbar({ profile }: { profile?: Profile | null }) {
         }}
       >
         <Link href="/">
-          <Avatar className="">
+          <Avatar>
             <AvatarImage src={profile?.avatarImage || "img/avatar.png"} className="object-cover object-center"/>
             <AvatarFallback>{fallbackInitial}</AvatarFallback>
           </Avatar>
         </Link>
 
-        <div className="flex items-center gap-0.5">
+        {/* Desktop nav links */}
+        <div className="hidden sm:flex items-center gap-0.5">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             return (
@@ -55,16 +58,13 @@ export function Navbar({ profile }: { profile?: Profile | null }) {
                 style={{
                   fontFamily: "var(--font-jetbrains-mono), monospace",
                   color: isActive ? "#EDEDEF" : "#8A8A93",
-                  background: isActive
-                    ? "rgba(255,255,255,0.05)"
-                    : "transparent",
+                  background: isActive ? "rgba(255,255,255,0.05)" : "transparent",
                   letterSpacing: "-0.01em",
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive) {
                     (e.target as HTMLElement).style.color = "#EDEDEF";
-                    (e.target as HTMLElement).style.background =
-                      "rgba(255,255,255,0.05)";
+                    (e.target as HTMLElement).style.background = "rgba(255,255,255,0.05)";
                   }
                 }}
                 onMouseLeave={(e) => {
@@ -80,25 +80,81 @@ export function Navbar({ profile }: { profile?: Profile | null }) {
           })}
         </div>
 
+        {/* Desktop CTA */}
         <Link
           href="/contact"
-          className="ml-[6px] px-4 py-[9px] rounded-full text-[12.5px] font-semibold transition-colors duration-200 whitespace-nowrap"
+          className="hidden sm:block ml-[6px] px-4 py-[9px] rounded-full text-[12.5px] font-semibold transition-colors duration-200 whitespace-nowrap"
           style={{
             fontFamily: "var(--font-jetbrains-mono), monospace",
             background: "#FF6B6B",
             color: "#12080A",
             letterSpacing: "-0.1px",
           }}
-          onMouseEnter={(e) => {
-            (e.target as HTMLElement).style.background = "#FF867F";
-          }}
-          onMouseLeave={(e) => {
-            (e.target as HTMLElement).style.background = "#FF6B6B";
-          }}
+          onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#FF867F"; }}
+          onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "#FF6B6B"; }}
         >
           {ctaLabel}
         </Link>
+
+        {/* Mobile hamburger */}
+        <button
+          className="sm:hidden ml-1 w-9 h-9 flex items-center justify-center rounded-full text-[16px] transition-colors duration-200"
+          style={{ color: "#8A8A93", background: "transparent" }}
+          onClick={() => setMobileOpen((o) => !o)}
+          aria-label="Toggle menu"
+        >
+          {mobileOpen ? "✕" : "☰"}
+        </button>
       </motion.nav>
+
+      {/* Mobile dropdown */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="pointer-events-auto absolute top-[68px] left-4 right-4 rounded-2xl border border-white/[0.09] p-3 flex flex-col gap-1"
+            style={{
+              background: "rgba(17,17,20,0.95)",
+              backdropFilter: "blur(18px)",
+              WebkitBackdropFilter: "blur(18px)",
+            }}
+          >
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="px-4 py-3 rounded-xl text-[14px] transition-colors duration-200"
+                  style={{
+                    fontFamily: "var(--font-jetbrains-mono), monospace",
+                    color: isActive ? "#EDEDEF" : "#8A8A93",
+                    background: isActive ? "rgba(255,255,255,0.05)" : "transparent",
+                  }}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+            <Link
+              href="/contact"
+              onClick={() => setMobileOpen(false)}
+              className="mt-1 px-4 py-3 rounded-xl text-[14px] font-semibold text-center"
+              style={{
+                fontFamily: "var(--font-jetbrains-mono), monospace",
+                background: "#FF6B6B",
+                color: "#12080A",
+              }}
+            >
+              {ctaLabel}
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

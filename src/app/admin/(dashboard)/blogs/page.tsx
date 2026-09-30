@@ -77,7 +77,8 @@ export default function AdminPostsPage() {
       </div>
 
       <div className="rounded-[16px] border overflow-hidden" style={{ borderColor: BORDER }}>
-        <Table>
+        <div className="overflow-x-auto">
+        <Table className="min-w-[640px]">
           <TableHeader>
             <TableRow className="bg-white/[0.02] hover:bg-white/[0.02]">
               {['Title', 'Tags', 'Date', 'Status', 'Actions'].map((h) => (
@@ -158,6 +159,7 @@ export default function AdminPostsPage() {
             ))}
           </TableBody>
         </Table>
+        </div>
       </div>
 
       <AdminPagination page={page} total={total} size={SIZE} onPageChange={setPage} />

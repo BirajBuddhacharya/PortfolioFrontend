@@ -17,10 +17,6 @@ export default function AdminInboxPage() {
   const deleteMessage = useDeleteMessage();
 
   useEffect(() => {
-    if (!selected && msgs.length > 0) setSelected(msgs[0]);
-  }, [msgs, selected]);
-
-  useEffect(() => {
     if (selected && !selected.read) markRead.mutate(selected.id);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected?.id]);
@@ -28,10 +24,13 @@ export default function AdminInboxPage() {
   const unreadCount = msgs.filter((m) => !m.read).length;
 
   return (
-    <div className="flex gap-4 h-[580px]">
+    <div className="flex flex-col sm:flex-row gap-4 sm:h-[580px]">
 
-      {/* List panel */}
-      <Card className="w-[280px] shrink-0 flex flex-col gap-0 overflow-hidden rounded-[16px] border-border bg-[#111115] p-0 shadow-none">
+      {/* List panel — hidden on mobile when a message is open */}
+      <Card className={cn(
+        'sm:w-[280px] sm:shrink-0 flex flex-col gap-0 overflow-hidden rounded-[16px] border-border bg-[#111115] p-0 shadow-none',
+        selected ? 'hidden sm:flex' : 'flex',
+      )}>
         <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: BORDER }}>
           <span className="text-[12px] font-medium" style={{ color: TEXT }}>Inbox</span>
           {unreadCount > 0 && (
@@ -84,12 +83,19 @@ export default function AdminInboxPage() {
             key={selected.id}
             initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }}
             transition={{ duration: 0.25 }}
-            className="flex-1 min-w-0"
+            className="flex-1 min-w-0 min-h-[480px] sm:min-h-0"
           >
             <Card className="flex h-full flex-col gap-0 overflow-hidden rounded-[16px] border-border bg-[#111115] p-0 shadow-none">
               <div className="px-6 py-5 border-b" style={{ borderColor: BORDER }}>
+                <button
+                  className="sm:hidden flex items-center gap-1 text-[11.5px] mb-3 cursor-pointer bg-transparent border-none p-0"
+                  style={{ fontFamily: mono, color: MUTED }}
+                  onClick={() => setSelected(null)}
+                >
+                  ← back
+                </button>
                 <div className="text-[17px] font-semibold mb-1" style={{ fontFamily: heading, color: TEXT }}>{selected.subject}</div>
-                <div className="flex items-center gap-2 text-[12px]" style={{ fontFamily: mono, color: MUTED }}>
+                <div className="flex flex-wrap items-center gap-2 text-[12px]" style={{ fontFamily: mono, color: MUTED }}>
                   <span>{selected.name}</span>
                   <span>·</span>
                   <span>{selected.email}</span>

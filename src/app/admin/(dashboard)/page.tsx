@@ -19,12 +19,12 @@ export default function AdminDashboardPage() {
   const maxBar = Math.max(...bars, 1);
 
   return (
-    <div className="grid grid-cols-4 gap-4 auto-rows-[120px]">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:auto-rows-[120px]">
 
       {/* Visitor chart — 2 cols × 2 rows */}
       <motion.div
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
-        className="col-span-2 row-span-2"
+        className="sm:col-span-2 lg:col-span-2 lg:row-span-2 min-h-[240px]"
       >
         <Card className={dashCard}>
           <div className="flex items-center justify-between mb-4">
@@ -83,7 +83,7 @@ export default function AdminDashboardPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.28 }}
-        className="row-span-2"
+        className="sm:col-span-2 lg:col-span-1 lg:row-span-2"
       >
         <Card
           className={cn(dashCard, 'gap-3 border-[#FF6B6B]/[0.21] bg-[#FF6B6B]/[0.07]')}
@@ -117,7 +117,7 @@ export default function AdminDashboardPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.32 }}
-        className="col-span-2"
+        className="sm:col-span-2 lg:col-span-2"
       >
         <Card className={dashCard}>
           <SectionLabel>top pages</SectionLabel>
@@ -142,7 +142,7 @@ export default function AdminDashboardPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.36 }}
-        className="col-span-2 row-span-2"
+        className="sm:col-span-2 lg:col-span-2 lg:row-span-2 min-h-[200px]"
       >
         <Card className={dashCard}>
           <SectionLabel>recent activity</SectionLabel>
@@ -167,7 +167,7 @@ export default function AdminDashboardPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.4 }}
-        className="col-span-2 row-span-2"
+        className="sm:col-span-2 lg:col-span-2 lg:row-span-2 min-h-[200px]"
       >
         <Card className={dashCard}>
           <SectionLabel>unread messages</SectionLabel>

@@ -24,16 +24,16 @@ export default function AdminResumePage() {
     <Tabs defaultValue="experience" className="max-w-[860px] gap-8">
       <TabsList variant="line" className="w-full justify-start gap-1 rounded-none bg-transparent border-b border-white/[0.07] pb-0 h-auto p-0">
         <TabsTrigger value="experience" className="gap-1.5 px-4 py-[10px] text-[12.5px] rounded-none rounded-t-[6px] data-[state=active]:bg-white/[0.04]">
-          <Briefcase size={13} /> Experience
+          <Briefcase size={13} /><span className="hidden sm:inline">Experience</span>
         </TabsTrigger>
         <TabsTrigger value="education-certs" className="gap-1.5 px-4 py-[10px] text-[12.5px] rounded-none rounded-t-[6px] data-[state=active]:bg-white/[0.04]">
-          <GraduationCap size={13} /> Education &amp; Certs
+          <GraduationCap size={13} /><span className="hidden sm:inline">Education &amp; Certs</span>
         </TabsTrigger>
         <TabsTrigger value="skills" className="gap-1.5 px-4 py-[10px] text-[12.5px] rounded-none rounded-t-[6px] data-[state=active]:bg-white/[0.04]">
-          <Wrench size={13} /> Skills
+          <Wrench size={13} /><span className="hidden sm:inline">Skills</span>
         </TabsTrigger>
         <TabsTrigger value="pdf" className="gap-1.5 px-4 py-[10px] text-[12.5px] rounded-none rounded-t-[6px] data-[state=active]:bg-white/[0.04]">
-          <FileText size={13} /> Resume PDF
+          <FileText size={13} /><span className="hidden sm:inline">Resume PDF</span>
         </TabsTrigger>
       </TabsList>
       <TabsContent value="experience">

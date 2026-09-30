@@ -96,7 +96,7 @@ export function Footer({
 
         <div className="flex flex-col gap-[10px]">
           <div
-            className="mt-auto text-[11.5px] blink-cursor"
+            className="mt-auto text-[11.5px]"
             style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#4A4A52' }}
           >
             © {year}{profile?.footerNote ? ` — ${profile.footerNote}` : ''}

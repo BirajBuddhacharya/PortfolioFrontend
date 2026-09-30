@@ -52,7 +52,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [profile, contactLinks] = await Promise.all([getProfile(), getContactLinks()]);
+  const [profile, contactLinks] = await Promise.all([
+    getProfile(),
+    getContactLinks(),
+  ]);
 
   const structuredData = {
     "@context": "https://schema.org",

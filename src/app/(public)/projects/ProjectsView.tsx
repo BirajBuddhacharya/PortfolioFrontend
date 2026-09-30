@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import type { Project } from '../../../types/project';
@@ -13,7 +13,17 @@ const filters = [
   { id: 'AI product', label: 'AI product' },
 ];
 
-const COLUMN_COUNT = 3;
+function useColumnCount() {
+  const [count, setCount] = useState(3);
+  useEffect(() => {
+    const update = () =>
+      setCount(window.innerWidth < 640 ? 1 : window.innerWidth < 1024 ? 2 : 3);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+  return count;
+}
 
 function useColumns(items: Project[], count: number): Project[][] {
   return useMemo(() => {
@@ -158,16 +168,17 @@ function ProjectCard({ p, index }: { p: Project; index: number }) {
 
 export function ProjectsView({ projects }: { projects: Project[] }) {
   const [activeFilter, setActiveFilter] = useState('all');
+  const columnCount = useColumnCount();
 
   const visible: Project[] = activeFilter === 'all'
     ? projects
     : projects.filter((p) => p.kind === activeFilter);
 
-  const columns = useColumns(visible, COLUMN_COUNT);
+  const columns = useColumns(visible, columnCount);
 
   return (
     <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh' }}>
-      <main className="relative z-10 max-w-[1180px] mx-auto px-7 pt-[160px]">
+      <main className="relative z-10 max-w-[1180px] mx-auto px-4 sm:px-7 pt-[120px] sm:pt-[160px]">
 
         {/* Header */}
         <motion.div

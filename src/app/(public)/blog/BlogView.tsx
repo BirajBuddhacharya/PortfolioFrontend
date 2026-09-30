@@ -18,7 +18,7 @@ export function BlogView({ posts }: { posts: BlogListItem[] }) {
 
   return (
     <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh' }}>
-      <main className="relative z-10 max-w-[1180px] mx-auto px-7 pt-[160px]">
+      <main className="relative z-10 max-w-[1180px] mx-auto px-4 sm:px-7 pt-[120px] sm:pt-[160px]">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <div
             className="text-[12px] uppercase tracking-[0.14em] mb-4"
@@ -69,7 +69,7 @@ export function BlogView({ posts }: { posts: BlogListItem[] }) {
                 </div>
               )}
               <div
-                className="p-[40px] flex flex-col justify-center"
+                className="p-6 sm:p-[40px] flex flex-col justify-center"
                 style={{ background: '#0C0C0F' }}
               >
                 <span
@@ -151,24 +151,24 @@ export function BlogView({ posts }: { posts: BlogListItem[] }) {
             >
               <Link
                 href={`/blog/${p.slug}`}
-                className="grid items-center gap-6 py-6 px-3 border-b border-white/[0.08] transition-colors duration-200"
-                style={{ gridTemplateColumns: '110px 1fr minmax(130px, auto) auto', color: 'inherit' }}
+                className="grid items-center gap-3 sm:gap-6 py-6 px-3 border-b border-white/[0.08] transition-colors duration-200 grid-cols-[1fr_auto] sm:grid-cols-[110px_1fr_minmax(130px,auto)_auto]"
+                style={{ color: 'inherit' }}
                 onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.03)'; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
               >
                 <span
-                  className="text-[12px]"
+                  className="hidden sm:block text-[12px]"
                   style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#6E6E78' }}
                 >
                   {p.date}
                 </span>
                 <span
-                  className="text-[19px] font-medium"
+                  className="text-[17px] sm:text-[19px] font-medium"
                   style={{ fontFamily: 'var(--font-space-grotesk), sans-serif', letterSpacing: '-0.02em', color: '#EDEDEF' }}
                 >
                   {p.title}
                 </span>
-                <span className="flex flex-wrap gap-[6px] justify-self-start">
+                <span className="hidden sm:flex flex-wrap gap-[6px] justify-self-start">
                   {p.tags.map((t) => (
                     <span
                       key={t}

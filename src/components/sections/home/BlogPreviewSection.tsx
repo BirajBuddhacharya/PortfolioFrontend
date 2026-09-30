@@ -61,17 +61,13 @@ export function BlogPreviewSection({ posts }: { posts: BlogPreviewItem[] }) {
             >
               <Link
                 href={`/blog/${p.slug}`}
-                className="grid items-center gap-6 py-[22px] px-3 border-b border-white/[0.08] transition-colors duration-200"
-                style={{
-                  gridTemplateColumns: '110px 1fr auto',
-                  color: 'inherit',
-                  display: 'grid',
-                }}
+                className="grid items-center gap-3 sm:gap-6 py-[22px] px-3 border-b border-white/[0.08] transition-colors duration-200 grid-cols-[1fr_auto] sm:grid-cols-[110px_1fr_auto]"
+                style={{ color: 'inherit' }}
                 onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.03)'; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
               >
                 <span
-                  className="text-[12px]"
+                  className="hidden sm:block text-[12px]"
                   style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#6E6E78' }}
                 >
                   {p.date}

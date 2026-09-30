@@ -48,10 +48,7 @@ export function ExperienceSection({ items: experience }: { items: ExperienceItem
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.5, delay: i * 0.1, ease: [0.2, 0.8, 0.2, 1] }}
-              className="grid gap-8 py-[30px] border-t border-white/[0.08] transition-colors duration-200"
-              style={{
-                gridTemplateColumns: 'minmax(140px, 200px) 1fr',
-              }}
+              className="grid gap-4 sm:gap-8 py-[30px] border-t border-white/[0.08] transition-colors duration-200 grid-cols-1 sm:grid-cols-[minmax(140px,200px)_1fr]"
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.015)'; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
             >

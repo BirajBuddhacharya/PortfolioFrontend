@@ -38,7 +38,7 @@ export function ResumeView({ blocks, pdfUrl }: { blocks: ResumeBlock[]; pdfUrl?:
 
   return (
     <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'hidden' }}>
-      <main className="relative z-10 max-w-[900px] mx-auto px-7 pt-[160px]">
+      <main className="relative z-10 max-w-[900px] mx-auto px-4 sm:px-7 pt-[120px] sm:pt-[160px]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -88,8 +88,7 @@ export function ResumeView({ blocks, pdfUrl }: { blocks: ResumeBlock[]; pdfUrl?:
             className="border-t border-white/[0.08] py-[34px]"
           >
             <div
-              className="grid gap-[30px] items-start"
-              style={{ gridTemplateColumns: 'minmax(130px, 190px) 1fr' }}
+              className="grid gap-4 sm:gap-[30px] items-start grid-cols-1 sm:grid-cols-[minmax(130px,190px)_1fr]"
             >
               <div
                 className="text-[12px] uppercase tracking-[0.1em] pt-1"
