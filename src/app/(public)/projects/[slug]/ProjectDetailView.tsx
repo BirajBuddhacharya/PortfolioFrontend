@@ -18,7 +18,10 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 export function ProjectDetailView({ project }: { project: Project }) {
-  const meta = [project.year, project.kind, project.status].filter(Boolean);
+  // kind is a free-form string — trim and drop empties.
+  const meta = [project.year, project.kind, project.status]
+    .map((m) => (typeof m === 'string' ? m.trim() : m))
+    .filter((m): m is string => !!m);
 
   return (
     <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', overflowX: 'clip' }}>

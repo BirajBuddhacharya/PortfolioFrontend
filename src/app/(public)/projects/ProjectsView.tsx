@@ -5,14 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { Project } from '../../../types/project';
 import { ProjectCard } from '../../../components/projects/ProjectCard';
 
-const filters = [
-  { id: 'all', label: 'All' },
-  { id: 'ML', label: 'ML / AI' },
-  { id: 'Web app', label: 'Web app' },
-  { id: 'CLI tool', label: 'CLI' },
-  { id: 'AI product', label: 'AI product' },
-];
-
 function useColumnCount() {
   const [count, setCount] = useState(3);
   useEffect(() => {
@@ -56,9 +48,28 @@ export function ProjectsView({ projects }: { projects: Project[] }) {
   const [activeFilter, setActiveFilter] = useState('all');
   const columnCount = useColumnCount();
 
+  // kind is a free-form string — derive filters from actual data
+  // instead of a hardcoded enum list.
+  const kinds = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          projects
+            .map((p) => (p.kind ?? '').trim())
+            .filter((k): k is string => k.length > 0),
+        ),
+      ).sort((a, b) => a.localeCompare(b)),
+    [projects],
+  );
+
+  const filters = useMemo(
+    () => [{ id: 'all', label: 'All' }, ...kinds.map((k) => ({ id: k, label: k }))],
+    [kinds],
+  );
+
   const visible: Project[] = activeFilter === 'all'
     ? projects
-    : projects.filter((p) => p.kind === activeFilter);
+    : projects.filter((p) => (p.kind ?? '').trim() === activeFilter);
 
   const columns = useColumns(visible, columnCount);
 
@@ -128,8 +139,8 @@ export function ProjectsView({ projects }: { projects: Project[] }) {
           </motion.div>
         )}
 
-        {/* Filters */}
-        {projects.length > 0 && <div className="flex gap-2 flex-wrap mb-[40px]">
+        {/* Filters — built from kind strings present in data */}
+        {projects.length > 0 && filters.length > 1 && <div className="flex gap-2 flex-wrap mb-[40px]">
           {filters.map((f) => {
             const isActive = activeFilter === f.id;
             return (

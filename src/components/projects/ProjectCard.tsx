@@ -12,6 +12,7 @@ export function ProjectCard({
 }) {
   const accent = p.coverAccent ?? p.coverColor ?? "#FF6B6B";
   const coverH = coverHeight ?? p.coverHeight ?? 172;
+  const kindLabel = (p.kind ?? '').trim();
 
   return (
     <Link
@@ -56,8 +57,8 @@ export function ProjectCard({
             }}
           />
         )}
-        {/* Kind badge */}
-        {p.kind && (
+        {/* Kind badge — free-form string */}
+        {kindLabel && (
           <span
             className="absolute top-[14px] left-[14px] text-[11px] px-[10px] py-1 rounded-full"
             style={{
@@ -70,7 +71,7 @@ export function ProjectCard({
               letterSpacing: "0.04em",
             }}
           >
-            {p.kind}
+            {kindLabel}
           </span>
         )}
         {/* Year — dark blurred pill, readable over any cover */}
