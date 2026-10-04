@@ -238,7 +238,10 @@ export default function AdminProjectsPage() {
                       options={PROJECT_STATUSES}
                       disabled={updateProject.isPending}
                       onValueChange={(val) =>
-                        updateProject.mutate({ id: p.id, status: val })
+                        updateProject.mutate({
+                          id: p.id,
+                          status: val as ProjectStatus,
+                        })
                       }
                     />
                   </TableCell>

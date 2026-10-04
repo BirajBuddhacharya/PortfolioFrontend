@@ -1,13 +1,24 @@
-import { notFound } from 'next/navigation';
-import { getBlog, getProfile } from '../../../../lib/serverApi';
-import { pageMetadata, toDescription, SITE_URL, SITE_NAME } from '../../../../lib/seo';
-import { PostView } from './PostView';
-import type { Metadata } from 'next';
+import { notFound } from "next/navigation";
+import { getBlog, getProfile } from "../../../../lib/serverApi";
+import {
+  pageMetadata,
+  toDescription,
+  SITE_URL,
+  SITE_NAME,
+} from "../../../../lib/seo";
+import { PostView } from "./PostView";
+import type { Metadata } from "next";
 
 export const revalidate = 60;
 
 const formatDate = (iso: string | null) =>
-  iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+  iso
+    ? new Date(iso).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "";
 
 export async function generateMetadata({
   params,
@@ -16,16 +27,16 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const post = await getBlog(slug);
-  if (!post) return { title: 'Post not found' };
+  if (!post) return { title: "Post not found" };
 
   return pageMetadata({
     title: `${post.title} | Biraj Buddhacharya`,
     description: toDescription(post.excerpt || post.content),
     path: `/blog/${slug}`,
-    type: 'article',
+    type: "article",
     image: post.coverImage,
     publishedTime: post.publishedAt,
-    tags: post.tags,
+    tags: post.tags.map((tag) => tag.name),
   });
 }
 
@@ -40,13 +51,13 @@ export default async function PostPage({
 
   const description = toDescription(post.excerpt || post.content);
   const ld = {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
     headline: post.title,
     description,
     datePublished: post.publishedAt ?? post.createdAt,
     dateModified: post.updatedAt,
-    author: { '@type': 'Person', name: SITE_NAME },
+    author: { "@type": "Person", name: SITE_NAME },
     ...(post.coverImage ? { image: post.coverImage } : {}),
     mainEntityOfPage: `${SITE_URL}/blog/${slug}`,
   };
@@ -59,7 +70,13 @@ export default async function PostPage({
     tags: post.tags,
     date: formatDate(post.publishedAt ?? post.createdAt),
     readTime: `${post.readTime} min`,
-    author: profile ? { name: profile.name, bio: profile.headline, avatarImage: profile.avatarImage } : undefined,
+    author: profile
+      ? {
+          name: profile.name,
+          bio: profile.headline,
+          avatarImage: profile.avatarImage,
+        }
+      : undefined,
   };
 
   return (

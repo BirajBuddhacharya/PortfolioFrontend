@@ -130,6 +130,13 @@ export const useDeleteMessage = () => {
 
 // ── Posts (Blog) ─────────────────────────────────────────────────────────────
 
+interface AdminListParams {
+  search?: string;
+  status?: string;
+  page?: number;
+  size?: number;
+}
+
 /** Full unpaginated list — used only by useAdminPostDetail (edit page, draft-safe). */
 const fetchAllAdminPosts = async () => {
   const { data } = await api.get<ApiResponse<{ result: BlogPost[]; total: number }>>(ApiUrls.BLOG_ADMIN);

@@ -6,13 +6,14 @@ import Link from 'next/link';
 import { Prose } from '../../../../components/Prose';
 import { Toc } from '../../../../components/Toc';
 import { parseHeadings } from '../../../../lib/markdown';
+import { Tag } from 'src/types/tag';
 
 export interface PostViewModel {
   id: string;
   title: string;
   content: string | null;
   coverImage: string | null;
-  tags: string[];
+  tags: Tag[];
   date: string;
   readTime: string;
   author?: { name: string; bio: string | null; avatarImage: string | null };
