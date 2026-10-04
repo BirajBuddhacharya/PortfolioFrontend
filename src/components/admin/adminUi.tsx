@@ -163,7 +163,7 @@ export function ConfirmDelete({
 
 // ─── Status badge ────────────────────────────────────────────────────────────
 export function StatusBadge({ status }: { status: string }) {
-  const isLive = status === "live" || status === "published";
+  const isLive = status === "live" || status === "published" || status === "ACTIVE";
   return (
     <Badge
       variant="outline"
@@ -191,7 +191,7 @@ export function StatusSelect({
   onValueChange: (val: string) => void;
   disabled?: boolean;
 }) {
-  const isLive = status === "live" || status === "published";
+  const isLive = status === "live" || status === "published" || status === "ACTIVE";
   return (
     <Select value={status} onValueChange={onValueChange} disabled={disabled}>
       <SelectTrigger

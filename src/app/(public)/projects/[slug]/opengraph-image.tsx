@@ -16,6 +16,6 @@ export default async function OgImage({
     label: 'Project',
     title: project?.title ?? 'Project',
     description: toDescription(project?.summary ?? project?.blurb ?? project?.content),
-    tags: project?.stack,
+    tags: project?.tags?.map((t) => t.name),
   });
 }

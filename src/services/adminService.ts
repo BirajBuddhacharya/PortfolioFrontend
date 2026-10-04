@@ -4,7 +4,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QueryKeys } from '../lib/queryKeys';
 import { ApiUrls } from '../lib/apiUrls';
 import { api, type ApiResponse } from '../lib/apiClient';
-import type { Project } from '../types/project';
 import type { BlogPost, CreateBlogPostPayload, UpdateBlogPostPayload } from '../types/blog';
 import type { Profile, UpdateProfilePayload } from '../types/profile';
 import type { ContactMessage, ContactLink, CreateContactLinkPayload, UpdateContactLinkPayload } from '../types/contact';
@@ -128,30 +127,6 @@ export const useDeleteMessage = () => {
   });
 };
 
-// ── Projects ─────────────────────────────────────────────────────────────────
-
-interface AdminListParams {
-  search?: string;
-  status?: string;
-  page?: number;
-  size?: number;
-}
-
-export const useAdminProjects = (params: AdminListParams = {}) => {
-  const { search = '', status = 'all', page = 1, size = 10 } = params;
-  return useQuery({
-    queryKey: [QueryKeys.PROJECTS_LIST, { search, status, page, size }],
-    queryFn: async () => {
-      const q = new URLSearchParams({ pagination: 'true', page: String(page), size: String(size) });
-      if (search) q.set('search', search);
-      if (status && status !== 'all') q.set('status', status);
-      const { data } = await api.get<ApiResponse<{ result: Project[]; total: number }>>(
-        `${ApiUrls.PROJECTS_LIST}?${q}`,
-      );
-      return data.data;
-    },
-  });
-};
 
 // ── Posts (Blog) ─────────────────────────────────────────────────────────────
 

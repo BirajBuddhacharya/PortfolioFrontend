@@ -4,6 +4,8 @@ import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Project } from '../../../types/project';
 import { ProjectCard } from '../../../components/projects/ProjectCard';
+import { useTags } from '../../../services/tagsService';
+import { usePublicProjectsByTag } from '../../../services/projectsService';
 
 function useColumnCount() {
   const [count, setCount] = useState(3);
@@ -44,33 +46,14 @@ function ProjectCardItem({ p, index }: { p: Project; index: number }) {
   );
 }
 
-export function ProjectsView({ projects }: { projects: Project[] }) {
-  const [activeFilter, setActiveFilter] = useState('all');
+export function ProjectsView({ projects: initialProjects }: { projects: Project[] }) {
+  const [activeTagId, setActiveTagId] = useState<string | null>(null);
   const columnCount = useColumnCount();
 
-  // kind is a free-form string — derive filters from actual data
-  // instead of a hardcoded enum list.
-  const kinds = useMemo(
-    () =>
-      Array.from(
-        new Set(
-          projects
-            .map((p) => (p.kind ?? '').trim())
-            .filter((k): k is string => k.length > 0),
-        ),
-      ).sort((a, b) => a.localeCompare(b)),
-    [projects],
-  );
+  const { data: tags = [] } = useTags();
+  const { data: filteredProjects, isFetching } = usePublicProjectsByTag(activeTagId);
 
-  const filters = useMemo(
-    () => [{ id: 'all', label: 'All' }, ...kinds.map((k) => ({ id: k, label: k }))],
-    [kinds],
-  );
-
-  const visible: Project[] = activeFilter === 'all'
-    ? projects
-    : projects.filter((p) => (p.kind ?? '').trim() === activeFilter);
-
+  const visible: Project[] = activeTagId ? (filteredProjects ?? []) : initialProjects;
   const columns = useColumns(visible, columnCount);
 
   return (
@@ -108,7 +91,7 @@ export function ProjectsView({ projects }: { projects: Project[] }) {
           </p>
         </motion.div>
 
-        {projects.length === 0 && (
+        {initialProjects.length === 0 && (
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -139,43 +122,48 @@ export function ProjectsView({ projects }: { projects: Project[] }) {
           </motion.div>
         )}
 
-        {/* Filters — built from kind strings present in data */}
-        {projects.length > 0 && filters.length > 1 && <div className="flex gap-2 flex-wrap mb-[40px]">
-          {filters.map((f) => {
-            const isActive = activeFilter === f.id;
-            return (
-              <button
-                key={f.id}
-                onClick={() => setActiveFilter(f.id)}
-                className="px-4 py-[9px] rounded-full text-[12.5px] border transition-all duration-200 cursor-pointer"
-                style={{
-                  fontFamily: 'var(--font-jetbrains-mono), monospace',
-                  background: isActive ? 'rgba(255,107,107,0.12)' : 'transparent',
-                  borderColor: isActive ? 'rgba(255,107,107,0.5)' : 'rgba(255,255,255,0.10)',
-                  color: isActive ? '#FF6B6B' : '#6E6E78',
-                  transform: isActive ? 'scale(1.02)' : 'scale(1)',
-                }}
-              >
-                {f.label}
-              </button>
-            );
-          })}
-        </div>}
+        {/* Tag filters */}
+        {initialProjects.length > 0 && tags.length > 0 && (
+          <div className="flex gap-2 flex-wrap mb-[40px]">
+            {[{ id: null, label: 'All' }, ...tags.map((t) => ({ id: t.id, label: t.name }))].map((f) => {
+              const isActive = activeTagId === f.id;
+              return (
+                <button
+                  key={f.id ?? 'all'}
+                  onClick={() => setActiveTagId(f.id)}
+                  className="px-4 py-[9px] rounded-full text-[12.5px] border transition-all duration-200 cursor-pointer"
+                  style={{
+                    fontFamily: 'var(--font-jetbrains-mono), monospace',
+                    background: isActive ? 'rgba(255,107,107,0.12)' : 'transparent',
+                    borderColor: isActive ? 'rgba(255,107,107,0.5)' : 'rgba(255,255,255,0.10)',
+                    color: isActive ? '#FF6B6B' : '#6E6E78',
+                    transform: isActive ? 'scale(1.02)' : 'scale(1)',
+                    opacity: isFetching && f.id === activeTagId ? 0.6 : 1,
+                  }}
+                >
+                  {f.label}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
-        {/* Masonry grid — 3 flexbox columns, shortest-column-first distribution */}
-        {projects.length > 0 && <div className="flex gap-5 items-start pb-10">
-          {columns.map((col, ci) => (
-            <div key={ci} className="flex-1 flex flex-col gap-5 min-w-0">
-              <AnimatePresence mode="popLayout">
-                {col.map((p, i) => (
-                  <ProjectCardItem key={p.id} p={p} index={ci * 2 + i} />
-                ))}
-              </AnimatePresence>
-            </div>
-          ))}
-        </div>}
+        {/* Masonry grid */}
+        {initialProjects.length > 0 && (
+          <div className="flex gap-5 items-start pb-10">
+            {columns.map((col, ci) => (
+              <div key={ci} className="flex-1 flex flex-col gap-5 min-w-0">
+                <AnimatePresence mode="popLayout">
+                  {col.map((p, i) => (
+                    <ProjectCardItem key={p.id} p={p} index={ci * 2 + i} />
+                  ))}
+                </AnimatePresence>
+              </div>
+            ))}
+          </div>
+        )}
 
-        {projects.length > 0 && visible.length === 0 && (
+        {initialProjects.length > 0 && visible.length === 0 && !isFetching && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -185,7 +173,7 @@ export function ProjectsView({ projects }: { projects: Project[] }) {
               className="text-[13px]"
               style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#6E6E78' }}
             >
-              no projects in this category yet
+              no projects with this tag yet
             </div>
           </motion.div>
         )}

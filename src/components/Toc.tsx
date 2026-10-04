@@ -25,12 +25,20 @@ export function Toc({ content, className = '' }: { content: string; className?: 
       .filter((n): n is HTMLElement => !!n);
     if (!nodes.length) return;
 
+    // Headings carry scroll-margin-top, so an anchor click settles them there
+    // rather than at the viewport top — activate on that same line.
+    const lines = nodes.map((n) => parseFloat(getComputedStyle(n).scrollMarginTop) + 1);
+
     const pick = () => {
+      // Trailing headings never reach the line when the page bottoms out first.
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const atBottom = max > 0 && window.scrollY >= max - 2;
+
       let current = nodes[0];
-      for (const n of nodes) {
-        if (n.getBoundingClientRect().top <= 96) current = n;
-        else break;
-      }
+      nodes.forEach((n, i) => {
+        const { top } = n.getBoundingClientRect();
+        if (top <= lines[i] || (atBottom && top < window.innerHeight)) current = n;
+      });
       setActiveSlug(current.id);
     };
 

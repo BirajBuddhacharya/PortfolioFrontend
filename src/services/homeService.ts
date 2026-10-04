@@ -1,13 +1,14 @@
-'use client';
+"use client";
 
-import { useQuery } from '@tanstack/react-query';
-import { QueryKeys } from '../lib/queryKeys';
-import { ApiUrls } from '../lib/apiUrls';
-import { api, type ApiResponse } from '../lib/apiClient';
-import type { Profile } from '../types/profile';
-import type { ResumeGrouped } from '../types/resume';
-import type { BlogPost } from '../types/blog';
-import { useProjects } from './projectsService';
+import { useQuery } from "@tanstack/react-query";
+import { QueryKeys } from "../lib/queryKeys";
+import { ApiUrls } from "../lib/apiUrls";
+import { api, type ApiResponse } from "../lib/apiClient";
+import type { Profile } from "../types/profile";
+import type { ResumeGrouped } from "../types/resume";
+import type { BlogPost } from "../types/blog";
+import { usePublicProjects } from "./projectsService";
+import { ProjectStatus } from "../types/project";
 
 const fetchProfile = async () => {
   const { data } = await api.get<ApiResponse<Profile>>(ApiUrls.PROFILE);
@@ -34,10 +35,10 @@ export const useHomeTicker = () =>
   });
 
 export const useHomeFeaturedProjects = () => {
-  const query = useProjects();
+  const query = usePublicProjects();
   return {
     ...query,
-    data: (query.data ?? []).filter((p) => p.status === 'live').slice(0, 3),
+    data: (query.data ?? []).filter((p) => p.status === ProjectStatus.ACTIVE).slice(0, 3),
   };
 };
 
@@ -47,10 +48,10 @@ export const useHomeExperience = () =>
     queryFn: fetchResume,
     select: (r: ResumeGrouped) =>
       r.experiences.map((e) => ({
-        period: e.period ?? '',
-        location: e.location ?? '',
+        period: e.period ?? "",
+        location: e.location ?? "",
         role: e.title,
-        company: e.organization ?? '',
+        company: e.organization ?? "",
         points: e.points,
       })),
   });
@@ -60,14 +61,22 @@ export const useHomeSkills = () =>
     queryKey: [QueryKeys.RESUME],
     queryFn: fetchResume,
     select: (r: ResumeGrouped) =>
-      r.skills.map((s) => ({ name: s.title, items: (s.body ?? '').split(',').map((x) => x.trim()).filter(Boolean) })),
+      r.skills.map((s) => ({
+        name: s.title,
+        items: (s.body ?? "")
+          .split(",")
+          .map((x) => x.trim())
+          .filter(Boolean),
+      })),
   });
 
 export const useHomeBlogPreview = () =>
   useQuery({
     queryKey: [QueryKeys.BLOG_POSTS],
     queryFn: async () => {
-      const { data } = await api.get<ApiResponse<{ result: BlogPost[]; total: number }>>(ApiUrls.BLOG_POSTS);
+      const { data } = await api.get<
+        ApiResponse<{ result: BlogPost[]; total: number }>
+      >(ApiUrls.BLOG_POSTS);
       return data.data.result;
     },
     select: (posts: BlogPost[]) =>
@@ -75,8 +84,12 @@ export const useHomeBlogPreview = () =>
         id: p.id,
         title: p.title,
         date: p.publishedAt
-          ? new Date(p.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-          : '',
+          ? new Date(p.publishedAt).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })
+          : "",
         readTime: `${p.readTime} min`,
       })),
   });

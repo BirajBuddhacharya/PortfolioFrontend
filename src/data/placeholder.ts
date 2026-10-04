@@ -1,3 +1,5 @@
+import { ProjectStatus } from '../services/common/enum/ProjectStatus';
+
 export const placeholder = {
   stats: [
     { value: "3+", label: "years experience" },
@@ -58,7 +60,7 @@ export const placeholder = {
       coverHeight: 260,
       coverAccent: "#FF6B6B",
       coverColor: "#141418",
-      status: "live",
+      status: ProjectStatus.ACTIVE,
       live: "https://github.com/BirajBuddhacharya/RiskVision",
       repo: "https://github.com/BirajBuddhacharya/RiskVision",
       summary:
@@ -95,7 +97,7 @@ export const placeholder = {
       coverHeight: 160,
       coverAccent: "#6E6E78",
       coverColor: "#0E1418",
-      status: "live",
+      status: ProjectStatus.ACTIVE,
       live: "https://github.com/BirajBuddhacharya/SyncBeats",
       repo: "https://github.com/BirajBuddhacharya/SyncBeats",
       summary:
@@ -132,7 +134,7 @@ export const placeholder = {
       coverHeight: 200,
       coverAccent: "#7C3AED",
       coverColor: "#130E18",
-      status: "live",
+      status: ProjectStatus.ACTIVE,
       live: "https://github.com/BirajBuddhacharya/ABC-Books",
       repo: "https://github.com/BirajBuddhacharya/ABC-Books",
       summary:
@@ -169,7 +171,7 @@ export const placeholder = {
       coverHeight: 300,
       coverAccent: "#0EA5E9",
       coverColor: "#0C1418",
-      status: "live",
+      status: ProjectStatus.ACTIVE,
       live: "#",
       repo: "#",
       summary:
@@ -206,7 +208,7 @@ export const placeholder = {
       coverHeight: 220,
       coverAccent: "#10B981",
       coverColor: "#0E1814",
-      status: "live",
+      status: ProjectStatus.ACTIVE,
       live: "#",
       repo: "#",
       summary:
@@ -243,7 +245,7 @@ export const placeholder = {
       coverHeight: 180,
       coverAccent: "#F59E0B",
       coverColor: "#18140E",
-      status: "archived",
+      status: ProjectStatus.ARCHIVED,
       live: "#",
       repo: "#",
       summary:

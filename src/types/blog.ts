@@ -1,10 +1,14 @@
+import type { Tag } from './tag';
+
+export type { Tag };
+
 export interface BlogPost {
   id: string;
   slug: string;
   title: string;
   excerpt: string | null;
   content: string | null;
-  tags: string[];
+  tags: Tag[];
   status: string; // draft | published
   coverImage: string | null;
   publishedAt: string | null;
@@ -18,7 +22,7 @@ export interface CreateBlogPostPayload {
   slug: string;
   excerpt?: string;
   content?: string;
-  tags?: string[];
+  tagIds?: string[];
   status?: 'draft' | 'published';
   coverImage?: string;
   publishedAt?: string;

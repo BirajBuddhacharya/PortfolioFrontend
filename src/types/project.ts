@@ -1,3 +1,9 @@
+import type { Tag } from './tag';
+import { ProjectStatus } from '../services/common/enum/ProjectStatus';
+
+export { ProjectStatus };
+export type { Tag };
+
 export interface Project {
   id: string;
   slug: string;
@@ -7,9 +13,8 @@ export interface Project {
   /** Markdown body rendered on the detail page. */
   content?: string | null;
   year?: string | null;
-  kind?: string | null;
-  status: string;
-  stack: string[];
+  status: ProjectStatus;
+  tags: Tag[];
   gallery: string[];
   metrics: { value: string; label: string }[];
   live?: string | null;
@@ -29,9 +34,8 @@ export type CreateProjectPayload = {
   summary?: string;
   content?: string;
   year?: string;
-  kind?: string;
-  status?: string;
-  stack?: string[];
+  status?: ProjectStatus;
+  tagIds?: string[];
   gallery?: string[];
   metrics?: { value: string; label: string }[];
   live?: string;

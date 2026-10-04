@@ -68,13 +68,24 @@
   --color-destructive-foreground: var(--destructive-foreground);
 }
 
+html {
+  /* Viewport scrolling reads this off <html>; set on <body> it is not
+     propagated, so #anchor jumps land instantly instead of animating. */
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 body {
   margin: 0;
   padding: 0;
   background: #09090b;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  scroll-behavior: smooth;
   /* Clip horizontal overflow without creating a scroll container.
      (Do NOT use overflow-x: hidden here, and do NOT put overflow-x on
      <html>: either one breaks viewport scroll-propagation, so when a Radix

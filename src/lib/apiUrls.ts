@@ -18,9 +18,13 @@ export enum ApiUrls {
   DASHBOARD_OVERVIEW = "/dashboard/overview",
   DASHBOARD_SNAPSHOT = "/dashboard/snapshot",
   PROJECTS_LIST = "/projects",
+  PUBLIC_PROJECTS_LIST = "/public/projects",
+  PUBLIC_PROJECT_DETAIL = '/public/projects/:id',
   PROJECT_DETAIL = "/projects/:id",
   UPLOAD_IMAGE = "/upload/image",
   UPLOAD_PDF = "/upload/pdf",
   GALLERY = "/gallery",
   GALLERY_ITEM = "/gallery/:id",
+  TAGS = "/tags",
+  TAG_DETAIL = "/tags/:id",
 }

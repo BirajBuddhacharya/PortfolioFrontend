@@ -1,21 +1,27 @@
-import { HeroSection } from '../../components/sections/home/HeroSection';
-import { TickerSection } from '../../components/sections/home/TickerSection';
-import { StatsSection } from '../../components/sections/home/StatsSection';
-import { FeaturedProjectsSection } from '../../components/sections/home/FeaturedProjectsSection';
-import { ExperienceSection } from '../../components/sections/home/ExperienceSection';
-import { SkillsSection } from '../../components/sections/home/SkillsSection';
-import { BlogPreviewSection } from '../../components/sections/home/BlogPreviewSection';
-import { CTASection } from '../../components/sections/home/CTASection';
-import { getProfile, getResume, getProjects, getBlogs } from '../../lib/serverApi';
-import { pageMetadata } from '../../lib/seo';
+import { HeroSection } from "../../components/sections/home/HeroSection";
+import { TickerSection } from "../../components/sections/home/TickerSection";
+import { StatsSection } from "../../components/sections/home/StatsSection";
+import { FeaturedProjectsSection } from "../../components/sections/home/FeaturedProjectsSection";
+import { ExperienceSection } from "../../components/sections/home/ExperienceSection";
+import { SkillsSection } from "../../components/sections/home/SkillsSection";
+import { BlogPreviewSection } from "../../components/sections/home/BlogPreviewSection";
+import { CTASection } from "../../components/sections/home/CTASection";
+import {
+  getProfile,
+  getResume,
+  getProjects,
+  getBlogs,
+} from "../../lib/serverApi";
+import { pageMetadata } from "../../lib/seo";
+import { ProjectStatus } from "src/services/common/enum/ProjectStatus";
 
 export const revalidate = 60;
 
 export const metadata = pageMetadata({
-  title: 'Biraj Buddhacharya | ML Engineer & Full-stack Developer',
+  title: "Biraj Buddhacharya | ML Engineer & Full-stack Developer",
   description:
-    'Machine learning engineer and full-stack developer. I build backends that think — RAG chatbots, recommendation engines and analytics systems — and the interfaces that make them usable.',
-  path: '/',
+    "Machine learning engineer and full-stack developer. I build backends that think — RAG chatbots, recommendation engines and analytics systems — and the interfaces that make them usable.",
+  path: "/",
 });
 
 export default async function HomePage() {
@@ -26,38 +32,57 @@ export default async function HomePage() {
     getBlogs(),
   ]);
 
-  const liveProjects = projects.filter((p) => p.status === 'live');
+  const liveProjects = projects.filter(
+    (p) => p.status === ProjectStatus.ACTIVE,
+  );
   const featuredProjects = liveProjects.slice(0, 3);
 
   const experience = (resume?.experiences ?? []).map((e) => ({
-    period: e.period ?? '',
-    location: e.location ?? '',
+    period: e.period ?? "",
+    location: e.location ?? "",
     role: e.title,
-    company: e.organization ?? '',
+    company: e.organization ?? "",
     points: e.points,
   }));
 
   const skills = (resume?.skills ?? []).map((s) => ({
     name: s.title,
-    items: (s.body ?? '').split(',').map((x) => x.trim()).filter(Boolean),
+    items: (s.body ?? "")
+      .split(",")
+      .map((x) => x.trim())
+      .filter(Boolean),
   }));
 
   const blogPreview = posts.slice(0, 3).map((p) => ({
     slug: p.slug,
     title: p.title,
     date: p.publishedAt
-      ? new Date(p.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-      : '',
+      ? new Date(p.publishedAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+      : "",
     readTime: `${p.readTime} min`,
   }));
 
   return (
-    <div style={{ background: '#09090B', color: '#EDEDEF', minHeight: '100vh', position: 'relative' }}>
+    <div
+      style={{
+        background: "#09090B",
+        color: "#EDEDEF",
+        minHeight: "100vh",
+        position: "relative",
+      }}
+    >
       <main className="relative z-10">
         <HeroSection />
         <TickerSection items={profile?.ticker ?? []} />
         <StatsSection stats={profile?.stats ?? []} />
-        <FeaturedProjectsSection projects={featuredProjects} total={liveProjects.length} />
+        <FeaturedProjectsSection
+          projects={featuredProjects}
+          total={liveProjects.length}
+        />
         <ExperienceSection items={experience} />
         <SkillsSection groups={skills} />
         <BlogPreviewSection posts={blogPreview} />

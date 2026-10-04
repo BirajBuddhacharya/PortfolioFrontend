@@ -1,10 +1,13 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 const toSlug = (s: string) =>
-  s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-import Link from 'next/link';
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+import Link from "next/link";
 import {
   ArrowLeft,
   BarChart3,
@@ -13,35 +16,26 @@ import {
   Github,
   Hash,
   Images,
-  Layers,
   Link2,
   Palette,
   Plus,
-  Shapes,
+  Tags,
   Text,
   X,
-} from 'lucide-react';
-import { Input } from '@/components/components/ui/input';
-import { ColorPicker } from '@/components/components/ui/color-picker';
-import { Textarea } from '@/components/components/ui/textarea';
-import { MarkdownEditor } from './MarkdownEditor';
-import { Button } from '@/components/components/ui/button';
-import { Separator } from '@/components/components/ui/separator';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/components/ui/select';
-import { cn } from '@/components/lib/utils';
-import { Prose } from '../Prose';
-import { ChipInput, Row, field } from './FormPrimitives';
-import type { Project, CreateProjectPayload } from '../../types/project';
-import { ImagePickerButton } from './ImagePickerButton';
-
-const KIND_OPTIONS = ['ML', 'Web app', 'CLI tool', 'AI product'];
-const NONE = '__none__';
+} from "lucide-react";
+import { Input } from "@/components/components/ui/input";
+import { ColorPicker } from "@/components/components/ui/color-picker";
+import { Textarea } from "@/components/components/ui/textarea";
+import { MarkdownEditor } from "./MarkdownEditor";
+import { Button } from "@/components/components/ui/button";
+import { Separator } from "@/components/components/ui/separator";
+import { cn } from "@/components/lib/utils";
+import { Prose } from "../Prose";
+import { TagAutocompleteInput, Row, field } from "./FormPrimitives";
+import type { Project, CreateProjectPayload } from "../../types/project";
+import { ProjectStatus } from "../../types/project";
+import type { Tag } from "../../types/tag";
+import { ImagePickerButton } from "./ImagePickerButton";
 
 /* ── Form ─────────────────────────────────────────────────────────────────── */
 export function ProjectForm({
@@ -55,24 +49,29 @@ export function ProjectForm({
 }) {
   const isEdit = !!project;
 
-  const [title, setTitle] = useState(project?.title ?? '');
-  const [slug, setSlug] = useState(project?.slug ?? '');
+  const [title, setTitle] = useState(project?.title ?? "");
+  const [slug, setSlug] = useState(project?.slug ?? "");
   const [slugEdited, setSlugEdited] = useState(isEdit);
-  const [blurb, setBlurb] = useState(project?.blurb ?? '');
-  const [summary, setSummary] = useState(project?.summary ?? '');
-  const [content, setContent] = useState(project?.content ?? '');
-  const [year, setYear] = useState(project?.year ?? '');
-  const [kind, setKind] = useState(project?.kind ?? '');
-  const [status, setStatus] = useState(project?.status ?? 'live');
-  const [stack, setStack] = useState<string[]>(project?.stack ?? []);
+  const [blurb, setBlurb] = useState(project?.blurb ?? "");
+  const [summary, setSummary] = useState(project?.summary ?? "");
+  const [content, setContent] = useState(project?.content ?? "");
+  const [year, setYear] = useState(project?.year ?? "");
+  const [status, setStatus] = useState<ProjectStatus>(project?.status ?? ProjectStatus.ACTIVE);
+  const [tags, setTags] = useState<Tag[]>(project?.tags ?? []);
   const [gallery, setGallery] = useState<string[]>(project?.gallery ?? []);
-  const [live, setLive] = useState(project?.live ?? '');
-  const [repo, setRepo] = useState(project?.repo ?? '');
-  const [coverImage, setCoverImage] = useState(project?.coverImage ?? '');
-  const [coverAccent, setCoverAccent] = useState(project?.coverAccent ?? '#FF6B6B');
-  const [coverColor, setCoverColor] = useState(project?.coverColor ?? '#141418');
+  const [live, setLive] = useState(project?.live ?? "");
+  const [repo, setRepo] = useState(project?.repo ?? "");
+  const [coverImage, setCoverImage] = useState(project?.coverImage ?? "");
+  const [coverAccent, setCoverAccent] = useState(
+    project?.coverAccent ?? "#FF6B6B",
+  );
+  const [coverColor, setCoverColor] = useState(
+    project?.coverColor ?? "#141418",
+  );
   const [coverHeight, setCoverHeight] = useState(project?.coverHeight ?? 260);
-  const [metrics, setMetrics] = useState<{ value: string; label: string }[]>(project?.metrics ?? []);
+  const [metrics, setMetrics] = useState<{ value: string; label: string }[]>(
+    project?.metrics ?? [],
+  );
   const [preview, setPreview] = useState(false);
 
   useEffect(() => {
@@ -90,9 +89,8 @@ export function ProjectForm({
       summary: trimmed(summary),
       content: trimmed(content),
       year: trimmed(year),
-      kind: trimmed(kind),
       status,
-      stack,
+      tagIds: tags.map((t) => t.id),
       gallery,
       metrics: metrics.filter((m) => m.value.trim() || m.label.trim()),
       live: trimmed(live),
@@ -108,16 +106,28 @@ export function ProjectForm({
     <form onSubmit={handleSubmit}>
       {/* Sticky bar */}
       <div className="sticky top-0 z-20 -mx-7 mb-10 flex items-center justify-between gap-4 border-b border-border bg-background/85 px-7 py-3 backdrop-blur">
-        <Button asChild variant="ghost" size="sm" className="h-8 gap-1.5 px-2 font-mono text-[12px] text-[#6E6E78] hover:text-[#FF6B6B]">
+        <Button
+          asChild
+          variant="ghost"
+          size="sm"
+          className="h-8 gap-1.5 px-2 font-mono text-[12px] text-[#6E6E78] hover:text-[#FF6B6B]"
+        >
           <Link href="/admin/projects">
             <ArrowLeft size={13} /> projects
           </Link>
         </Button>
 
         <div className="flex items-center gap-3">
-          <span className="font-mono text-[11px] text-[#6E6E78]">{isEdit ? 'editing' : 'draft'}</span>
-          <Button type="submit" size="sm" disabled={saving || !title.trim()} className="h-8 font-mono text-[12px] font-semibold">
-            {saving ? 'Saving…' : isEdit ? 'Save' : 'Create'}
+          <span className="font-mono text-[11px] text-[#6E6E78]">
+            {isEdit ? "editing" : "draft"}
+          </span>
+          <Button
+            type="submit"
+            size="sm"
+            disabled={saving || !title.trim()}
+            className="h-8 font-mono text-[12px] font-semibold"
+          >
+            {saving ? "Saving…" : isEdit ? "Save" : "Create"}
           </Button>
         </div>
       </div>
@@ -131,42 +141,34 @@ export function ProjectForm({
         className="h-auto border-none bg-transparent p-0 font-[family-name:var(--font-space-grotesk)] text-[clamp(30px,4vw,40px)] font-semibold leading-[1.15] tracking-[-0.03em] shadow-none placeholder:text-[#313139] focus-visible:ring-0 md:text-[clamp(30px,4vw,40px)]"
       />
 
-      {/* Blurb — page subtitle */}
+      {/* Blurb */}
       <Input
         value={blurb}
         onChange={(e) => setBlurb(e.target.value)}
         placeholder="Add a short description…"
-        className={cn(field, '-ml-2 mb-6 mt-1 h-9 text-[15px] text-[#A1A1AA]')}
+        className={cn(field, "-ml-2 mb-6 mt-1 h-9 text-[15px] text-[#A1A1AA]")}
       />
 
       {/* ── Properties ─────────────────────────────────────────────────── */}
       <div className="-ml-2 flex flex-col gap-0.5">
         <Row icon={Calendar} label="Year">
-          <Input value={year} onChange={(e) => setYear(e.target.value)} placeholder="Empty" className={field} />
+          <Input
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
+            placeholder="Empty"
+            className={field}
+          />
         </Row>
 
-        <Row icon={Shapes} label="Kind">
-          <Select value={kind || NONE} onValueChange={(v) => setKind(v === NONE ? '' : v)}>
-            <SelectTrigger
-              size="sm"
-              className={cn(field, 'w-full justify-between data-[size=sm]:h-8', !kind && 'text-[#45454E]')}
-            >
-              <SelectValue placeholder="Empty" />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              <SelectItem value={NONE} className="text-[#6E6E78]">Empty</SelectItem>
-              {KIND_OPTIONS.map((k) => (
-                <SelectItem key={k} value={k}>{k}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <Row icon={Tags} label="Tags">
+          <TagAutocompleteInput values={tags} onChange={setTags} />
         </Row>
 
         <Row icon={CircleDot} label="Status">
           <div className="flex gap-1.5 px-2 py-1">
-            {(['live', 'archived'] as const).map((s) => {
+            {([ProjectStatus.ACTIVE, ProjectStatus.ARCHIVED] as const).map((s) => {
               const on = status === s;
-              const color = s === 'live' ? '#10B981' : '#6E6E78';
+              const color = s === ProjectStatus.ACTIVE ? "#10B981" : "#6E6E78";
               return (
                 <Button
                   key={s}
@@ -176,9 +178,9 @@ export function ProjectForm({
                   onClick={() => setStatus(s)}
                   className="h-auto rounded-full px-[10px] py-[3px] font-mono text-[11.5px] font-normal"
                   style={{
-                    color: on ? color : '#6E6E78',
-                    background: on ? `${color}18` : 'transparent',
-                    borderColor: on ? `${color}45` : 'rgba(255,255,255,0.07)',
+                    color: on ? color : "#6E6E78",
+                    background: on ? `${color}18` : "transparent",
+                    borderColor: on ? `${color}45` : "rgba(255,255,255,0.07)",
                   }}
                 >
                   {s}
@@ -188,25 +190,34 @@ export function ProjectForm({
           </div>
         </Row>
 
-        <Row icon={Layers} label="Stack">
-          <ChipInput values={stack} onChange={setStack} placeholder="Type and press Enter…" />
-        </Row>
-
         <Row icon={Hash} label="Slug">
           <Input
             value={slug}
-            onChange={(e) => { setSlug(e.target.value); setSlugEdited(true); }}
+            onChange={(e) => {
+              setSlug(e.target.value);
+              setSlugEdited(true);
+            }}
             placeholder="auto-generated"
-            className={cn(field, 'font-mono text-[13px]')}
+            className={cn(field, "font-mono text-[13px]")}
           />
         </Row>
 
         <Row icon={Link2} label="Live URL">
-          <Input value={live} onChange={(e) => setLive(e.target.value)} placeholder="Empty" className={field} />
+          <Input
+            value={live}
+            onChange={(e) => setLive(e.target.value)}
+            placeholder="Empty"
+            className={field}
+          />
         </Row>
 
         <Row icon={Github} label="Repo URL">
-          <Input value={repo} onChange={(e) => setRepo(e.target.value)} placeholder="Empty" className={field} />
+          <Input
+            value={repo}
+            onChange={(e) => setRepo(e.target.value)}
+            placeholder="Empty"
+            className={field}
+          />
         </Row>
 
         <Row icon={Text} label="Summary" align="start">
@@ -215,7 +226,10 @@ export function ProjectForm({
             value={summary}
             onChange={(e) => setSummary(e.target.value)}
             placeholder="Intro paragraph shown above the body…"
-            className={cn(field, 'h-auto min-h-0 resize-y py-1.5 leading-relaxed')}
+            className={cn(
+              field,
+              "h-auto min-h-0 resize-y py-1.5 leading-relaxed",
+            )}
           />
         </Row>
 
@@ -226,16 +240,32 @@ export function ProjectForm({
                 <Input
                   value={m.value}
                   placeholder="80%+"
-                  onChange={(e) => setMetrics((p) => p.map((x, j) => (j === i ? { ...x, value: e.target.value } : x)))}
-                  onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
-                  className={cn(field, 'flex-1 font-mono text-[13px]')}
+                  onChange={(e) =>
+                    setMetrics((p) =>
+                      p.map((x, j) =>
+                        j === i ? { ...x, value: e.target.value } : x,
+                      ),
+                    )
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") e.preventDefault();
+                  }}
+                  className={cn(field, "flex-1 font-mono text-[13px]")}
                 />
                 <Input
                   value={m.label}
                   placeholder="model accuracy"
-                  onChange={(e) => setMetrics((p) => p.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))}
-                  onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
-                  className={cn(field, 'flex-[2] text-[13px]')}
+                  onChange={(e) =>
+                    setMetrics((p) =>
+                      p.map((x, j) =>
+                        j === i ? { ...x, label: e.target.value } : x,
+                      ),
+                    )
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") e.preventDefault();
+                  }}
+                  className={cn(field, "flex-[2] text-[13px]")}
                 />
                 <Button
                   type="button"
@@ -252,7 +282,9 @@ export function ProjectForm({
               type="button"
               variant="ghost"
               size="sm"
-              onClick={() => setMetrics((m) => [...m, { value: '', label: '' }])}
+              onClick={() =>
+                setMetrics((m) => [...m, { value: "", label: "" }])
+              }
               className="h-7 w-fit gap-1.5 px-1 font-mono text-[12px] font-normal text-[#6E6E78] hover:bg-transparent hover:text-[#FF6B6B]"
             >
               <Plus size={12} /> Add metric
@@ -263,25 +295,46 @@ export function ProjectForm({
         <Row icon={Images} label="Gallery" align="start">
           <div className="flex flex-col gap-2 px-2 py-1 w-full">
             {gallery.length > 0 && (
-              <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fill, 220px)' }}>
+              <div
+                className="grid gap-2"
+                style={{ gridTemplateColumns: "repeat(auto-fill, 220px)" }}
+              >
                 {gallery.map((url, i) => (
-                  <div key={i} className="relative w-[220px] rounded border border-[#27272A] bg-[#111113] overflow-hidden group">
+                  <div
+                    key={i}
+                    className="relative w-[220px] rounded border border-[#27272A] bg-[#111113] overflow-hidden group"
+                  >
                     {url ? (
-                      <img src={url} alt="" className="w-full h-[120px] object-cover" />
+                      <img
+                        src={url}
+                        alt=""
+                        className="w-full h-[120px] object-cover"
+                      />
                     ) : (
-                      <div className="w-full h-[120px] flex items-center justify-center text-[#6E6E78] font-mono text-[11px]">no image</div>
+                      <div className="w-full h-[120px] flex items-center justify-center text-[#6E6E78] font-mono text-[11px]">
+                        no image
+                      </div>
                     )}
                     <Input
                       value={url}
-                      onChange={(e) => setGallery((g) => g.map((v, j) => (j === i ? e.target.value : v)))}
-                      className={cn(field, 'w-full font-mono text-[10px] rounded-none border-0 border-t border-[#27272A]')}
+                      onChange={(e) =>
+                        setGallery((g) =>
+                          g.map((v, j) => (j === i ? e.target.value : v)),
+                        )
+                      }
+                      className={cn(
+                        field,
+                        "w-full font-mono text-[10px] rounded-none border-0 border-t border-[#27272A]",
+                      )}
                       placeholder="https://..."
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="icon"
-                      onClick={() => setGallery((g) => g.filter((_, j) => j !== i))}
+                      onClick={() =>
+                        setGallery((g) => g.filter((_, j) => j !== i))
+                      }
                       className="absolute top-1 right-1 size-6 opacity-0 group-hover:opacity-100 bg-black/60 text-[#6E6E78] hover:bg-destructive/80 hover:text-white transition-opacity"
                     >
                       <X size={12} />
@@ -295,53 +348,59 @@ export function ProjectForm({
                 type="button"
                 variant="ghost"
                 size="sm"
-                onClick={() => setGallery((g) => [...g, ''])}
+                onClick={() => setGallery((g) => [...g, ""])}
                 className="h-7 w-fit gap-1.5 px-1 font-mono text-[12px] font-normal text-[#6E6E78] hover:bg-transparent hover:text-[#FF6B6B]"
               >
                 <Plus size={12} /> Add URL
               </Button>
-              <ImagePickerButton onUploaded={(url) => setGallery((g) => [...g, url])} />
+              <ImagePickerButton
+                onUploaded={(url) => setGallery((g) => [...g, url])}
+              />
             </div>
           </div>
         </Row>
 
         <Row icon={Palette} label="Cover" align="start">
           <div className="flex flex-col gap-2 px-2 py-1 w-full">
-            {/* Cover image */}
             <div className="flex items-center gap-2">
               {coverImage && (
-                <img src={coverImage} alt="" className="h-[60px] w-[100px] rounded-md object-cover border border-[#27272A]" />
+                <img
+                  src={coverImage}
+                  alt=""
+                  className="h-[60px] w-[100px] rounded-md object-cover border border-[#27272A]"
+                />
               )}
               <div className="flex flex-col gap-1 flex-1">
                 <Input
                   value={coverImage}
                   onChange={(e) => setCoverImage(e.target.value)}
                   placeholder="https://… or upload →"
-                  className={cn(field, 'font-mono text-[12px]')}
+                  className={cn(field, "font-mono text-[12px]")}
                 />
                 <ImagePickerButton onUploaded={(url) => setCoverImage(url)} />
               </div>
             </div>
-            {/* Colors & height */}
             <div className="flex flex-wrap items-center gap-2">
-            {[
-              { v: coverAccent, set: setCoverAccent, label: 'Accent' },
-              { v: coverColor, set: setCoverColor, label: 'Background' },
-            ].map((c) => (
-              <ColorPicker
-                key={c.label}
-                value={c.v}
-                label={c.label}
-                onChange={c.set}
+              {[
+                { v: coverAccent, set: setCoverAccent, label: "Accent" },
+                { v: coverColor, set: setCoverColor, label: "Background" },
+              ].map((c) => (
+                <ColorPicker
+                  key={c.label}
+                  value={c.v}
+                  label={c.label}
+                  onChange={c.set}
+                />
+              ))}
+              <span className="ml-1 font-mono text-[11.5px] text-[#6E6E78]">
+                h
+              </span>
+              <Input
+                type="number"
+                value={coverHeight}
+                onChange={(e) => setCoverHeight(Number(e.target.value))}
+                className={cn(field, "w-[72px] font-mono text-[12.5px]")}
               />
-            ))}
-            <span className="ml-1 font-mono text-[11.5px] text-[#6E6E78]">h</span>
-            <Input
-              type="number"
-              value={coverHeight}
-              onChange={(e) => setCoverHeight(Number(e.target.value))}
-              className={cn(field, 'w-[72px] font-mono text-[12.5px]')}
-            />
             </div>
           </div>
         </Row>
@@ -351,18 +410,23 @@ export function ProjectForm({
 
       {/* ── Body ───────────────────────────────────────────────────────── */}
       <div className="mb-4 flex items-center justify-between">
-        <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-[#6E6E78]">body · markdown</span>
+        <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-[#6E6E78]">
+          body · markdown
+        </span>
         <div className="flex gap-1 rounded-lg border border-border p-[3px]">
-          {[{ id: false, label: 'Write' }, { id: true, label: 'Preview' }].map((t) => (
+          {[
+            { id: false, label: "Write" },
+            { id: true, label: "Preview" },
+          ].map((t) => (
             <Button
               key={t.label}
               type="button"
-              variant={preview === t.id ? 'default' : 'ghost'}
+              variant={preview === t.id ? "default" : "ghost"}
               size="sm"
               onClick={() => setPreview(t.id)}
               className={cn(
-                'h-auto rounded-md px-3 py-1 font-mono text-[11px] font-normal',
-                preview !== t.id && 'text-[#A1A1AA] hover:bg-white/[0.05]',
+                "h-auto rounded-md px-3 py-1 font-mono text-[11px] font-normal",
+                preview !== t.id && "text-[#A1A1AA] hover:bg-white/[0.05]",
               )}
             >
               {t.label}
@@ -374,9 +438,13 @@ export function ProjectForm({
       <div className="pb-24">
         {preview ? (
           <div className="min-h-[460px]">
-            {content.trim()
-              ? <Prose>{content}</Prose>
-              : <span className="font-mono text-[13px] text-[#6E6E78]">Nothing to preview yet.</span>}
+            {content.trim() ? (
+              <Prose>{content}</Prose>
+            ) : (
+              <span className="font-mono text-[13px] text-[#6E6E78]">
+                Nothing to preview yet.
+              </span>
+            )}
           </div>
         ) : (
           <MarkdownEditor value={content} onChange={setContent} />

@@ -18,8 +18,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 export function ProjectDetailView({ project }: { project: Project }) {
-  // kind is a free-form string — trim and drop empties.
-  const meta = [project.year, project.kind, project.status]
+  const meta = [project.year, project.status]
     .map((m) => (typeof m === 'string' ? m.trim() : m))
     .filter((m): m is string => !!m);
 
@@ -156,17 +155,17 @@ export function ProjectDetailView({ project }: { project: Project }) {
             </div>
           )}
 
-          {project.stack.length > 0 && (
+          {project.tags?.length > 0 && (
             <div className="mb-[56px]">
-              <SectionLabel>stack</SectionLabel>
+              <SectionLabel>tags</SectionLabel>
               <div className="flex flex-wrap gap-2">
-                {project.stack.map((s) => (
+                {project.tags.map((t) => (
                   <span
-                    key={s}
+                    key={t.id}
                     className="text-[12.5px] px-[14px] py-2 rounded-[8px] border border-white/[0.08]"
                     style={{ fontFamily: mono, color: '#C7C7CE', background: 'rgba(255,255,255,0.05)' }}
                   >
-                    {s}
+                    {t.name}
                   </span>
                 ))}
               </div>

@@ -2,13 +2,14 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import type { Tag } from '../../../types/tag';
 
 export interface BlogListItem {
   slug: string;
   title: string;
   excerpt: string | null;
   coverImage: string | null;
-  tags: string[];
+  tags: Tag[];
   date: string;
   readTime: string;
 }
@@ -171,7 +172,7 @@ export function BlogView({ posts }: { posts: BlogListItem[] }) {
                 <span className="hidden sm:flex flex-wrap gap-[6px] justify-self-start">
                   {p.tags.map((t) => (
                     <span
-                      key={t}
+                      key={t.id}
                       className="text-[11px] border border-[rgba(255,107,107,0.25)] px-[10px] py-1 rounded-full"
                       style={{
                         fontFamily: 'var(--font-jetbrains-mono), monospace',
@@ -179,7 +180,7 @@ export function BlogView({ posts }: { posts: BlogListItem[] }) {
                         background: 'rgba(255,107,107,0.08)',
                       }}
                     >
-                      {t}
+                      {t.name}
                     </span>
                   ))}
                 </span>

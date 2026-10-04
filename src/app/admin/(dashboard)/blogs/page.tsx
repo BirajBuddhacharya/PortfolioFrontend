@@ -122,11 +122,11 @@ export default function AdminPostsPage() {
                   <div className="flex flex-wrap gap-[5px]">
                     {p.tags.map((t) => (
                       <Badge
-                        key={t}
+                        key={t.id}
                         variant="outline"
                         className="border-border bg-white/[0.04] px-[9px] py-[3px] font-mono text-[10.5px] font-normal text-[#A1A1AA]"
                       >
-                        {t}
+                        {t.name}
                       </Badge>
                     ))}
                   </div>
@@ -213,7 +213,7 @@ export default function AdminPostsPage() {
                       {preview.tags?.length > 0 && (
                         <div className="flex flex-wrap gap-2 mb-6">
                           {preview.tags.map((t) => (
-                            <Badge key={t} variant="outline" className="border-border bg-white/[0.04] px-[9px] py-[3px] font-mono text-[10.5px] font-normal text-[#A1A1AA]">{t}</Badge>
+                            <Badge key={t.id} variant="outline" className="border-border bg-white/[0.04] px-[9px] py-[3px] font-mono text-[10.5px] font-normal text-[#A1A1AA]">{t.name}</Badge>
                           ))}
                         </div>
                       )}

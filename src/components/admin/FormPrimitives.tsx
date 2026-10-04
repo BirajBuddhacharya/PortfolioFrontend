@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, type KeyboardEvent } from 'react';
+import { useRef, useState, type KeyboardEvent } from 'react';
 import { X } from 'lucide-react';
 import { Input } from '@/components/components/ui/input';
 import { Button } from '@/components/components/ui/button';
 import { Badge } from '@/components/components/ui/badge';
 import { cn } from '@/components/lib/utils';
+import { useTags, useCreateTag } from '../../services/tagsService';
+import type { Tag } from '../../types/tag';
 
 /** Borderless Notion-style field: reveals a surface only on hover/focus. */
 export const field =
@@ -43,6 +45,105 @@ export function Row({
         <span>{label}</span>
       </div>
       <div className="min-w-0">{children}</div>
+    </div>
+  );
+}
+
+/** Tag autocomplete input backed by the /tags API. Enter creates if no exact match exists. */
+export function TagAutocompleteInput({
+  values,
+  onChange,
+}: {
+  values: Tag[];
+  onChange: (tags: Tag[]) => void;
+}) {
+  const [draft, setDraft] = useState('');
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { data: allTags = [] } = useTags();
+  const createTag = useCreateTag();
+
+  const suggestions = allTags.filter(
+    (t) =>
+      t.name.toLowerCase().includes(draft.toLowerCase()) &&
+      !values.find((v) => v.id === t.id),
+  );
+
+  const addTag = (tag: Tag) => {
+    if (!values.find((v) => v.id === tag.id)) onChange([...values, tag]);
+    setDraft('');
+    setOpen(false);
+  };
+
+  const handleKeyDown = async (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const trimmed = draft.trim();
+      if (!trimmed) return;
+      const exact = allTags.find((t) => t.name.toLowerCase() === trimmed.toLowerCase());
+      if (exact) {
+        addTag(exact);
+      } else {
+        const newTag = await createTag.mutateAsync({ name: trimmed });
+        addTag(newTag);
+      }
+    } else if (e.key === 'Backspace' && !draft && values.length) {
+      onChange(values.slice(0, -1));
+    } else if (e.key === 'Escape') {
+      setOpen(false);
+    }
+  };
+
+  return (
+    <div ref={containerRef} className="relative flex flex-wrap items-center gap-1.5 px-2 py-1">
+      {values.map((t) => (
+        <Badge
+          key={t.id}
+          variant="secondary"
+          className="gap-1 rounded-md border-white/[0.08] bg-white/[0.05] py-0 pr-0.5 font-mono text-[11.5px] font-normal text-[#C7C7CE]"
+        >
+          {t.name}
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => onChange(values.filter((v) => v.id !== t.id))}
+            aria-label={`Remove ${t.name}`}
+            className="size-4 rounded-sm text-[#6E6E78] hover:bg-transparent hover:text-[#FF6B6B]"
+          >
+            <X size={11} />
+          </Button>
+        </Badge>
+      ))}
+      <div className="relative min-w-[130px] flex-1">
+        <Input
+          value={draft}
+          onChange={(e) => {
+            setDraft(e.target.value);
+            setOpen(e.target.value.length > 0);
+          }}
+          onKeyDown={handleKeyDown}
+          onFocus={() => draft && setOpen(true)}
+          onBlur={() => setTimeout(() => setOpen(false), 150)}
+          placeholder={values.length ? '' : 'Type tag name, press Enter…'}
+          className={cn(field, 'h-7 font-mono text-[13px] hover:bg-transparent')}
+          disabled={createTag.isPending}
+        />
+        {open && suggestions.length > 0 && (
+          <div className="absolute left-0 top-full z-50 mt-1 w-[200px] rounded-md border border-[#27272A] bg-[#111113] py-1 shadow-lg">
+            {suggestions.slice(0, 8).map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onMouseDown={() => addTag(t)}
+                className="w-full px-3 py-1.5 text-left font-mono text-[12.5px] text-[#C7C7CE] hover:bg-white/[0.06] hover:text-[#FF6B6B]"
+              >
+                {t.name}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

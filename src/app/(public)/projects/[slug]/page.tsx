@@ -39,7 +39,7 @@ export default async function ProjectDetailPage({
     description: toDescription(project.summary || project.blurb || project.content),
     url: `${SITE_URL}/projects/${slug}`,
     ...(project.updatedAt ? { dateModified: project.updatedAt } : {}),
-    ...(project.stack.length ? { keywords: project.stack.join(', ') } : {}),
+    ...(project.tags?.length ? { keywords: project.tags.map((t) => t.name).join(', ') } : {}),
   };
 
   return (

@@ -2,6 +2,7 @@ import 'server-only';
 
 import type { Project } from '../types/project';
 import type { BlogPost } from '../types/blog';
+import type { Tag } from '../types/tag';
 import type { Profile } from '../types/profile';
 import type { ResumeGrouped } from '../types/resume';
 import type { ContactLink } from '../types/contact';
@@ -46,7 +47,7 @@ export const getProject = (id: string) => get<Project>(`/projects/${id}`);
 
 export const getBlogs = () => list<BlogPost>('/blog');
 export const getBlog = (id: string) => get<BlogPost>(`/blog/${id}`);
-export const getBlogTags = async () => (await get<string[]>('/blog/tags')) ?? [];
+export const getBlogTags = async () => (await get<Tag[]>('/tags')) ?? [];
 
 export const getProfile = () => get<Profile>('/profile');
 export const getResume = () => get<ResumeGrouped>('/resume');

@@ -16,8 +16,9 @@ import { cn } from '@/components/lib/utils';
 import { Prose } from '../Prose';
 import { MarkdownEditor, type MarkdownEditorHandle } from './MarkdownEditor';
 import { HeadingExplorer, parseHeadings, type Heading } from './HeadingExplorer';
-import { ChipInput, Row, field } from './FormPrimitives';
+import { TagAutocompleteInput, Row, field } from './FormPrimitives';
 import type { BlogPost, CreateBlogPostPayload } from '../../types/blog';
+import type { Tag } from '../../types/tag';
 import { ImagePickerButton } from './ImagePickerButton';
 
 /** `2026-09-26T10:00:00.000Z` → `2026-09-26` for a date input. */
@@ -39,7 +40,7 @@ export function PostForm({
   const [slugEdited, setSlugEdited] = useState(isEdit);
   const [excerpt, setExcerpt] = useState(post?.excerpt ?? '');
   const [content, setContent] = useState(post?.content ?? '');
-  const [tags, setTags] = useState<string[]>(post?.tags ?? []);
+  const [tags, setTags] = useState<Tag[]>(post?.tags ?? []);
   const [status, setStatus] = useState<'draft' | 'published'>(
     (post?.status as 'draft' | 'published') ?? 'draft',
   );
@@ -86,7 +87,7 @@ export function PostForm({
       slug: slug.trim(),
       excerpt: trimmed(excerpt),
       content: trimmed(content),
-      tags,
+      tagIds: tags.map((t) => t.id),
       status,
       coverImage: trimmed(coverImage),
       publishedAt: publishedAt ? new Date(publishedAt).toISOString() : undefined,
@@ -168,7 +169,7 @@ export function PostForm({
             </Row>
 
             <Row icon={Tags} label="Tags">
-              <ChipInput values={tags} onChange={setTags} placeholder="Type and press Enter…" />
+              <TagAutocompleteInput values={tags} onChange={setTags} />
             </Row>
 
             <Row icon={CalendarClock} label="Published">

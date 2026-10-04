@@ -12,7 +12,7 @@ export function ProjectCard({
 }) {
   const accent = p.coverAccent ?? p.coverColor ?? "#FF6B6B";
   const coverH = coverHeight ?? p.coverHeight ?? 172;
-  const kindLabel = (p.kind ?? '').trim();
+  const firstTag = p.tags?.[0];
 
   return (
     <Link
@@ -45,7 +45,6 @@ export function ProjectCard({
             className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (
-          /* Ambient glow blob */
           <div
             className="absolute rounded-full blur-3xl opacity-30"
             style={{
@@ -56,40 +55,6 @@ export function ProjectCard({
               left: "20%",
             }}
           />
-        )}
-        {/* Kind badge — free-form string */}
-        {kindLabel && (
-          <span
-            className="absolute top-[14px] left-[14px] text-[11px] px-[10px] py-1 rounded-full"
-            style={{
-              fontFamily: "var(--font-jetbrains-mono), monospace",
-              color: accent,
-              background: `${accent}18`,
-              border: `1px solid ${accent}40`,
-              backdropFilter: "blur(8px)",
-              WebkitBackdropFilter: "blur(8px)",
-              letterSpacing: "0.04em",
-            }}
-          >
-            {kindLabel}
-          </span>
-        )}
-        {/* Year — dark blurred pill, readable over any cover */}
-        {p.year && (
-          <span
-            className="absolute top-[14px] right-[14px] text-[11px] px-[10px] py-1 rounded-full"
-            style={{
-              fontFamily: "var(--font-jetbrains-mono), monospace",
-              color: "#EDEDEF",
-              background: "rgba(9,9,11,0.78)",
-              border: "1px solid rgba(255,255,255,0.22)",
-              backdropFilter: "blur(8px)",
-              WebkitBackdropFilter: "blur(8px)",
-              letterSpacing: "0.04em",
-            }}
-          >
-            {p.year}
-          </span>
         )}
       </div>
 
@@ -118,11 +83,11 @@ export function ProjectCard({
             {p.blurb}
           </p>
         )}
-        {p.stack.length > 0 && (
+        {p.tags?.length > 0 && (
           <div className="flex flex-wrap gap-[6px]">
-            {p.stack.map((s) => (
+            {p.tags.map((t) => (
               <span
-                key={s}
+                key={t.id}
                 className="text-[11px] px-[9px] py-1 rounded-[6px] border border-white/[0.07]"
                 style={{
                   fontFamily: "var(--font-jetbrains-mono), monospace",
@@ -130,7 +95,7 @@ export function ProjectCard({
                   background: "rgba(255,255,255,0.05)",
                 }}
               >
-                {s}
+                {t.name}
               </span>
             ))}
           </div>
