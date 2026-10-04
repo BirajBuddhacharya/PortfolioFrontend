@@ -1,11 +1,12 @@
-import 'server-only';
+import "server-only";
 
-import type { Project } from '../types/project';
-import type { BlogPost } from '../types/blog';
-import type { Tag } from '../types/tag';
-import type { Profile } from '../types/profile';
-import type { ResumeGrouped } from '../types/resume';
-import type { ContactLink } from '../types/contact';
+import type { Project } from "../types/project";
+import type { BlogPost } from "../types/blog";
+import type { Tag } from "../types/tag";
+import type { Profile } from "../types/profile";
+import type { ResumeGrouped } from "../types/resume";
+import type { ContactLink } from "../types/contact";
+import { ApiUrls } from "./apiUrls";
 
 /**
  * Server-side data access for public pages.
@@ -17,7 +18,8 @@ import type { ContactLink } from '../types/contact';
  * `API_BASE_URL` lets deployments point server renders at an internal address
  * while the browser keeps using the public one.
  */
-const BASE = process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
+const BASE =
+  process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 
 /** How long a public page may serve cached backend data, in seconds. */
 export const REVALIDATE = 60;
@@ -28,7 +30,9 @@ type Paginated<T> = { result: T[]; total: number };
 async function get<T>(path: string): Promise<T | null> {
   if (!BASE) return null;
   try {
-    const res = await fetch(`${BASE}${path}`, { next: { revalidate: REVALIDATE } });
+    const res = await fetch(`${BASE}${path}`, {
+      next: { revalidate: REVALIDATE },
+    });
     if (!res.ok) return null;
     const json = (await res.json()) as Envelope<T>;
     return json.data ?? null;
@@ -42,13 +46,15 @@ async function get<T>(path: string): Promise<T | null> {
 const list = async <T>(path: string): Promise<T[]> =>
   (await get<Paginated<T>>(path))?.result ?? [];
 
-export const getProjects = () => list<Project>('/projects');
-export const getProject = (id: string) => get<Project>(`/projects/${id}`);
+export const getProjects = () => list<Project>(ApiUrls.PUBLIC_PROJECTS_LIST);
+export const getProject = (id: string) =>
+  get<Project>(ApiUrls.PUBLIC_PROJECTS_LIST + `/${id}`);
 
-export const getBlogs = () => list<BlogPost>('/blog');
-export const getBlog = (id: string) => get<BlogPost>(`/blog/${id}`);
-export const getBlogTags = async () => (await get<Tag[]>('/tags')) ?? [];
+export const getBlogs = () => list<BlogPost>(ApiUrls.PUBLIC_BLOG_POSTS);
+export const getBlog = (slug: string) => get<BlogPost>(ApiUrls.PUBLIC_BLOG_POST_DETAIL.replace(':slug', slug));
+export const getBlogTags = async () => (await get<Tag[]>("/tags")) ?? [];
 
-export const getProfile = () => get<Profile>('/profile');
-export const getResume = () => get<ResumeGrouped>('/resume');
-export const getContactLinks = async () => (await get<ContactLink[]>('/contact/links')) ?? [];
+export const getProfile = () => get<Profile>("/profile");
+export const getResume = () => get<ResumeGrouped>("/resume");
+export const getContactLinks = async () =>
+  (await get<ContactLink[]>("/contact/links")) ?? [];

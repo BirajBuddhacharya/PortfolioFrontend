@@ -1,5 +1,7 @@
 import type { Tag } from './tag';
+import { BlogStatus } from '../common/enums/blog-status.enum';
 
+export { BlogStatus };
 export type { Tag };
 
 export interface BlogPost {
@@ -9,7 +11,7 @@ export interface BlogPost {
   excerpt: string | null;
   content: string | null;
   tags: Tag[];
-  status: string; // draft | published
+  status: BlogStatus;
   coverImage: string | null;
   publishedAt: string | null;
   createdAt: string;
@@ -23,7 +25,7 @@ export interface CreateBlogPostPayload {
   excerpt?: string;
   content?: string;
   tagIds?: string[];
-  status?: 'draft' | 'published';
+  status?: BlogStatus;
   coverImage?: string;
   publishedAt?: string;
 }

@@ -86,9 +86,6 @@ export function ProjectsView({ projects: initialProjects }: { projects: Project[
           >
             Work, in detail<span style={{ color: '#FF6B6B' }}>.</span>
           </h1>
-          <p className="text-[16.5px] leading-[1.7] max-w-[56ch] mb-[38px]" style={{ color: '#8A8A93' }}>
-            Client freelance builds, product work, and machine-learning experiments that made it past the notebook.
-          </p>
         </motion.div>
 
         {initialProjects.length === 0 && (

@@ -20,6 +20,8 @@ export enum ApiUrls {
   PROJECTS_LIST = "/projects",
   PUBLIC_PROJECTS_LIST = "/public/projects",
   PUBLIC_PROJECT_DETAIL = '/public/projects/:id',
+  PUBLIC_BLOG_POSTS = "/public/blog",
+  PUBLIC_BLOG_POST_DETAIL = "/public/blog/:slug",
   PROJECT_DETAIL = "/projects/:id",
   UPLOAD_IMAGE = "/upload/image",
   UPLOAD_PDF = "/upload/pdf",

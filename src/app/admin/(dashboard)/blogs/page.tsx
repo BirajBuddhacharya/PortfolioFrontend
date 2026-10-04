@@ -14,9 +14,10 @@ import { useAdminPosts, useDeletePost, useUpdatePost } from '../../../../service
 import { Skeleton } from '@/components/components/ui/skeleton';
 import { BORDER, TEXT, MUTED, ACCENT, mono, heading, formField, newButton, tableHead, rowButton, SectionLabel, StatusSelect, ConfirmDelete, AdminPagination } from '../../../../components/admin/adminUi';
 import { cn } from '@/components/lib/utils';
+import { BlogStatus } from '../../../../common/enums/blog-status.enum';
 import type { BlogPost } from '../../../../types/blog';
 
-const BLOG_STATUSES = ['draft', 'published'];
+const BLOG_STATUSES = Object.values(BlogStatus);
 const SIZE = 10;
 
 export default function AdminPostsPage() {
@@ -138,7 +139,7 @@ export default function AdminPostsPage() {
                     options={BLOG_STATUSES}
                     disabled={updatePost.isPending}
                     onValueChange={(val) =>
-                      updatePost.mutate({ id: p.id, status: val as 'draft' | 'published', ...(val === 'published' ? { publishedAt: new Date().toISOString() } : {}) })
+                      updatePost.mutate({ id: p.id, status: val as BlogStatus, ...(val === BlogStatus.ACTIVE ? { publishedAt: new Date().toISOString() } : {}) })
                     }
                   />
                 </TableCell>
@@ -177,9 +178,9 @@ export default function AdminPostsPage() {
                     className="text-[10px] px-[8px] py-[2px] rounded-full border"
                     style={{
                       fontFamily: mono,
-                      background: preview.status === 'published' ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.04)',
-                      borderColor: preview.status === 'published' ? 'rgba(16,185,129,0.25)' : BORDER,
-                      color: preview.status === 'published' ? '#10B981' : MUTED,
+                      background: preview.status === BlogStatus.ACTIVE ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.04)',
+                      borderColor: preview.status === BlogStatus.ACTIVE ? 'rgba(16,185,129,0.25)' : BORDER,
+                      color: preview.status === BlogStatus.ACTIVE ? '#10B981' : MUTED,
                     }}
                   >
                     {preview.status}

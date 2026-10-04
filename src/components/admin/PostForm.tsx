@@ -17,6 +17,7 @@ import { Prose } from '../Prose';
 import { MarkdownEditor, type MarkdownEditorHandle } from './MarkdownEditor';
 import { HeadingExplorer, parseHeadings, type Heading } from './HeadingExplorer';
 import { TagAutocompleteInput, Row, field } from './FormPrimitives';
+import { BlogStatus } from '../../common/enums/blog-status.enum';
 import type { BlogPost, CreateBlogPostPayload } from '../../types/blog';
 import type { Tag } from '../../types/tag';
 import { ImagePickerButton } from './ImagePickerButton';
@@ -41,9 +42,7 @@ export function PostForm({
   const [excerpt, setExcerpt] = useState(post?.excerpt ?? '');
   const [content, setContent] = useState(post?.content ?? '');
   const [tags, setTags] = useState<Tag[]>(post?.tags ?? []);
-  const [status, setStatus] = useState<'draft' | 'published'>(
-    (post?.status as 'draft' | 'published') ?? 'draft',
-  );
+  const [status, setStatus] = useState<BlogStatus>(post?.status ?? BlogStatus.DRAFT);
   const [coverImage, setCoverImage] = useState(post?.coverImage ?? '');
   const [publishedAt, setPublishedAt] = useState(toDateInput(post?.publishedAt));
   const [preview, setPreview] = useState(false);
@@ -144,9 +143,9 @@ export function PostForm({
           <div className="-ml-2 flex flex-col gap-0.5">
             <Row icon={CircleDot} label="Status">
               <div className="flex gap-1.5 px-2 py-1">
-                {(['draft', 'published'] as const).map((s) => {
+                {Object.values(BlogStatus).map((s) => {
                   const on = status === s;
-                  const color = s === 'published' ? '#10B981' : '#6E6E78';
+                  const color = s === BlogStatus.ACTIVE ? '#10B981' : s === BlogStatus.INACTIVE ? '#F59E0B' : '#6E6E78';
                   return (
                     <Button
                       key={s}

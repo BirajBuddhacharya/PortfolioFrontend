@@ -32,7 +32,7 @@ export const useBlogPosts = () =>
     queryFn: async () => {
       const { data } = await api.get<
         ApiResponse<{ result: BlogPost[]; total: number }>
-      >(ApiUrls.BLOG_POSTS);
+      >(ApiUrls.PUBLIC_BLOG_POSTS);
       return data.data.result.map(toListItem);
     },
   });
@@ -43,23 +43,23 @@ export const useBlogFeatured = () =>
     queryFn: async () => {
       const { data } = await api.get<
         ApiResponse<{ result: BlogPost[]; total: number }>
-      >(ApiUrls.BLOG_POSTS);
+      >(ApiUrls.PUBLIC_BLOG_POSTS);
       return data.data.result.map(toListItem);
     },
     select: (posts) => posts[0],
   });
 
-export const useBlogPostDetail = (id: string) =>
+export const useBlogPostDetail = (slug: string) =>
   useQuery({
-    queryKey: [QueryKeys.BLOG_POST_DETAIL, id],
+    queryKey: [QueryKeys.BLOG_POST_DETAIL, slug],
     queryFn: async () => {
       const { data } = await api.get<ApiResponse<BlogPost>>(
-        ApiUrls.BLOG_POST_DETAIL.replace(":id", id),
+        ApiUrls.PUBLIC_BLOG_POST_DETAIL.replace(":slug", slug),
       );
       const p = data.data;
       return { ...toListItem(p), body: p.content };
     },
-    enabled: !!id,
+    enabled: !!slug,
   });
 
 export const useBlogTags = () =>
