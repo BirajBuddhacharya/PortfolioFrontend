@@ -16,6 +16,19 @@ export const useTags = () =>
     staleTime: 5 * 60 * 1000,
   });
 
+export const useTagSearch = (search: string) =>
+  useQuery({
+    queryKey: [QueryKeys.TAGS, 'search', search],
+    queryFn: async () => {
+      const { data } = await api.get<ApiResponse<Tag[]>>(
+        search ? `${ApiUrls.TAGS}?search=${encodeURIComponent(search)}` : ApiUrls.TAGS,
+      );
+      return data.data;
+    },
+    staleTime: 30 * 1000,
+    enabled: true,
+  });
+
 export const useCreateTag = () => {
   const queryClient = useQueryClient();
   return useMutation({

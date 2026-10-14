@@ -1,12 +1,12 @@
 'use client';
 
-import { useRef, useState, type KeyboardEvent } from 'react';
+import { useRef, useState, useEffect, type KeyboardEvent } from 'react';
 import { X } from 'lucide-react';
 import { Input } from '@/components/components/ui/input';
 import { Button } from '@/components/components/ui/button';
 import { Badge } from '@/components/components/ui/badge';
 import { cn } from '@/components/lib/utils';
-import { useTags, useCreateTag } from '../../services/tagsService';
+import { useTagSearch, useCreateTag } from '../../services/tagsService';
 import type { Tag } from '../../types/tag';
 
 /** Borderless Notion-style field: reveals a surface only on hover/focus. */
@@ -58,20 +58,24 @@ export function TagAutocompleteInput({
   onChange: (tags: Tag[]) => void;
 }) {
   const [draft, setDraft] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { data: allTags = [] } = useTags();
   const createTag = useCreateTag();
 
-  const suggestions = allTags.filter(
-    (t) =>
-      t.name.toLowerCase().includes(draft.toLowerCase()) &&
-      !values.find((v) => v.id === t.id),
-  );
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(draft), 300);
+    return () => clearTimeout(timer);
+  }, [draft]);
+
+  const { data: searchResults = [] } = useTagSearch(debouncedSearch);
+
+  const suggestions = searchResults.filter((t) => !values.find((v) => v.id === t.id));
 
   const addTag = (tag: Tag) => {
     if (!values.find((v) => v.id === tag.id)) onChange([...values, tag]);
     setDraft('');
+    setDebouncedSearch('');
     setOpen(false);
   };
 
@@ -80,7 +84,7 @@ export function TagAutocompleteInput({
       e.preventDefault();
       const trimmed = draft.trim();
       if (!trimmed) return;
-      const exact = allTags.find((t) => t.name.toLowerCase() === trimmed.toLowerCase());
+      const exact = searchResults.find((t) => t.name.toLowerCase() === trimmed.toLowerCase());
       if (exact) {
         addTag(exact);
       } else {
