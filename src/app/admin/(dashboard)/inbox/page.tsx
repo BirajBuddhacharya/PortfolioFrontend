@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Inbox, CheckCheck, Trash2 } from 'lucide-react';
 import { Button } from '@/components/components/ui/button';
@@ -28,6 +28,14 @@ export default function AdminInboxPage() {
   const [checkedIds, setCheckedIds] = useState<Set<number>>(new Set());
   const markRead = useMarkMessageRead();
   const deleteMessage = useDeleteMessage();
+  const autoOpened = useRef(false);
+
+  // Open the first message by default once the list has loaded.
+  useEffect(() => {
+    if (isLoading || autoOpened.current || msgs.length === 0) return;
+    autoOpened.current = true;
+    setSelected(msgs[0]);
+  }, [isLoading, msgs]);
 
   useEffect(() => {
     if (selected && !selected.read) markRead.mutate(selected.id);
