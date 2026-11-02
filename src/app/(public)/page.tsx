@@ -20,7 +20,7 @@ export const revalidate = 60;
 export const metadata = pageMetadata({
   title: "Biraj Buddhacharya | ML Engineer & Full-stack Developer",
   description:
-    "Machine learning engineer and full-stack developer. I build backends that think — RAG chatbots, recommendation engines and analytics systems — and the interfaces that make them usable.",
+    "AI engineer and full-stack developer. I build backends that think: RAG chatbots, recommendation engines and analytics systems and the interfaces that make them usable.",
   path: "/",
 });
 
