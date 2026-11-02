@@ -37,7 +37,7 @@ const navItems: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/projects", label: "Projects", icon: FolderKanban },
   { href: "/admin/blogs", label: "Blogs", icon: FileText },
-  { href: "/admin/about", label: "About", icon: User },
+  { href: "/admin/profile", label: "Profile", icon: User },
   { href: "/admin/resume", label: "Resume", icon: Briefcase },
   { href: "/admin/gallery", label: "Gallery", icon: Images },
   { href: "/admin/inbox", label: "Inbox", icon: Mail },

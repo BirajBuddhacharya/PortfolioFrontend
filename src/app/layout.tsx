@@ -29,7 +29,7 @@ const sora = Sora({
 export const metadata: Metadata = {
   title: "Biraj Buddhacharya | ML Engineer & Full-stack Developer",
   description:
-    "Machine learning engineer and full-stack developer. I build backends that think — RAG chatbots, recommendation engines, and analytics systems — and the interfaces that make them usable.",
+    "Machine learning engineer and full-stack developer. I build backends that think: RAG chatbots, recommendation engines, and analytics systems and the interfaces that make them usable.",
   keywords:
     "Biraj Buddhacharya, ML Engineer, Full-stack Developer, Machine Learning, FastAPI, React, PyTorch, LangChain, Portfolio",
   authors: [{ name: "Biraj Buddhacharya" }],
