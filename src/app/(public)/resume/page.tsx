@@ -1,4 +1,4 @@
-import { getResume, getProfile } from '../../../lib/serverApi';
+import { getResume } from '../../../lib/serverApi';
 import { pageMetadata } from '../../../lib/seo';
 import { ResumeView, type ResumeRow } from './ResumeView';
 import type { ResumeItem } from '../../../types/resume';
@@ -18,7 +18,7 @@ const toRow = (e: Pick<ResumeItem, 'title' | 'period' | 'organization' | 'body'>
 });
 
 export default async function ResumePage() {
-  const [resume, profile] = await Promise.all([getResume(), getProfile()]);
+  const resume = await getResume();
 
   const blocks = [
     { label: 'Experience', rows: (resume?.experiences ?? []).map(toRow) },
@@ -30,5 +30,5 @@ export default async function ResumePage() {
     },
   ].filter((b) => b.rows.length > 0);
 
-  return <ResumeView blocks={blocks} pdfUrl={profile?.resumePdfUrl} />;
+  return <ResumeView blocks={blocks} />;
 }
