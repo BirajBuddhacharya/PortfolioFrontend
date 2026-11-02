@@ -7,6 +7,9 @@ import { ProjectCard } from "../../../components/projects/ProjectCard";
 import { useTags } from "../../../services/tagsService";
 import { usePublicProjectsByTag } from "../../../services/projectsService";
 import { Skeleton } from "@/components/components/ui/skeleton";
+import { TagsOrderByEnum } from "src/services/common/enum/TagsOrderByEnum";
+
+const MAX_TAGS_LENGTH = 8;
 
 function useColumnCount() {
   const [count, setCount] = useState(3);
@@ -59,7 +62,9 @@ export function ProjectsView({
   const [activeTagId, setActiveTagId] = useState<string | null>(null);
   const columnCount = useColumnCount();
 
-  const { data: tags = [], isLoading } = useTags();
+  const { data: tags = [], isLoading } = useTags({
+    orderBy: TagsOrderByEnum.PROJECT,
+  });
   const { data: filteredProjects, isFetching } =
     usePublicProjectsByTag(activeTagId);
 
@@ -180,7 +185,7 @@ export function ProjectsView({
         {/* Tag filters */}
         {isLoading ? (
           <div className="flex gap-2 flex-wrap mb-[40px]">
-            {Array.from({ length: 5 }).map((_, i) => (
+            {Array.from({ length: MAX_TAGS_LENGTH }).map((_, i) => (
               <Skeleton
                 key={i}
                 className="h-[38px] rounded-full"
@@ -194,7 +199,9 @@ export function ProjectsView({
             <div className="flex gap-2 flex-wrap mb-[40px]">
               {[
                 { id: null, label: "All" },
-                ...tags.map((t) => ({ id: t.id, label: t.name })),
+                ...tags
+                  .slice(0, MAX_TAGS_LENGTH)
+                  .map((t) => ({ id: t.id, label: t.name })),
               ].map((f) => {
                 const isActive = activeTagId === f.id;
                 return (

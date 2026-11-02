@@ -1,16 +1,19 @@
-'use client';
+"use client";
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { QueryKeys } from '../lib/queryKeys';
-import { ApiUrls } from '../lib/apiUrls';
-import { api, type ApiResponse } from '../lib/apiClient';
-import type { Tag } from '../types/tag';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryKeys } from "../lib/queryKeys";
+import { ApiUrls } from "../lib/apiUrls";
+import { api, type ApiResponse } from "../lib/apiClient";
+import type { Tag } from "../types/tag";
+import { TagsOrderByEnum } from "./common/enum/TagsOrderByEnum";
 
-export const useTags = () =>
+export const useTags = ({ orderBy }: { orderBy?: TagsOrderByEnum } = {}) =>
   useQuery({
     queryKey: [QueryKeys.TAGS],
     queryFn: async () => {
-      const { data } = await api.get<ApiResponse<Tag[]>>(ApiUrls.TAGS);
+      const { data } = await api.get<ApiResponse<Tag[]>>(ApiUrls.TAGS, {
+        params: { orderBy },
+      });
       return data.data;
     },
     staleTime: 5 * 60 * 1000,
@@ -18,10 +21,12 @@ export const useTags = () =>
 
 export const useTagSearch = (search: string) =>
   useQuery({
-    queryKey: [QueryKeys.TAGS, 'search', search],
+    queryKey: [QueryKeys.TAGS, "search", search],
     queryFn: async () => {
       const { data } = await api.get<ApiResponse<Tag[]>>(
-        search ? `${ApiUrls.TAGS}?search=${encodeURIComponent(search)}` : ApiUrls.TAGS,
+        search
+          ? `${ApiUrls.TAGS}?search=${encodeURIComponent(search)}`
+          : ApiUrls.TAGS,
       );
       return data.data;
     },
@@ -46,7 +51,7 @@ export const useDeleteTag = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      await api.delete(ApiUrls.TAG_DETAIL.replace(':id', id));
+      await api.delete(ApiUrls.TAG_DETAIL.replace(":id", id));
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.TAGS] });
