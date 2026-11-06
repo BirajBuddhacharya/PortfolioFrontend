@@ -52,7 +52,8 @@ export const getProject = (id: string) =>
 
 export const getBlogs = () => list<BlogPost>(ApiUrls.PUBLIC_BLOG_POSTS);
 export const getBlog = (slug: string) => get<BlogPost>(ApiUrls.PUBLIC_BLOG_POST_DETAIL.replace(':slug', slug));
-export const getBlogTags = async () => (await get<Tag[]>("/tags")) ?? [];
+export const getBlogTags = async () =>
+  (await get<Tag[]>(ApiUrls.PUBLIC_TAGS)) ?? [];
 
 export const getProfile = () => get<Profile>("/profile");
 export const getResume = () => get<ResumeGrouped>("/resume");

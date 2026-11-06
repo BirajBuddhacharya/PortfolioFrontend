@@ -2,17 +2,16 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Badge } from '@/components/components/ui/badge';
 import { Card } from '@/components/components/ui/card';
 import { Button } from '@/components/components/ui/button';
 import { cn } from '@/components/lib/utils';
-import { useAdminOverview, useAdminChart, useAdminTopPages, useAdminActivity, useAdminInbox } from '../../../services/adminService';
+import { useAdminOverview, useAdminChart, useAdminContentCounts, useAdminActivity, useAdminInbox } from '../../../services/adminService';
 import { ACCENT, MUTED, TEXT, TEXT2, mono, heading, dashCard, SectionLabel } from '../../../components/admin/adminUi';
 
 export default function AdminDashboardPage() {
   const { data: stats = [] } = useAdminOverview();
   const { data: bars = [] } = useAdminChart();
-  const { data: topPages = [] } = useAdminTopPages();
+  const { data: contentCounts = [] } = useAdminContentCounts();
   const { data: activity = [] } = useAdminActivity();
   const { data: msgs = [] } = useAdminInbox();
 
@@ -29,14 +28,8 @@ export default function AdminDashboardPage() {
         <Card className={dashCard}>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <SectionLabel>visitors — last 14 days</SectionLabel>
+              <SectionLabel>content created — last 14 days</SectionLabel>
             </div>
-            <Badge
-              variant="outline"
-              className="border-[#10B981]/25 bg-[#10B981]/10 px-3 py-1 font-mono text-[11px] font-normal text-[#10B981]"
-            >
-              +18.4%
-            </Badge>
           </div>
           <div className="flex-1 flex items-end gap-[5px]">
             {bars.map((h, i) => (
@@ -120,18 +113,18 @@ export default function AdminDashboardPage() {
         className="sm:col-span-2 lg:col-span-2"
       >
         <Card className={dashCard}>
-          <SectionLabel>top pages</SectionLabel>
+          <SectionLabel>content breakdown</SectionLabel>
           <div className="flex flex-col gap-[6px]">
-            {topPages.slice(0, 3).map((pg) => (
-              <div key={pg.path} className="flex items-center gap-3">
-                <span className="text-[12px] w-[80px] shrink-0" style={{ fontFamily: mono, color: TEXT2 }}>{pg.path}</span>
+            {contentCounts.map((item) => (
+              <div key={item.label} className="flex items-center gap-3">
+                <span className="text-[12px] w-[80px] shrink-0" style={{ fontFamily: mono, color: TEXT2 }}>{item.label}</span>
                 <div className="flex-1 h-[4px] rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
                   <div
                     className="h-full rounded-full"
-                    style={{ width: `${pg.pct}%`, background: `${ACCENT}88` }}
+                    style={{ width: `${item.pct}%`, background: `${ACCENT}88` }}
                   />
                 </div>
-                <span className="text-[11px] w-[50px] text-right" style={{ fontFamily: mono, color: MUTED }}>{pg.views}</span>
+                <span className="text-[11px] w-[50px] text-right" style={{ fontFamily: mono, color: MUTED }}>{item.count}</span>
               </div>
             ))}
           </div>

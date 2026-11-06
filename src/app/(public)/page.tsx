@@ -14,6 +14,7 @@ import {
 } from "../../lib/serverApi";
 import { pageMetadata } from "../../lib/seo";
 import { ProjectStatus } from "src/services/common/enum/ProjectStatus";
+import { formatPeriod } from "../../lib/formatPeriod";
 
 export const revalidate = 60;
 
@@ -38,7 +39,7 @@ export default async function HomePage() {
   const featuredProjects = liveProjects.slice(0, 3);
 
   const experience = (resume?.experiences ?? []).map((e) => ({
-    period: e.period ?? "",
+    period: formatPeriod(e.period),
     location: e.location ?? "",
     role: e.title,
     company: e.organization ?? "",

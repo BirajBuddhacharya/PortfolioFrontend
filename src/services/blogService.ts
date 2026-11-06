@@ -66,7 +66,7 @@ export const useBlogTags = () =>
   useQuery({
     queryKey: [QueryKeys.BLOG_TAGS],
     queryFn: async () => {
-      const { data } = await api.get<ApiResponse<Tag[]>>(ApiUrls.TAGS);
+      const { data } = await api.get<ApiResponse<Tag[]>>(ApiUrls.PUBLIC_TAGS);
       return data.data;
     },
   });

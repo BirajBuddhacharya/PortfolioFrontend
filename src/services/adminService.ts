@@ -33,7 +33,7 @@ interface DashboardOverview {
 
 interface DashboardSnapshot {
   chartBars: number[];
-  topPages: { path: string; views: number; pct: number }[];
+  contentCounts: { label: string; count: number; pct: number }[];
   activity: { text: string; time: string }[];
 }
 
@@ -63,11 +63,11 @@ export const useAdminChart = () =>
     select: (s: DashboardSnapshot) => s.chartBars,
   });
 
-export const useAdminTopPages = () =>
+export const useAdminContentCounts = () =>
   useQuery({
     queryKey: [QueryKeys.DASHBOARD_SNAPSHOT],
     queryFn: fetchSnapshot,
-    select: (s: DashboardSnapshot) => s.topPages,
+    select: (s: DashboardSnapshot) => s.contentCounts,
   });
 
 export const useAdminActivity = () =>

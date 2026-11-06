@@ -42,9 +42,11 @@ export function Footer({
             className="text-[12px] leading-[1.8]"
             style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#6E6E78' }}
           >
-            {profile?.location}
-            {profile?.location && email && <br />}
-            {email?.value}
+            {profile?.location && <span>{profile.location}</span>}
+            {profile?.location && email?.value && (
+              <span aria-hidden="true"> · </span>
+            )}
+            {email?.value && <span>{email.value}</span>}
           </div>
         </div>
 

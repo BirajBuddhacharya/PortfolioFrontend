@@ -164,7 +164,7 @@ function Sidebar({
             className="text-[11px]"
             style={{ fontFamily: mono, color: MUTED }}
           >
-            biraj / admin
+            portfolio / admin
           </div>
         </Link>
       </div>
@@ -250,8 +250,8 @@ function Sidebar({
         <Button
           type="button"
           variant="ghost"
-          onClick={() => {
-            logout();
+          onClick={async () => {
+            await logout();
             router.replace("/admin/login");
             router.refresh();
           }}

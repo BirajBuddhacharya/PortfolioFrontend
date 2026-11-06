@@ -208,6 +208,7 @@ export function ProjectsView({
                   <button
                     key={f.id ?? "all"}
                     onClick={() => setActiveTagId(f.id)}
+                    aria-pressed={isActive}
                     className="px-4 py-[9px] rounded-full text-[12.5px] border transition-all duration-200 cursor-pointer"
                     style={{
                       fontFamily: "var(--font-jetbrains-mono), monospace",

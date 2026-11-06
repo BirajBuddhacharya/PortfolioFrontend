@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Lock } from "lucide-react";
 import { useAdminLogin } from "../../../services/authService";
-import { setToken } from "../../../lib/authToken";
+import { setTokens } from "../../../lib/authToken";
 
 const BG = "#09090B";
 const CARD = "#111115";
@@ -30,8 +30,9 @@ export default function AdminLoginPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
+    const refreshToken = params.get("refreshToken");
     if (token) {
-      setToken(token);
+      setTokens({ accessToken: token, refreshToken: refreshToken ?? undefined });
       window.history.replaceState({}, "", "/admin/login");
       router.replace("/admin");
     }
@@ -111,7 +112,7 @@ export default function AdminLoginPage() {
               className="text-[11.5px]"
               style={{ fontFamily: mono, color: MUTED }}
             >
-              biraj / admin
+              authorized personnel only
             </div>
           </div>
         </div>

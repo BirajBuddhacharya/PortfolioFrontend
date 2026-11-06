@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QueryKeys } from '../lib/queryKeys';
 import { ApiUrls } from '../lib/apiUrls';
 import { api, type ApiResponse } from '../lib/apiClient';
+import { formatPeriod } from '../lib/formatPeriod';
 import type {
   ResumeGrouped,
   ResumeItemFull,
@@ -22,7 +23,7 @@ export const useResume = () =>
 
 const toRow = (e: { title: string; period: string | null; organization: string | null; body: string | null }) => ({
   title: e.title,
-  meta: [e.organization, e.period].filter(Boolean).join(' · '),
+  meta: [e.organization, formatPeriod(e.period)].filter(Boolean).join(' · '),
   body: e.body ?? '',
 });
 

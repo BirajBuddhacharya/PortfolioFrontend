@@ -11,7 +11,7 @@ export const useTags = ({ orderBy }: { orderBy?: TagsOrderByEnum } = {}) =>
   useQuery({
     queryKey: [QueryKeys.TAGS],
     queryFn: async () => {
-      const { data } = await api.get<ApiResponse<Tag[]>>(ApiUrls.TAGS, {
+      const { data } = await api.get<ApiResponse<Tag[]>>(ApiUrls.PUBLIC_TAGS, {
         params: { orderBy },
       });
       return data.data;

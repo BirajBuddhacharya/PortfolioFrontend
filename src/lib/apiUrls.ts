@@ -1,5 +1,7 @@
 export enum ApiUrls {
   AUTH_LOGIN = "/auth/login",
+  AUTH_LOGOUT = "/auth/logout",
+  AUTH_REFRESH = "/auth/refresh",
   AUTH_ME = "/auth/me",
   USERS_ME = "/users/me",
   PROFILE = "/profile",
@@ -22,6 +24,7 @@ export enum ApiUrls {
   PUBLIC_PROJECT_DETAIL = '/public/projects/:id',
   PUBLIC_BLOG_POSTS = "/public/blog",
   PUBLIC_BLOG_POST_DETAIL = "/public/blog/:slug",
+  PUBLIC_TAGS = "/public/tags",
   PROJECT_DETAIL = "/projects/:id",
   UPLOAD_IMAGE = "/upload/image",
   UPLOAD_PDF = "/upload/pdf",

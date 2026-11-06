@@ -18,7 +18,8 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 export function ProjectDetailView({ project }: { project: Project }) {
-  const meta = [project.year, project.status]
+  // B5 — never render the internal DB enum (ACTIVE/ARCHIVED) to visitors.
+  const meta = [project.year]
     .map((m) => (typeof m === 'string' ? m.trim() : m))
     .filter((m): m is string => !!m);
 
