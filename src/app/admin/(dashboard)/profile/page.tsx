@@ -305,6 +305,7 @@ function HomeTab() {
   const updateProfile = useUpdateProfile();
 
   const [stats, setStats] = useState<{ value: string; label: string }[]>([]);
+  const [heroDescription, setHeroDescription] = useState("");
   const [ticker, setTicker] = useState<string[]>([]);
   const [tickerInput, setTickerInput] = useState("");
   const hydrated = useRef(false);
@@ -312,6 +313,7 @@ function HomeTab() {
   useEffect(() => {
     if (about && !hydrated.current) {
       hydrated.current = true;
+      setHeroDescription(about.heroDescription ?? "");
       setStats(
         (about.stats ?? []).map((s) => ({
           value: s.value ?? "",
@@ -336,6 +338,7 @@ function HomeTab() {
     updateProfile.mutate(
       {
         stats: stats.filter((s) => s.value.trim() || s.label.trim()),
+        heroDescription,
         ticker,
       },
       { onSuccess: () => toast.success("Saved") },
@@ -346,6 +349,21 @@ function HomeTab() {
 
   return (
     <div className="flex flex-col gap-10">
+      {/*Home Page Description*/}
+      <div>
+        <SectionLabel>Home Page Description</SectionLabel>
+        <Input
+          value={heroDescription}
+          onChange={(e) => setHeroDescription(e.target.value)}
+          placeholder="e.g. I’m a full-stack engineer with a passion for building delightful user experiences."
+          className={cn(
+            formField,
+            "h-auto px-4 py-[10px] text-[15px] font-semibold tracking-[-0.02em] md:text-[15px]",
+          )}
+          style={{ fontFamily: heading }}
+        />
+      </div>
+
       {/* ── Stats ── */}
       <div>
         <div className="flex items-center justify-between mb-4">

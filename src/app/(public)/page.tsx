@@ -77,7 +77,7 @@ export default async function HomePage() {
       }}
     >
       <main className="relative z-10">
-        <HeroSection />
+        <HeroSection heroDescription={profile?.heroDescription} />
         <TickerSection items={profile?.ticker ?? []} />
         <StatsSection stats={profile?.stats ?? []} />
         <FeaturedProjectsSection

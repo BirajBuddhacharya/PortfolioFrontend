@@ -13,6 +13,7 @@ export interface Profile {
   resumePdfUrl?: string | null;
   emailNotifications?: boolean;
   updatedAt?: string;
+  heroDescription?: string;
 }
 
-export type UpdateProfilePayload = Partial<Omit<Profile, 'updatedAt'>>;
+export type UpdateProfilePayload = Partial<Omit<Profile, "updatedAt">>;

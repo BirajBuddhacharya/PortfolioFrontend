@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 
-export function HeroSection() {
+export function HeroSection({ heroDescription }: { heroDescription?: string }) {
   return (
     <section
       className="relative overflow-hidden"
@@ -100,9 +100,8 @@ export function HeroSection() {
               { color: "#A1A1AA", textWrap: "pretty" } as React.CSSProperties
             }
           >
-            Machine learning engineer and full-stack developer. I build backends
-            that think — RAG chatbots, recommendation engines and analytics
-            systems — and the interfaces that make them usable.
+            {heroDescription ||
+              "I build backends that think: RAG chatbots, recommendation engines and analytics systems and the interfaces that make them usable."}
           </p>
 
           <div className="flex gap-3 flex-wrap">
