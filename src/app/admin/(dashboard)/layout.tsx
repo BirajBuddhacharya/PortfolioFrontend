@@ -14,6 +14,7 @@ import {
   LogOut,
   Images,
   Menu,
+  BarChart3,
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/components/ui/button";
@@ -40,6 +41,7 @@ const navItems: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/admin/profile", label: "Profile", icon: User },
   { href: "/admin/resume", label: "Resume", icon: Briefcase },
   { href: "/admin/gallery", label: "Gallery", icon: Images },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/inbox", label: "Inbox", icon: Mail },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
