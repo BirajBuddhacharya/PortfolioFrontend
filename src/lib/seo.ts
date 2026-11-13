@@ -51,6 +51,14 @@ export function pageMetadata({
       title,
       description,
       url,
+      images: [
+        {
+          url: DEFAULT_OG_IMAGE,
+          width: 1024,
+          height: 680,
+          alt: SITE_NAME,
+        },
+      ],
       siteName: SITE_NAME,
       type,
       ...(publishedTime ? { publishedTime } : {}),

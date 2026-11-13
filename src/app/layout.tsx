@@ -3,7 +3,7 @@ import { Space_Grotesk, JetBrains_Mono, Sora } from "next/font/google";
 import { Toaster } from "../../components/components/ui/sonner";
 import { QueryProvider } from "../providers/QueryProvider";
 import { getProfile, getContactLinks } from "../lib/serverApi";
-import { DEFAULT_OG_IMAGE, SITE_URL } from "../lib/seo";
+import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from "../lib/seo";
 import "./globals.css";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Env } from "src/utils/Env";
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
         url: DEFAULT_OG_IMAGE,
         width: 1024,
         height: 680,
-        alt: "Biraj Buddhacharya",
+        alt: SITE_NAME,
       },
     ],
     title: "Biraj Buddhacharya | ML Engineer & Full-stack Developer",
