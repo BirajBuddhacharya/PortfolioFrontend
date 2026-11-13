@@ -22,13 +22,11 @@ interface Fact {
 
 export function AboutView({
   headline,
-  coverImage,
   paragraphs,
   education,
   facts,
 }: {
   headline: string;
-  coverImage: string | null;
   paragraphs: string[];
   education: EducationRow[];
   facts: Fact[];
@@ -72,21 +70,19 @@ export function AboutView({
             ))}
           </motion.div>
 
-          {coverImage && (
-            <motion.div
-              {...reveal}
-              transition={{ ...reveal.transition, delay: 0.15 }}
-              className="relative"
-              style={{ aspectRatio: '4/5', borderRadius: 20, border: '1px solid rgba(255,255,255,0.1)', background: 'linear-gradient(135deg,#141418,#0C0C0F)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={coverImage}
-                alt="Portrait"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            </motion.div>
-          )}
+          <motion.div
+            {...reveal}
+            transition={{ ...reveal.transition, delay: 0.15 }}
+            className="relative"
+            style={{ aspectRatio: '4/5', borderRadius: 20, border: '1px solid rgba(255,255,255,0.1)', background: 'linear-gradient(135deg,#141418,#0C0C0F)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/heroSection.png"
+              alt="Biraj Buddhacharya"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+            />
+          </motion.div>
         </div>
 
         {education.length > 0 && (
