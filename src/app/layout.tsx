@@ -35,9 +35,6 @@ export const metadata: Metadata = {
   authors: [{ name: "Biraj Buddhacharya" }],
   robots: "index, follow",
   metadataBase: new URL("https://birajbuddhacharya.com.np"),
-  verification: {
-    google: "MfMgvrHxXGqKqKNEvhpvELHqDe7tx5nX-T6quHavP2Q",
-  },
   openGraph: {
     images: [
       {
