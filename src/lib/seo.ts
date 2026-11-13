@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://birajbuddhacharya.com.np";
 export const SITE_NAME = "Biraj Buddhacharya";
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/heroSection.png`;
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/OGImage.png`;
 
 /** Collapses markdown/prose down to a clean meta-description sentence. */
 export function toDescription(
