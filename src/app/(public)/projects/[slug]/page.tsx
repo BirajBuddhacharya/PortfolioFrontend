@@ -18,6 +18,7 @@ export async function generateMetadata({
   return pageMetadata({
     title: `${project.title} | Biraj Buddhacharya`,
     description: toDescription(project.summary || project.blurb || project.content),
+    image: project.coverImage,
     path: `/projects/${slug}`,
     type: 'article',
   });

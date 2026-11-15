@@ -28,6 +28,7 @@ export function toDescription(
 export function pageMetadata({
   title,
   description,
+  image,
   path,
   type = "website",
   publishedTime,
@@ -53,10 +54,10 @@ export function pageMetadata({
       url,
       images: [
         {
-          url: DEFAULT_OG_IMAGE,
+          url: image ? image : DEFAULT_OG_IMAGE,
           width: 1024,
           height: 680,
-          alt: SITE_NAME,
+          alt: title,
         },
       ],
       siteName: SITE_NAME,
