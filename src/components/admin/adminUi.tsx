@@ -163,7 +163,8 @@ export function ConfirmDelete({
 
 // ─── Status badge ────────────────────────────────────────────────────────────
 export function StatusBadge({ status }: { status: string }) {
-  const isLive = status === "live" || status === "published" || status === "ACTIVE";
+  const isLive =
+    status === "live" || status === "published" || status === "ACTIVE";
   return (
     <Badge
       variant="outline"
@@ -191,7 +192,8 @@ export function StatusSelect({
   onValueChange: (val: string) => void;
   disabled?: boolean;
 }) {
-  const isLive = status === "live" || status === "published" || status === "ACTIVE";
+  const isLive =
+    status === "live" || status === "published" || status === "ACTIVE";
   return (
     <Select value={status} onValueChange={onValueChange} disabled={disabled}>
       <SelectTrigger
@@ -221,11 +223,37 @@ export function StatusSelect({
 }
 
 // ─── Section heading ─────────────────────────────────────────────────────────
-export function SectionLabel({ children }: { children: React.ReactNode }) {
+export function SectionLabel({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <div
-      className="text-[10.5px] uppercase tracking-[0.14em] mb-4"
+      className={cn(
+        "text-[10.5px] uppercase tracking-[0.14em] mb-4",
+        className,
+      )}
       style={{ fontFamily: mono, color: MUTED }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/** Dashed empty-state block shown when an editable list has no rows yet. */
+export function EmptyState({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="rounded-[12px] border border-dashed px-4 py-8 text-center text-[12px] leading-relaxed"
+      style={{
+        borderColor: BORDER,
+        fontFamily: mono,
+        color: MUTED,
+        background: SURFACE,
+      }}
     >
       {children}
     </div>
@@ -304,14 +332,26 @@ export function ResumeRowEditor<T extends ResumeRow>({
   rows,
   setRows,
   addLabel,
+  sectionLabel,
+  emptyState,
 }: {
   rows: T[];
   setRows: React.Dispatch<React.SetStateAction<T[]>>;
   addLabel: string;
+  sectionLabel?: string;
+  emptyState?: React.ReactNode;
 }) {
   return (
     <>
-      <div className="flex justify-end mb-4">
+      <div
+        className={cn(
+          "flex items-center justify-between gap-4 mb-4",
+          !sectionLabel && "justify-end",
+        )}
+      >
+        {sectionLabel && (
+          <SectionLabel className="mb-0">{sectionLabel}</SectionLabel>
+        )}
         <Button
           type="button"
           variant="outline"
@@ -333,8 +373,11 @@ export function ResumeRowEditor<T extends ResumeRow>({
           {addLabel}
         </Button>
       </div>
-      <div className="flex flex-col gap-4">
-        {rows.map((row, i) => (
+      {rows.length === 0 && emptyState ? (
+        emptyState
+      ) : (
+        <div className="flex flex-col gap-4">
+          {rows.map((row, i) => (
           <Card key={i} className={panelCard}>
             <div className="flex items-center justify-between">
               <div
@@ -436,8 +479,9 @@ export function ResumeRowEditor<T extends ResumeRow>({
               />
             </div>
           </Card>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </>
   );
 }

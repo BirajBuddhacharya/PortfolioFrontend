@@ -8,6 +8,7 @@ import { useGallery, useDeleteGalleryItem } from '../../../../services/uploadSer
 import { QueryKeys } from '../../../../lib/queryKeys';
 import { BORDER, MUTED, TEXT, mono, SectionLabel, ConfirmDelete } from '../../../../components/admin/adminUi';
 import { ImageUploadButton } from '../../../../components/admin/ImageUploadButton';
+import { GallerySkeleton } from '../../../../components/admin/GallerySkeleton';
 
 export default function AdminGalleryPage() {
   const { data: items = [], isLoading } = useGallery();
@@ -24,9 +25,7 @@ export default function AdminGalleryPage() {
         <ImageUploadButton onUploaded={() => queryClient.invalidateQueries({ queryKey: [QueryKeys.GALLERY] })} />
       </div>
 
-      {isLoading && (
-        <div className="text-[13px] py-8" style={{ fontFamily: mono, color: MUTED }}>Loading…</div>
-      )}
+      {isLoading && <GallerySkeleton />}
 
       {images.length > 0 && (
         <div className="mb-8">

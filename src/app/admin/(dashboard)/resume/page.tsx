@@ -15,9 +15,15 @@ import { useUploadPdf } from '../../../../services/uploadService';
 import type { CreateResumeItemPayload, UpdateResumeItemPayload } from '../../../../types/resume';
 import {
   MUTED, mono, formField, addButton, saveButton, panelCard, resumeLabel, rowDangerButton,
-  SectionLabel, ResumeRowEditor, saveResumeRows,
+  SectionLabel, ResumeRowEditor, saveResumeRows, EmptyState,
   type ResumeRow, type SkillRow,
 } from '../../../../components/admin/adminUi';
+import {
+  ResumeExperienceSkeleton,
+  ResumeEducationCertsSkeleton,
+  ResumeSkillsSkeleton,
+  ResumePdfSkeleton,
+} from '../../../../components/admin/ResumeSkeleton';
 
 export default function AdminResumePage() {
   return (
@@ -53,7 +59,7 @@ export default function AdminResumePage() {
 }
 
 function ExperienceSection() {
-  const { data: resumeAdmin } = useAdminResume();
+  const { data: resumeAdmin, isLoading } = useAdminResume();
   const [experiences, setExperiences] = useState<ResumeRow[]>([]);
   const hydrated = useRef(false);
   const originalIds = useRef<string[]>([]);
@@ -94,23 +100,22 @@ function ExperienceSection() {
     }
   };
 
+  if (isLoading) return <ResumeExperienceSkeleton />;
+
   return (
     <div className="max-w-[860px] flex flex-col gap-6">
-      <SectionLabel>experience</SectionLabel>
-      {experiences.length === 0 && (
-        <div className="py-10 flex flex-col items-center gap-3 rounded-[14px] border border-dashed" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-          <span className="text-[12px]" style={{ fontFamily: mono, color: MUTED }}>no experience entries yet</span>
-          <button
-            type="button"
-            onClick={() => setExperiences([{ title: '', period: '', organization: '', body: '' }])}
-            className="text-[11px] px-3 py-[5px] rounded-[7px] border"
-            style={{ fontFamily: mono, borderColor: 'rgba(255,107,107,0.3)', color: '#FF6B6B' }}
-          >
-            + add first entry
-          </button>
-        </div>
-      )}
-      <ResumeRowEditor rows={experiences} setRows={setExperiences} addLabel="+ add experience" />
+      <ResumeRowEditor
+        rows={experiences}
+        setRows={setExperiences}
+        addLabel="+ add experience"
+        sectionLabel="experience"
+        emptyState={
+          <EmptyState>
+            no experience entries yet — use &quot;+ add experience&quot; to add
+            your first role.
+          </EmptyState>
+        }
+      />
       <Button
         type="button"
         onClick={handleSave}
@@ -124,7 +129,7 @@ function ExperienceSection() {
 }
 
 function EducationCertsSection() {
-  const { data: resumeAdmin } = useAdminResume();
+  const { data: resumeAdmin, isLoading } = useAdminResume();
   const [educationEntries, setEducationEntries] = useState<ResumeRow[]>([]);
   const [certs, setCerts] = useState<ResumeRow[]>([]);
   const hydrated = useRef(false);
@@ -165,15 +170,37 @@ function EducationCertsSection() {
     }
   };
 
+  if (isLoading) return <ResumeEducationCertsSkeleton />;
+
   return (
     <div className="max-w-[860px] flex flex-col gap-10">
       <div>
-        <SectionLabel>education</SectionLabel>
-        <ResumeRowEditor rows={educationEntries} setRows={setEducationEntries} addLabel="+ add education" />
+        <ResumeRowEditor
+          rows={educationEntries}
+          setRows={setEducationEntries}
+          addLabel="+ add education"
+          sectionLabel="education"
+          emptyState={
+            <EmptyState>
+              no education entries yet — use &quot;+ add education&quot; to add
+              one.
+            </EmptyState>
+          }
+        />
       </div>
       <div>
-        <SectionLabel>certifications</SectionLabel>
-        <ResumeRowEditor rows={certs} setRows={setCerts} addLabel="+ add certification" />
+        <ResumeRowEditor
+          rows={certs}
+          setRows={setCerts}
+          addLabel="+ add certification"
+          sectionLabel="certification"
+          emptyState={
+            <EmptyState>
+              no certifications yet — use &quot;+ add certification&quot; to add
+              one.
+            </EmptyState>
+          }
+        />
       </div>
       <Button
         type="button"
@@ -188,7 +215,7 @@ function EducationCertsSection() {
 }
 
 function SkillsSection() {
-  const { data: resumeAdmin } = useAdminResume();
+  const { data: resumeAdmin, isLoading } = useAdminResume();
   const [skills, setSkills] = useState<SkillRow[]>([]);
   const hydrated = useRef(false);
   const originalIds = useRef<string[]>([]);
@@ -222,10 +249,12 @@ function SkillsSection() {
     }
   };
 
+  if (isLoading) return <ResumeSkillsSkeleton />;
+
   return (
     <div className="max-w-[860px] flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <SectionLabel>skills</SectionLabel>
+        <SectionLabel className="mb-0">skills</SectionLabel>
         <Button
           type="button"
           variant="outline"
@@ -236,41 +265,47 @@ function SkillsSection() {
           + add category
         </Button>
       </div>
-      <div className="flex flex-col gap-4">
-        {skills.map((skill, i) => (
-          <Card key={i} className={panelCard}>
-            <div className="flex items-center justify-between">
-              <div className="text-[11px]" style={{ fontFamily: mono, color: MUTED }}>category {i + 1}</div>
-              <Button
-                type="button"
-                variant="outline"
-                size="xs"
-                onClick={() => setSkills((prev) => prev.filter((_, j) => j !== i))}
-                className={cn(rowDangerButton, 'rounded-[7px] py-[4px] text-[10.5px]')}
-              >
-                remove
-              </Button>
-            </div>
-            <div>
-              <Label className={resumeLabel}>category name</Label>
-              <Input
-                value={skill.title}
-                onChange={(e) => setSkills((prev) => prev.map((r, j) => j === i ? { ...r, title: e.target.value } : r))}
-                className={cn(formField, 'h-auto rounded-[9px] px-3 py-[8px] text-[13px] md:text-[13px]')}
-              />
-            </div>
-            <div>
-              <Label className={resumeLabel}>items (comma-separated)</Label>
-              <Textarea
-                value={skill.body}
-                onChange={(e) => setSkills((prev) => prev.map((r, j) => j === i ? { ...r, body: e.target.value } : r))}
-                rows={2}
-                className={cn(formField, 'resize-none rounded-[9px] px-3 py-[8px] text-[13px] leading-relaxed md:text-[13px]')}
-              />
-            </div>
-          </Card>
-        ))}
-      </div>
+      {skills.length === 0 ? (
+        <EmptyState>
+          no skill categories yet — use &quot;+ add category&quot; to add one.
+        </EmptyState>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {skills.map((skill, i) => (
+            <Card key={i} className={panelCard}>
+              <div className="flex items-center justify-between">
+                <div className="text-[11px]" style={{ fontFamily: mono, color: MUTED }}>category {i + 1}</div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="xs"
+                  onClick={() => setSkills((prev) => prev.filter((_, j) => j !== i))}
+                  className={cn(rowDangerButton, 'rounded-[7px] py-[4px] text-[10.5px]')}
+                >
+                  remove
+                </Button>
+              </div>
+              <div>
+                <Label className={resumeLabel}>category name</Label>
+                <Input
+                  value={skill.title}
+                  onChange={(e) => setSkills((prev) => prev.map((r, j) => j === i ? { ...r, title: e.target.value } : r))}
+                  className={cn(formField, 'h-auto rounded-[9px] px-3 py-[8px] text-[13px] md:text-[13px]')}
+                />
+              </div>
+              <div>
+                <Label className={resumeLabel}>items (comma-separated)</Label>
+                <Textarea
+                  value={skill.body}
+                  onChange={(e) => setSkills((prev) => prev.map((r, j) => j === i ? { ...r, body: e.target.value } : r))}
+                  rows={2}
+                  className={cn(formField, 'resize-none rounded-[9px] px-3 py-[8px] text-[13px] leading-relaxed md:text-[13px]')}
+                />
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
       <Button
         type="button"
         onClick={handleSave}
@@ -284,7 +319,7 @@ function SkillsSection() {
 }
 
 function ResumePdfSection() {
-  const { data: profile } = useAdminAbout();
+  const { data: profile, isLoading } = useAdminAbout();
   const updateProfile = useUpdateProfile();
   const [pdfUrl, setPdfUrl] = useState('');
   const hydrated = useRef(false);
@@ -325,6 +360,8 @@ function ResumePdfSection() {
     const file = e.dataTransfer.files?.[0];
     if (file) handleFile(file);
   };
+
+  if (isLoading) return <ResumePdfSkeleton />;
 
   return (
     <div className="max-w-[860px] flex flex-col gap-6">

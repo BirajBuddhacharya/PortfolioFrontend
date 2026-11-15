@@ -42,6 +42,11 @@ import {
   type ContactLinkRow,
 } from "../../../../components/admin/adminUi";
 import { ImagePickerButton } from "../../../../components/admin/ImagePickerButton";
+import {
+  SettingsAccountSkeleton,
+  SettingsLinksSkeleton,
+  SettingsNotificationsSkeleton,
+} from "../../../../components/admin/SettingsSkeleton";
 
 const triggerCls =
   "justify-start rounded-[8px] px-3 py-[9px] text-[13px] font-normal text-left h-auto " +
@@ -98,7 +103,7 @@ export default function AdminSettingsPage() {
 }
 
 function AccountTab() {
-  const { data: me } = useAdminMe();
+  const { data: me, isLoading } = useAdminMe();
   const updateMe = useUpdateMe();
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
@@ -111,6 +116,8 @@ function AccountTab() {
       setEmail(me.email ?? "");
     }
   }, [me]);
+
+  if (isLoading) return <SettingsAccountSkeleton />;
 
   return (
     <div className="flex flex-col gap-6">
@@ -163,7 +170,7 @@ function AccountTab() {
 }
 
 function LinksTab() {
-  const { data: contactLinks } = useContactLinks();
+  const { data: contactLinks, isLoading } = useContactLinks();
   const [links, setLinks] = useState<ContactLinkRow[]>([]);
   const hydrated = useRef(false);
   const originalLinkIds = useRef<string[]>([]);
@@ -199,6 +206,8 @@ function LinksTab() {
       setSavingLinks(false);
     }
   };
+
+  if (isLoading) return <SettingsLinksSkeleton />;
 
   return (
     <div className="flex flex-col gap-6">
@@ -320,7 +329,7 @@ function LinksTab() {
 }
 
 function NotificationsTab() {
-  const { data: profile } = useAdminAbout();
+  const { data: profile, isLoading } = useAdminAbout();
   const updateProfile = useUpdateProfile();
   const notifEmail = profile?.emailNotifications ?? true;
 
@@ -337,6 +346,8 @@ function NotificationsTab() {
       },
     );
   };
+
+  if (isLoading) return <SettingsNotificationsSkeleton />;
 
   return (
     <div className="flex flex-col gap-6">
