@@ -35,15 +35,15 @@ import {
 } from "../../../components/admin/adminUi";
 
 const navItems: { href: string; label: string; icon: LucideIcon }[] = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/projects", label: "Projects", icon: FolderKanban },
-  { href: "/admin/blogs", label: "Blogs", icon: FileText },
-  { href: "/admin/profile", label: "Profile", icon: User },
-  { href: "/admin/resume", label: "Resume", icon: Briefcase },
-  { href: "/admin/gallery", label: "Gallery", icon: Images },
-  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/admin/inbox", label: "Inbox", icon: Mail },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
+  { href: "/studio-7f3c9a", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/studio-7f3c9a/projects", label: "Projects", icon: FolderKanban },
+  { href: "/studio-7f3c9a/blogs", label: "Blogs", icon: FileText },
+  { href: "/studio-7f3c9a/profile", label: "Profile", icon: User },
+  { href: "/studio-7f3c9a/resume", label: "Resume", icon: Briefcase },
+  { href: "/studio-7f3c9a/gallery", label: "Gallery", icon: Images },
+  { href: "/studio-7f3c9a/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/studio-7f3c9a/inbox", label: "Inbox", icon: Mail },
+  { href: "/studio-7f3c9a/settings", label: "Settings", icon: Settings },
 ];
 
 export default function AdminLayout({
@@ -60,7 +60,7 @@ export default function AdminLayout({
   const { data: profile, isLoading: profileLoading } = useAdminAbout();
 
   const activeItem = navItems.find((n) =>
-    n.href === "/admin" ? pathname === "/admin" : pathname?.startsWith(n.href),
+    n.href === "/studio-7f3c9a" ? pathname === "/studio-7f3c9a" : pathname?.startsWith(n.href),
   );
 
   useEffect(() => {
@@ -175,8 +175,8 @@ function Sidebar({
       <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
         {navItems.map((item) => {
           const isActive =
-            item.href === "/admin"
-              ? pathname === "/admin"
+            item.href === "/studio-7f3c9a"
+              ? pathname === "/studio-7f3c9a"
               : pathname?.startsWith(item.href);
           return (
             <Button
@@ -193,7 +193,7 @@ function Sidebar({
               <Link href={item.href}>
                 <item.icon size={15} strokeWidth={1.6} />
                 {item.label}
-                {item.href === "/admin/inbox" && unread > 0 && (
+                {item.href === "/studio-7f3c9a/inbox" && unread > 0 && (
                   <Badge className="ml-auto px-[7px] py-[2px] text-[9.5px] font-normal text-[#111]">
                     {unread}
                   </Badge>
@@ -254,7 +254,7 @@ function Sidebar({
           variant="ghost"
           onClick={async () => {
             await logout();
-            router.replace("/admin/login");
+            router.replace("/studio-7f3c9a/login");
             router.refresh();
           }}
           className="h-auto w-full justify-start gap-2 rounded-[10px] px-3 py-[8px] font-mono text-[12px] font-normal text-[#6E6E78] hover:bg-transparent hover:text-destructive"

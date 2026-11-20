@@ -17,7 +17,7 @@ export default function NewPostPage() {
           saving={createPost.isPending}
           onSave={(data) =>
             createPost.mutate(data, {
-              onSuccess: () => router.push("/admin/blogs"),
+              onSuccess: () => router.push("/studio-7f3c9a/blogs"),
             })
           }
         />

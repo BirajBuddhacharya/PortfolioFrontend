@@ -15,7 +15,7 @@ const contentSecurityPolicyReportOnly = [
   "default-src 'self'",
   "base-uri 'self'",
   "object-src 'none'",
-  "frame-ancestors 'self'",
+  "frame-ancestors 'none'",
   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://challenges.cloudflare.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://res.cloudinary.com https://www.google-analytics.com",
@@ -32,7 +32,7 @@ const contentSecurityPolicyReportOnly = [
 const securityHeaders = [
   // Block framing entirely; CSP frame-ancestors is the modern equivalent.
   { key: "X-Frame-Options", value: "DENY" },
-  { key: "Content-Security-Policy", value: "frame-ancestors 'self'" },
+  { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
   {
     key: "Content-Security-Policy-Report-Only",
     value: contentSecurityPolicyReportOnly,
@@ -65,7 +65,7 @@ const nextConfig: NextConfig = {
       },
       {
         // Keep the admin surface out of search results even if robots.txt is ignored.
-        source: "/admin/:path*",
+        source: "/studio-7f3c9a/:path*",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
     ];

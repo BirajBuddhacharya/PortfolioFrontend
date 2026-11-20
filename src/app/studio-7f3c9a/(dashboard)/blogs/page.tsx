@@ -46,7 +46,7 @@ export default function AdminPostsPage() {
       <div className="flex items-center justify-between mb-5">
         <SectionLabel>all blogs</SectionLabel>
         <Button asChild variant="outline" size="sm" className={newButton}>
-          <Link href="/admin/blogs/new">+ New blogs</Link>
+          <Link href="/studio-7f3c9a/blogs/new">+ New blogs</Link>
         </Button>
       </div>
 
@@ -146,7 +146,7 @@ export default function AdminPostsPage() {
                 <TableCell className="px-5 py-[14px]" onClick={(e) => e.stopPropagation()}>
                   <div className="flex gap-2">
                     <Button asChild variant="outline" size="xs" className={cn(rowButton, 'px-2')}>
-                      <Link href={`/admin/blogs/${p.slug}/edit`}><Pencil size={13} /></Link>
+                      <Link href={`/studio-7f3c9a/blogs/${p.slug}/edit`}><Pencil size={13} /></Link>
                     </Button>
                     <ConfirmDelete
                       title="Delete this post?"

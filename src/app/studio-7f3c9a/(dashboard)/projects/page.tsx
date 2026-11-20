@@ -84,7 +84,7 @@ export default function AdminProjectsPage() {
       <div className="flex items-center justify-between mb-5">
         <SectionLabel>all projects</SectionLabel>
         <Button asChild variant="outline" size="sm" className={newButton}>
-          <Link href="/admin/projects/new">+ New project</Link>
+          <Link href="/studio-7f3c9a/projects/new">+ New project</Link>
         </Button>
       </div>
 
@@ -256,7 +256,7 @@ export default function AdminProjectsPage() {
                         size="xs"
                         className={cn(rowButton, "px-2")}
                       >
-                        <Link href={`/admin/projects/${p.slug}/edit`}>
+                        <Link href={`/studio-7f3c9a/projects/${p.slug}/edit`}>
                           <Pencil size={13} />
                         </Link>
                       </Button>

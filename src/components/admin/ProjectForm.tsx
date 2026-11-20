@@ -112,7 +112,7 @@ export function ProjectForm({
           size="sm"
           className="h-8 gap-1.5 px-2 font-mono text-[12px] text-[#6E6E78] hover:text-[#FF6B6B]"
         >
-          <Link href="/admin/projects">
+          <Link href="/studio-7f3c9a/projects">
             <ArrowLeft size={13} /> projects
           </Link>
         </Button>

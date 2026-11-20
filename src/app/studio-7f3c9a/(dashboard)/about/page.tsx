@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
 
 export default function AdminAboutRedirect() {
-  redirect('/admin/profile');
+  redirect('/studio-7f3c9a/profile');
 }

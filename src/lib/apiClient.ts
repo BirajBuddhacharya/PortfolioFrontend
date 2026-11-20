@@ -62,11 +62,11 @@ api.interceptors.response.use(
       }
     }
 
-    // backend rejected the token — drop it so the middleware keeps /admin gated
+    // backend rejected the token — drop it so the middleware keeps /studio-7f3c9a gated
     if (status === 401 || status === 403) {
       clearToken();
-      if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/admin/login')) {
-        window.location.href = '/admin/login';
+      if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/studio-7f3c9a/login')) {
+        window.location.href = '/studio-7f3c9a/login';
       }
     }
 

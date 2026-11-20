@@ -15,7 +15,7 @@ export default function NewProjectPage() {
           saving={createProject.isPending}
           onSave={(data) =>
             createProject.mutate(data, {
-              onSuccess: () => router.push('/admin/projects'),
+              onSuccess: () => router.push('/studio-7f3c9a/projects'),
             })
           }
         />

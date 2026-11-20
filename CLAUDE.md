@@ -19,7 +19,7 @@ No test runner is configured.
 
 This project uses **both** Next.js routers simultaneously:
 
-- **App Router** (`src/app/`) — all UI pages (`/`, `/about`, `/projects`, `/blog`, `/contact`, `/resume`, `/admin`)
+- **App Router** (`src/app/`) — all UI pages (`/`, `/about`, `/projects`, `/blog`, `/contact`, `/resume`, `/studio-7f3c9a`)
 - **Pages Router** (`src/pages/api/contact.ts`) — the only real API route (email via Resend)
 
 The files in `src/pages/` (about.tsx, home.tsx, etc.) are **legacy leftovers** from before the redesign — they are not active routes.
@@ -36,7 +36,7 @@ To add real data: replace `placeholder.X` in a service's `queryFn` with `api.get
 
 - `baseURL` comes from `NEXT_PUBLIC_API_BASE_URL`.
 - **Request interceptor** attaches `Authorization: Bearer <token>` from the `admin_token` cookie (`src/lib/authToken.ts`).
-- **Response interceptor**: on `401`/`403` it clears the token and hard-redirects to `/admin/login`; every error (any status, plus network failures) fires a `toast.error(...)` via **sonner**. Components therefore must not render their own error banners for API failures — the toast is the single error surface. `<Toaster />` is mounted once in `src/app/layout.tsx`.
+- **Response interceptor**: on `401`/`403` it clears the token and hard-redirects to `/studio-7f3c9a/login`; every error (any status, plus network failures) fires a `toast.error(...)` via **sonner**. Components therefore must not render their own error banners for API failures — the toast is the single error surface. `<Toaster />` is mounted once in `src/app/layout.tsx`.
 - `apiErrorMessage(error)` unwraps the backend's `{ message }` (string or string[]) and is what the interceptor toasts.
 - Backend payloads are wrapped: `ApiResponse<T> = { data: T; message?: string }`.
 
@@ -82,6 +82,6 @@ Note: the contact form UI (`useSubmitContact` in `src/services/contactService.ts
 
 ### Known Quirks
 
-- **Admin auth** is gated server-side by `src/middleware.ts`: it runs on `/admin` and everything under it except `/admin/login`, and redirects to the login page when the `admin_token` cookie is missing or its JWT `exp` has passed (fails closed on unparseable tokens). The backend still validates the JWT on every call — the middleware is only the gate. Admin *content* is still placeholder data.
+- **Admin auth** is gated server-side by `src/middleware.ts`: it runs on `/studio-7f3c9a` and everything under it except `/studio-7f3c9a/login`, and redirects to the login page when the `admin_token` cookie is missing or its JWT `exp` has passed (fails closed on unparseable tokens). The backend still validates the JWT on every call — the middleware is only the gate. Admin *content* is still placeholder data.
 - **`next-sitemap`** is installed but has no config file; sitemap generation is not active.
 - The contact API route lives in `src/pages/api/` (Pages Router), not `src/app/api/`. Keep new API routes there or migrate both to App Router.

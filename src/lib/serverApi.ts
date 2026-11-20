@@ -13,7 +13,7 @@ import { ApiUrls } from "./apiUrls";
  *
  * Deliberately uses `fetch` rather than `src/lib/apiClient.ts` — that axios
  * instance is browser-only (it reads the auth cookie and hard-redirects to
- * /admin/login on 401), none of which can run during a server render.
+ * /studio-7f3c9a/login on 401), none of which can run during a server render.
  *
  * `API_BASE_URL` lets deployments point server renders at an internal address
  * while the browser keeps using the public one.

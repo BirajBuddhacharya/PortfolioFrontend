@@ -1,5 +1,5 @@
 // Bearer tokens from the backend live in cookies so the Next middleware can
-// gate /admin server-side before any admin HTML is sent.
+// gate /studio-7f3c9a server-side before any admin HTML is sent.
 
 export const TOKEN_COOKIE = 'admin_token';
 export const REFRESH_COOKIE = 'admin_refresh_token';

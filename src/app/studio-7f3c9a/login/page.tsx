@@ -33,8 +33,8 @@ export default function AdminLoginPage() {
     const refreshToken = params.get("refreshToken");
     if (token) {
       setTokens({ accessToken: token, refreshToken: refreshToken ?? undefined });
-      window.history.replaceState({}, "", "/admin/login");
-      router.replace("/admin");
+      window.history.replaceState({}, "", "/studio-7f3c9a/login");
+      router.replace("/studio-7f3c9a");
     }
   }, [router]);
 
@@ -45,7 +45,7 @@ export default function AdminLoginPage() {
       { email: email.trim(), password },
       {
         onSuccess: () => {
-          router.replace("/admin");
+          router.replace("/studio-7f3c9a");
           router.refresh();
         },
       },
